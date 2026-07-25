@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -42,12 +43,21 @@
             background: rgba(30, 41, 59, 0.75);
             backdrop-filter: blur(16px);
         }
+        /* Mobile scroll utility */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 via-teal-50/20 to-indigo-50/20 text-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen pb-16">
+<body class="bg-gradient-to-br from-slate-50 via-teal-50/20 to-indigo-50/20 text-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen pb-24 md:pb-8">
 
+    <!-- Top Navigation Header -->
     <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-4 py-3 shadow-sm">
-        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
+        <div class="max-w-7xl mx-auto flex justify-between items-center gap-3">
             <div class="flex items-center gap-3">
                 <div class="bg-gradient-to-tr from-emerald-600 via-teal-500 to-indigo-500 text-white p-2.5 rounded-2xl shadow-lg shadow-emerald-500/20">
                     <i class="fa-solid fa-wallet text-xl"></i>
@@ -65,55 +75,87 @@
                     </select>
                 </div>
 
-                <button id="themeToggle" class="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:scale-105 transition-transform">
+                <button id="themeToggle" class="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:scale-105 transition-transform cursor-pointer">
                     <i class="fa-solid fa-moon dark:hidden"></i>
                     <i class="fa-solid fa-sun hidden dark:block"></i>
                 </button>
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto mt-3 border-t border-slate-100 dark:border-slate-800/60 pt-2">
-            <div class="flex space-x-2 overflow-x-auto no-scrollbar py-1 text-xs font-semibold">
-                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
+        <!-- Desktop Navigation Tabs (Hidden on Mobile) -->
+        <div class="max-w-7xl mx-auto mt-3 border-t border-slate-100 dark:border-slate-800/60 pt-2 hidden md:block">
+            <div class="flex space-x-2 py-1 text-xs font-semibold">
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all bg-emerald-600 text-white shadow-md shadow-emerald-600/20 cursor-pointer">
                     <i class="fa-solid fa-chart-pie"></i> Dashboard
                 </button>
-                <button onclick="switchTab('transactions')" id="tab-transactions" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100">
+                <button onclick="switchTab('transactions')" id="tab-transactions" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer">
                     <i class="fa-solid fa-receipt"></i> Transactions
                 </button>
-                <button onclick="switchTab('goals')" id="tab-goals" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100">
+                <button onclick="switchTab('goals')" id="tab-goals" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer">
                     <i class="fa-solid fa-bullseye"></i> Goals & Wishlist
                 </button>
-                <button onclick="switchTab('scratch')" id="tab-scratch" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 relative">
+                <button onclick="switchTab('scratch')" id="tab-scratch" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer relative">
                     <i class="fa-solid fa-gift text-amber-500"></i> Scratch Cards
                     <span id="scratchBadge" class="bg-rose-500 text-white text-[10px] px-1.5 py-0.2 rounded-full font-bold hidden">0</span>
                 </button>
-                <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100">
+                <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer">
                     <i class="fa-solid fa-gear"></i> Settings
                 </button>
             </div>
         </div>
     </nav>
 
+    <!-- Mobile Bottom Navigation (Visible only on Mobile) -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-slate-200/80 dark:border-slate-800/80 px-2 py-2 shadow-lg md:hidden flex justify-around items-center">
+        <button onclick="switchTab('dashboard')" id="mobile-tab-dashboard" class="mobile-tab-btn flex flex-col items-center gap-1 text-emerald-600 dark:text-emerald-400 cursor-pointer">
+            <i class="fa-solid fa-chart-pie text-lg"></i>
+            <span class="text-[9px] font-bold">Dashboard</span>
+        </button>
+        <button onclick="switchTab('transactions')" id="mobile-tab-transactions" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-850 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer">
+            <i class="fa-solid fa-receipt text-lg"></i>
+            <span class="text-[9px] font-semibold">Txns</span>
+        </button>
+        <button onclick="switchTab('goals')" id="mobile-tab-goals" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-850 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer">
+            <i class="fa-solid fa-bullseye text-lg"></i>
+            <span class="text-[9px] font-semibold">Goals</span>
+        </button>
+        <button onclick="switchTab('scratch')" id="mobile-tab-scratch" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-850 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer relative">
+            <i class="fa-solid fa-gift text-lg text-amber-500"></i>
+            <span class="text-[9px] font-semibold">Scratch</span>
+            <span id="mobileScratchBadge" class="absolute top-0 right-3 bg-rose-500 text-white text-[8px] px-1 py-0.2 rounded-full font-bold hidden">0</span>
+        </button>
+        <button onclick="switchTab('settings')" id="mobile-tab-settings" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-850 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer">
+            <i class="fa-solid fa-gear text-lg"></i>
+            <span class="text-[9px] font-semibold">Settings</span>
+        </button>
+    </nav>
+
+    <!-- Floating Action Button (FAB) for entry additions -->
+    <button onclick="openTxnModal()" class="fixed bottom-20 right-6 md:bottom-8 md:right-8 z-40 bg-gradient-to-tr from-emerald-600 to-teal-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/35 hover:scale-105 active:scale-95 transition-transform cursor-pointer">
+        <i class="fa-solid fa-plus text-2xl"></i>
+    </button>
+
     <main class="max-w-7xl mx-auto px-4 mt-6">
         
+        <!-- Dashboard Section -->
         <section id="content-dashboard" class="tab-content space-y-6">
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-850 shadow-sm relative overflow-hidden">
                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Balance</p>
                     <p id="totalBalance" class="text-2xl font-black mt-1 text-slate-900 dark:text-white">₹0.00</p>
                     <div class="absolute -right-2 -bottom-2 opacity-10 text-slate-900 dark:text-white text-6xl"><i class="fa-solid fa-scale-balanced"></i></div>
                 </div>
-                <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-850 shadow-sm relative overflow-hidden">
                     <p class="text-xs font-semibold text-emerald-500 uppercase tracking-wider">Total Income</p>
                     <p id="totalIncome" class="text-2xl font-black mt-1 text-emerald-600 dark:text-emerald-400">₹0.00</p>
                     <div class="absolute -right-2 -bottom-2 opacity-10 text-emerald-500 text-6xl"><i class="fa-solid fa-arrow-trend-up"></i></div>
                 </div>
-                <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-850 shadow-sm relative overflow-hidden">
                     <p class="text-xs font-semibold text-rose-500 uppercase tracking-wider">Total Expenses</p>
                     <p id="totalExpenses" class="text-2xl font-black mt-1 text-rose-600 dark:text-rose-400">₹0.00</p>
                     <div class="absolute -right-2 -bottom-2 opacity-10 text-rose-500 text-6xl"><i class="fa-solid fa-arrow-trend-down"></i></div>
                 </div>
-                <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-850 shadow-sm relative overflow-hidden">
                     <p class="text-xs font-semibold text-amber-500 uppercase tracking-wider">Net Savings</p>
                     <p id="totalSavings" class="text-2xl font-black mt-1 text-amber-600 dark:text-amber-400">₹0.00</p>
                     <div class="absolute -right-2 -bottom-2 opacity-10 text-amber-500 text-6xl"><i class="fa-solid fa-piggy-bank"></i></div>
@@ -134,7 +176,7 @@
                         <p class="text-xs text-slate-400">Categorical spending breakdown</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <label for="budgetInput" class="text-xs font-medium text-slate-500">Monthly Budget (₹):</label>
+                        <label for="budgetInput" class="text-xs font-medium text-slate-505">Monthly Budget (₹):</label>
                         <input type="number" id="budgetInput" value="50000" class="w-28 px-3 py-1.5 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
                     </div>
                 </div>
@@ -144,105 +186,60 @@
             </div>
         </section>
 
+        <!-- Transactions Tab Section -->
         <section id="content-transactions" class="tab-content hidden space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm h-fit">
-                    <h3 id="formTitle" class="font-bold text-lg mb-4 text-slate-900 dark:text-white">Add Transaction</h3>
-                    <form id="txnForm" class="space-y-4">
-                        <input type="hidden" id="editTxnId">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase">Type</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button type="button" id="typeExpense" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900/50 ring-2 ring-rose-500/20" onclick="setTxnType('Expense')">Expense</button>
-                                <button type="button" id="typeIncome" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800" onclick="setTxnType('Income')">Income</button>
-                            </div>
+            <div class="w-full glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <h3 class="font-bold text-lg">Transactions</h3>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="relative flex-1 sm:flex-initial">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="txnSearch" placeholder="Search..." class="w-full sm:w-40 pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Description</label>
-                            <input type="text" id="txnDesc" required placeholder="e.g., Grocery, Rent, Bonus" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Amount (₹)</label>
-                                <input type="number" id="txnAmount" required min="1" placeholder="0" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Category</label>
-                                <select id="txnCategory" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
-                                    <option value="Food">Food</option>
-                                    <option value="Shopping">Shopping</option>
-                                    <option value="Bills">Bills</option>
-                                    <option value="Travel">Travel</option>
-                                    <option value="Education">Education</option>
-                                    <option value="Medical">Medical</option>
-                                    <option value="Salary">Salary</option>
-                                    <option value="Others">Others</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Date</label>
-                            <input type="date" id="txnDate" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
-                        </div>
-                        <div class="flex gap-2 pt-2">
-                            <button type="submit" id="submitTxnBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-xl shadow-md transition-colors text-xs">Save Transaction</button>
-                            <button type="button" id="cancelEditBtn" class="hidden bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-4 py-2.5 rounded-xl text-xs" onclick="resetTxnForm()">Cancel</button>
-                        </div>
-                    </form>
+                        <select id="txnFilterCategory" class="px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
+                            <option value="All">All Categories</option>
+                            <option value="Food">Food</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Education">Education</option>
+                            <option value="Medical">Medical</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="lg:col-span-2 glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <h3 class="font-bold text-lg">Transactions</h3>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <div class="relative flex-1 sm:flex-initial">
-                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                                <input type="text" id="txnSearch" placeholder="Search..." class="w-full sm:w-40 pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <select id="txnFilterCategory" class="px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
-                                <option value="All">All Categories</option>
-                                <option value="Food">Food</option>
-                                <option value="Shopping">Shopping</option>
-                                <option value="Bills">Bills</option>
-                                <option value="Travel">Travel</option>
-                                <option value="Education">Education</option>
-                                <option value="Medical">Medical</option>
-                                <option value="Salary">Salary</option>
-                                <option value="Others">Others</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-slate-200/80 dark:border-slate-800 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
-                                    <th class="py-3 px-2">Details</th>
-                                    <th class="py-3 px-2">Category</th>
-                                    <th class="py-3 px-2">Date</th>
-                                    <th class="py-3 px-2 text-right">Amount</th>
-                                    <th class="py-3 px-2 text-center">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="txnTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="noTxnMsg" class="hidden text-center py-8 text-slate-400">
-                        <i class="fa-solid fa-receipt text-3xl mb-2 block"></i> No matching transactions found.
-                    </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200/80 dark:border-slate-800 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                                <th class="py-3 px-2">Details</th>
+                                <th class="py-3 px-2">Category</th>
+                                <th class="py-3 px-2">Date</th>
+                                <th class="py-3 px-2 text-right">Amount</th>
+                                <th class="py-3 px-2 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="txnTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noTxnMsg" class="hidden text-center py-8 text-slate-400">
+                    <i class="fa-solid fa-receipt text-3xl mb-2 block"></i> No matching transactions found.
                 </div>
             </div>
         </section>
 
+        <!-- Goals & Wishlist Section -->
         <section id="content-goals" class="tab-content hidden space-y-6">
             <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
                 <div class="flex justify-between items-center">
                     <div>
                         <h3 class="font-bold text-lg">My Goals & Wishlist</h3>
-                        <p class="text-xs text-slate-400">Set target savings for items you want to buy</p>
+                        <p class="text-xs text-slate-400">Set savings targets for items you want to purchase</p>
                     </div>
-                    <button onclick="toggleWishlistForm()" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-3 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20"><i class="fa-solid fa-plus mr-1"></i>New Goal</button>
+                    <button onclick="toggleWishlistForm()" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-3 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20 cursor-pointer"><i class="fa-solid fa-plus mr-1"></i>New Goal</button>
                 </div>
 
                 <form id="wishlistForm" class="hidden p-4 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 rounded-2xl space-y-3">
@@ -258,8 +255,8 @@
                     </div>
                     <input type="text" id="wishNotes" placeholder="Additional notes..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
                     <div class="flex gap-2 pt-1">
-                        <button type="submit" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl">Save Goal</button>
-                        <button type="button" onclick="toggleWishlistForm()" class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-4 py-2 rounded-xl">Cancel</button>
+                        <button type="submit" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl cursor-pointer">Save Goal</button>
+                        <button type="button" onclick="toggleWishlistForm()" class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-4 py-2 rounded-xl cursor-pointer">Cancel</button>
                     </div>
                 </form>
 
@@ -268,17 +265,18 @@
             </div>
         </section>
 
+        <!-- Scratch Cards Section -->
         <section id="content-scratch" class="tab-content hidden space-y-6">
             <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-6">
                 <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
-                        <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase backdrop-blur-md">Savings Rewards</span>
-                        <h2 class="text-2xl font-black mt-2">Scratch & Win Cashbacks!</h2>
-                        <p class="text-xs text-amber-100 mt-1">Get <strong class="underline">1 Scratch Card for every ₹10 saved</strong> in Net Savings.</p>
+                        <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase backdrop-blur-md">Earnings Rewards</span>
+                        <h2 class="text-2xl font-black mt-2">Scratch & Get Coupons!</h2>
+                        <p class="text-xs text-amber-100 mt-1">Get <strong>1 card for any Income</strong> and <strong>2 cards for Income >= ₹5,000</strong>.</p>
                     </div>
                     <div class="bg-white/10 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 text-center">
-                        <span class="block text-[10px] font-bold text-amber-200 uppercase">Available Cards</span>
-                        <span id="availableScratchCount" class="text-3xl font-black">0</span>
+                        <span class="block text-[10px] font-bold text-amber-200 uppercase">Available Tickets</span>
+                        <span id="availableScratchCount" class="text-3xl font-black animate-pulse">0</span>
                     </div>
                 </div>
 
@@ -290,13 +288,14 @@
             </div>
         </section>
 
+        <!-- Settings Section -->
         <section id="content-settings" class="tab-content hidden space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
                     <h3 class="font-bold text-lg"><i class="fa-solid fa-users text-emerald-500 mr-2"></i>User Profiles</h3>
                     <form onsubmit="addUser(event)" class="flex gap-2">
-                        <input type="text" id="newUserName" required placeholder="New profile name..." class="flex-1 px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none">
-                        <button type="submit" class="bg-emerald-600 text-white text-xs px-4 py-2 rounded-xl font-semibold hover:bg-emerald-500">Create</button>
+                        <input type="text" id="newUserName" required placeholder="New profile name..." class="flex-1 px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
+                        <button type="submit" class="bg-emerald-600 text-white text-xs px-4 py-2 rounded-xl font-semibold hover:bg-emerald-500 cursor-pointer">Create</button>
                     </form>
                     <div id="userList" class="space-y-2 max-h-56 overflow-y-auto pr-1">
                     </div>
@@ -305,33 +304,94 @@
                 <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
                     <h3 class="font-bold text-lg"><i class="fa-solid fa-database text-amber-500 mr-2"></i>Data & Backup</h3>
                     <div class="grid grid-cols-2 gap-2">
-                        <button onclick="exportData()" class="flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 py-3 rounded-2xl text-xs font-semibold transition-colors"><i class="fa-solid fa-file-export text-slate-400"></i>Export Backup</button>
+                        <button onclick="exportData()" class="flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 py-3 rounded-2xl text-xs font-semibold transition-colors cursor-pointer"><i class="fa-solid fa-file-export text-slate-400"></i>Export Backup</button>
                         <label class="flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 py-3 rounded-2xl text-xs font-semibold transition-colors cursor-pointer">
                             <i class="fa-solid fa-file-import text-slate-400"></i>Import Backup
                             <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
                         </label>
                     </div>
-                    <button onclick="resetAllData()" class="w-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 dark:hover:bg-rose-950/40 text-rose-600 border border-rose-200 dark:border-rose-900/50 font-semibold py-3 rounded-2xl text-xs transition-colors"><i class="fa-solid fa-trash-can mr-2"></i>Purge & Reset Profile Local Storage</button>
+                    <button onclick="resetAllData()" class="w-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 dark:hover:bg-rose-950/40 text-rose-600 border border-rose-200 dark:border-rose-900/50 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-trash-can mr-2"></i>Purge & Reset Profile Local Storage</button>
                 </div>
             </div>
         </section>
 
     </main>
 
+    <!-- Add/Edit Transaction Modal -->
+    <div id="txnModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 relative animate-in fade-in zoom-in-95 duration-200">
+            <button onclick="closeTxnModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-650 dark:hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 id="formTitle" class="font-bold text-lg text-slate-900 dark:text-white">Add Transaction</h3>
+            <form id="txnForm" class="space-y-4">
+                <input type="hidden" id="editTxnId">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase">Type</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="typeExpense" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-955/30 dark:text-rose-400 dark:border-rose-900/50 ring-2 ring-rose-500/20 cursor-pointer" onclick="setTxnType('Expense')">Expense</button>
+                        <button type="button" id="typeIncome" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-650 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 cursor-pointer" onclick="setTxnType('Income')">Income</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Description</label>
+                    <input type="text" id="txnDesc" required placeholder="e.g., Grocery, Salary, Rent" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Amount (₹)</label>
+                        <input type="number" id="txnAmount" required min="1" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Category</label>
+                        <select id="txnCategory" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                            <option value="Food">Food</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Education">Education</option>
+                            <option value="Medical">Medical</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Date</label>
+                    <input type="date" id="txnDate" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" id="submitTxnBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-505 text-white font-semibold py-2.5 rounded-xl shadow-md transition-colors text-xs cursor-pointer">Save Transaction</button>
+                    <button type="button" id="cancelEditBtn" class="hidden bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-4 py-2.5 rounded-xl text-xs cursor-pointer" onclick="closeTxnModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scratch Reward Modal -->
     <div id="scratchModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-sm w-full border border-slate-200 dark:border-slate-700 shadow-2xl text-center space-y-4 relative">
-            <button onclick="closeScratchModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="font-bold text-lg">Scratch to Reveal</h3>
-            <p class="text-xs text-slate-400">Scratch the surface canvas below!</p>
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-sm w-full border border-slate-200 dark:border-slate-700 shadow-2xl text-center space-y-4 relative animate-in fade-in zoom-in-95 duration-200">
+            <button onclick="closeScratchModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 id="scratchModalTitle" class="font-bold text-lg text-slate-900 dark:text-white">Scratch to Reveal</h3>
+            <p id="scratchModalDesc" class="text-xs text-slate-400">Scratch the surface canvas below!</p>
             
-            <div class="relative w-64 h-64 mx-auto rounded-2xl overflow-hidden shadow-inner bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-950 dark:to-amber-900 border border-amber-300 dark:border-amber-700 flex flex-col justify-center items-center p-4">
-                <div id="rewardContent" class="space-y-2">
+            <div class="relative w-64 h-64 mx-auto rounded-2xl overflow-hidden shadow-inner bg-gradient-to-br from-slate-50 to-indigo-50/50 dark:from-slate-900 dark:to-slate-850 border border-slate-200 dark:border-slate-700 flex flex-col justify-center items-center p-4">
+                <div id="rewardContent" class="space-y-3 z-0 w-full">
                     <span id="rewardEmoji" class="text-5xl block animate-bounce">🎁</span>
-                    <h4 id="rewardTitle" class="text-xl font-black text-amber-700 dark:text-amber-300">₹0</h4>
-                    <p id="rewardDesc" class="text-xs font-semibold text-slate-600 dark:text-slate-300">Special Reward Revealed!</p>
+                    <h4 id="rewardBrand" class="text-[10px] font-black tracking-widest text-slate-400 uppercase">BRAND</h4>
+                    <h4 id="rewardTitle" class="text-lg font-black text-slate-900 dark:text-white">Reward Coupon</h4>
+                    <p id="rewardDesc" class="text-xs font-semibold text-slate-500 dark:text-slate-400 max-w-[200px] mx-auto">Special Reward Revealed!</p>
+                    
+                    <!-- Copyable Code Block -->
+                    <div id="codeBlock" class="mt-2 hidden px-4">
+                        <div class="bg-slate-100 dark:bg-slate-800 border border-dashed border-emerald-500/40 dark:border-emerald-500/25 py-2 px-3 rounded-lg text-xs font-bold text-emerald-600 dark:text-emerald-400 select-all tracking-wider mb-2" id="couponCodeDisplay">
+                            CODE123
+                        </div>
+                        <button id="copyBtn" onclick="copyCouponCode(document.getElementById('couponCodeDisplay').innerText)" class="w-full bg-emerald-600 hover:bg-emerald-505 text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow-md shadow-emerald-600/10 cursor-pointer flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-copy"></i> Copy Code
+                        </button>
+                    </div>
                 </div>
 
-                <canvas id="scratchCanvas" width="256" height="256" class="scratch-canvas absolute inset-0 z-10"></canvas>
+                <canvas id="scratchCanvas" width="256" height="256" class="scratch-canvas absolute inset-0 z-10 transition-opacity duration-300"></canvas>
             </div>
         </div>
     </div>
@@ -355,18 +415,32 @@
         let scratchRewards = JSON.parse(localStorage.getItem(getKey('scratchRewards'))) || {};
         let currentTxnType = 'Expense';
         let expenseChart = null;
+        let activeScratchId = null;
         let activeScratchIndex = null;
 
         // Navigation Tabs Controller
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = "tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100";
+                btn.className = "tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer";
+            });
+
+            document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
+                btn.className = "mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-650 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer";
             });
 
             document.getElementById(`content-${tabId}`).classList.remove('hidden');
+            
             const activeBtn = document.getElementById(`tab-${tabId}`);
-            activeBtn.className = "tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all bg-emerald-600 text-white shadow-md shadow-emerald-600/20";
+            if (activeBtn) {
+                activeBtn.className = "tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all bg-emerald-600 text-white shadow-md shadow-emerald-600/20 cursor-pointer";
+            }
+
+            const activeMobileBtn = document.getElementById(`mobile-tab-${tabId}`);
+            if (activeMobileBtn) {
+                activeMobileBtn.className = "mobile-tab-btn flex flex-col items-center gap-1 text-emerald-600 dark:text-emerald-400 cursor-pointer";
+            }
 
             if (tabId === 'dashboard') renderChart();
         }
@@ -389,7 +463,7 @@
                 div.className = "flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs";
                 div.innerHTML = `
                     <span class="font-semibold ${u === currentUser ? 'text-emerald-600 dark:text-emerald-400' : ''}">${u} ${u === currentUser ? '(Active)' : ''}</span>
-                    ${users.length > 1 && u !== currentUser ? `<button onclick="removeUser('${u}')" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    ${users.length > 1 && u !== currentUser ? `<button onclick="removeUser('${u}')" class="text-rose-500 hover:text-rose-700 cursor-pointer"><i class="fa-solid fa-trash"></i></button>` : ''}
                 `;
                 list.appendChild(div);
             });
@@ -474,12 +548,21 @@
             const incomeBtn = document.getElementById('typeIncome');
             
             if(type === 'Expense') {
-                expenseBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900/50 ring-2 ring-rose-500/20";
-                incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800";
+                expenseBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-955/30 dark:text-rose-400 dark:border-rose-900/50 ring-2 ring-rose-500/20 cursor-pointer";
+                incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-650 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 cursor-pointer";
             } else {
-                incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/50 ring-2 ring-emerald-500/20";
-                expenseBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800";
+                incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-955/30 dark:text-emerald-400 dark:border-emerald-900/50 ring-2 ring-emerald-500/20 cursor-pointer";
+                expenseBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-65 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 cursor-pointer";
             }
+        }
+
+        function openTxnModal() {
+            document.getElementById('txnModal').classList.remove('hidden');
+        }
+
+        function closeTxnModal() {
+            document.getElementById('txnModal').classList.add('hidden');
+            resetTxnForm();
         }
 
         document.getElementById('txnForm').addEventListener('submit', function(e) {
@@ -499,7 +582,7 @@
             }
 
             saveAndSyncData();
-            resetTxnForm();
+            closeTxnModal();
         });
 
         function editTransaction(id) {
@@ -516,10 +599,12 @@
             document.getElementById('formTitle').innerText = "Edit Transaction";
             document.getElementById('submitTxnBtn').innerText = "Update Entry";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
+            
+            openTxnModal();
         }
 
         function deleteTransaction(id) {
-            if(confirm("Confirm removal structural record entry?")) {
+            if(confirm("Confirm removal of this transaction entry?")) {
                 transactions = transactions.filter(t => t.id !== id);
                 saveAndSyncData();
             }
@@ -564,7 +649,7 @@
             renderTransactionsList();
             renderChart();
             renderWishlistContainer();
-            renderScratchCardsDeck(netSavings);
+            renderScratchCardsDeck();
         }
 
         function renderTransactionsList() {
@@ -598,8 +683,8 @@
                     <td class="py-3 px-2 text-right ${amtColor}">${prefixSign} ₹${Math.abs(t.amount).toFixed(2)}</td>
                     <td class="py-3 px-2 text-center">
                         <div class="flex items-center justify-center gap-2">
-                            <button onclick="editTransaction('${t.id}')" class="text-slate-400 hover:text-emerald-500 transition-colors"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteTransaction('${t.id}')" class="text-slate-400 hover:text-rose-500 transition-colors"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="editTransaction('${t.id}')" class="text-slate-400 hover:text-emerald-500 transition-colors cursor-pointer"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteTransaction('${t.id}')" class="text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </td>
                 `;
@@ -701,33 +786,34 @@
                 const calculatedRatio = currentNetSurplusPoolBalance > 0 ? Math.min((currentNetSurplusPoolBalance / w.targetPrice) * 100, 100) : 0;
                 const progressWidthPercentage = w.purchased ? 100 : calculatedRatio;
                 
-                card.className = `p-4 rounded-2xl border transition-all ${w.purchased ? 'bg-slate-50/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 opacity-60' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800'}`;
-                
-                const priorityBadgeColor = w.priority === 'High' ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400' : w.priority === 'Medium' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400';
-
+                card.className = `p-4 rounded-2xl border transition-all ${w.purchased ? 'bg-slate-50/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800' : 'glass-card border-white/60 dark:border-slate-800 shadow-sm'}`;
                 card.innerHTML = `
                     <div class="flex justify-between items-start gap-2">
                         <div>
-                            <span class="text-[9px] font-bold px-2 py-0.5 rounded-md ${priorityBadgeColor} tracking-wide uppercase inline-block mb-1">${w.priority} Priority</span>
-                            <h4 class="font-bold text-sm text-slate-900 dark:text-white ${w.purchased ? 'line-through text-slate-400' : ''}">${w.name}</h4>
+                            <span class="px-2 py-0.5 rounded-md text-[9px] font-bold ${
+                                w.priority === 'High' ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/30 dark:text-rose-400' : 
+                                w.priority === 'Medium' ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/30 dark:text-amber-400' :
+                                'bg-slate-100 text-slate-650 dark:bg-slate-800 dark:text-slate-400'
+                            }">${w.priority} Priority</span>
+                            <h4 class="font-bold text-sm text-slate-900 dark:text-white mt-1.5 ${w.purchased ? 'line-through text-slate-400' : ''}">${w.name}</h4>
                             ${w.notes ? `<p class="text-[11px] text-slate-400 mt-0.5">${w.notes}</p>` : ''}
                         </div>
                         <div class="text-right">
                             <span class="font-bold text-xs block text-slate-900 dark:text-white">₹${w.targetPrice.toLocaleString('en-IN')}</span>
-                            <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-md mt-1 inline-block">${w.purchased ? 'Acquired' : `${progressWidthPercentage.toFixed(0)}% Saved`}</span>
+                            <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-955/30 px-2 py-0.5 rounded-md mt-1 inline-block">${w.purchased ? 'Acquired' : `${progressWidthPercentage.toFixed(0)}% Saved`}</span>
                         </div>
                     </div>
 
-                    <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full mt-3 overflow-hidden">
+                    <div class="w-full bg-slate-200 dark:bg-slate-850 h-2 rounded-full mt-3 overflow-hidden">
                         <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-500" style="width: ${progressWidthPercentage}%"></div>
                     </div>
 
                     <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-200/60 dark:border-slate-800 text-[11px]">
-                        <button onclick="togglePurchasedWish('${w.id}')" class="text-slate-500 hover:text-emerald-500 font-semibold flex items-center gap-1.5 transition-colors">
+                        <button onclick="togglePurchasedWish('${w.id}')" class="text-slate-505 hover:text-emerald-500 font-semibold flex items-center gap-1.5 transition-colors cursor-pointer">
                             <i class="${w.purchased ? 'fa-solid fa-square-check text-emerald-500' : 'fa-regular fa-square'}"></i> ${w.purchased ? 'Purchased' : 'Mark Bought'}
                         </button>
                         <div class="flex items-center gap-2 text-slate-400">
-                            <button onclick="deleteWishItem('${w.id}')" class="hover:text-rose-500 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                            <button onclick="deleteWishItem('${w.id}')" class="hover:text-rose-500 transition-colors cursor-pointer"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                 `;
@@ -752,26 +838,62 @@
         // SCRATCH CARD SYSTEM REWARD COMPUTATION ENGINE
         function generateRewardForIndex(idx) {
             const rewardPool = [
-                { emoji: "🎉", title: "₹5 Cashback!", desc: "Saved into virtual wallet!" },
-                { emoji: "⚡", title: "₹10 Cashback!", desc: "Smart Saver Reward!" },
-                { emoji: "🌟", title: "₹25 Cashback!", desc: "Super Saver Achievement!" },
-                { emoji: "🚀", title: "₹50 Mega Cashback!", desc: "Financial Mastery Bonus!" },
-                { emoji: "💡", title: "Pro Tip", desc: "Automate 15% savings monthly!" },
-                { emoji: "🏆", title: "Rupee Master", desc: "Unlocked Milestone Streak!" }
+                { brand: "Swiggy", emoji: "🍔", title: "Flat 50% OFF", code: "SWIGGY50", desc: "Get 50% off up to ₹100 on your next food order!" },
+                { brand: "Zomato", emoji: "🍕", title: "Flat ₹150 OFF", code: "ZOMATO150", desc: "Save up to ₹150 on gourmet food orders!" },
+                { brand: "Amazon Pay", emoji: "🛒", title: "₹100 Cashback", code: "AMZNGIFT100", desc: "Flat ₹100 cashback on purchasing an Amazon Gift Voucher!" },
+                { brand: "Myntra", emoji: "🛍️", title: "Flat ₹300 OFF", code: "MYNTRA300", desc: "Get flat ₹300 off on fashion orders above ₹1,499!" },
+                { brand: "Ajio", emoji: "👔", title: "Extra 33% OFF", code: "AJIOMANIA", desc: "Extra 33% off on selected wardrobe styles!" },
+                { brand: "BoAt", emoji: "🎧", title: "Extra 15% OFF", code: "BOAT15", desc: "Enjoy 15% off on high-fidelity audio wearables!" },
+                { brand: "BookMyShow", emoji: "🎬", title: "Buy 1 Get 1", code: "BMSFREE", desc: "Buy one movie ticket and get the second free!" },
+                { brand: "Domino's", emoji: "🍕", title: "₹100 Cashback", code: "DOMINOS100", desc: "Enjoy a flat ₹100 cashback on your favorite pizzas!" }
             ];
             return rewardPool[idx % rewardPool.length];
         }
 
-        function renderScratchCardsDeck(netSavings) {
-            const cardsEarnedCount = Math.max(0, Math.floor(netSavings / 10));
+        function getScratchCards() {
+            let cards = [];
+            const incomeTxns = transactions.filter(t => t.type === 'Income').sort((a,b) => new Date(a.date) - new Date(b.date));
             
-            document.getElementById('availableScratchCount').innerText = cardsEarnedCount;
+            incomeTxns.forEach(t => {
+                const count = t.amount >= 5000 ? 2 : 1;
+                for (let i = 0; i < count; i++) {
+                    cards.push({
+                        id: `${t.id}-${i}`,
+                        txnDesc: t.description,
+                        txnAmount: t.amount,
+                        date: t.date,
+                        index: cards.length
+                    });
+                }
+            });
+            return cards;
+        }
+
+        function renderScratchCardsDeck() {
+            const cards = getScratchCards();
+            const cardsEarnedCount = cards.length;
+            
+            let unrevealedCount = 0;
+            cards.forEach(c => {
+                if(!scratchRewards[c.id] || !scratchRewards[c.id].revealed) {
+                    unrevealedCount++;
+                }
+            });
+
+            document.getElementById('availableScratchCount').innerText = unrevealedCount;
             const badge = document.getElementById('scratchBadge');
-            if(cardsEarnedCount > 0) {
-                badge.innerText = cardsEarnedCount;
+            const mobileBadge = document.getElementById('mobileScratchBadge');
+            
+            if(unrevealedCount > 0) {
+                badge.innerText = unrevealedCount;
                 badge.classList.remove('hidden');
+                if (mobileBadge) {
+                    mobileBadge.innerText = unrevealedCount;
+                    mobileBadge.classList.remove('hidden');
+                }
             } else {
                 badge.classList.add('hidden');
+                if (mobileBadge) mobileBadge.classList.add('hidden');
             }
 
             const deckContainer = document.getElementById('scratchDeck');
@@ -780,128 +902,280 @@
             if (cardsEarnedCount === 0) {
                 deckContainer.innerHTML = `
                     <div class="col-span-full text-center py-8 text-slate-400 text-xs">
-                        <i class="fa-solid fa-piggy-bank text-3xl mb-2 block text-amber-400"></i>
-                        Save at least ₹10 to unlock your first Scratch Card!
+                        <i class="fa-solid fa-gift text-3xl mb-2 block text-amber-400"></i>
+                        Earn scratch card tickets by adding Income transactions!
                     </div>
                 `;
                 return;
             }
 
-            for (let i = 0; i < cardsEarnedCount; i++) {
-                const cardState = scratchRewards[i] || { revealed: false };
+            cards.forEach(c => {
+                const cardState = scratchRewards[c.id] || { revealed: false };
                 const cardDiv = document.createElement('div');
-                cardDiv.className = `aspect-square rounded-2xl p-4 border flex flex-col items-center justify-between cursor-pointer transition-all hover:scale-105 shadow-sm ${
+                cardDiv.className = `aspect-square rounded-2xl p-4 border flex flex-col items-center justify-between cursor-pointer transition-all hover:scale-105 shadow-sm active:scale-95 ${
                     cardState.revealed 
-                        ? 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 opacity-80' 
-                        : 'bg-gradient-to-br from-amber-400 to-orange-500 text-white border-amber-300 shadow-amber-500/20'
+                        ? 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800/80 opacity-90' 
+                        : 'bg-gradient-to-br from-amber-400 via-orange-400 to-rose-500 text-white border-amber-300 shadow-lg shadow-amber-500/10'
                 }`;
 
                 if (cardState.revealed) {
-                    const reward = generateRewardForIndex(i);
+                    const reward = generateRewardForIndex(c.index);
                     cardDiv.innerHTML = `
-                        <span class="text-[10px] font-bold uppercase text-slate-400">Card #${i+1}</span>
-                        <div class="text-center">
-                            <span class="text-2xl block mb-1">${reward.emoji}</span>
-                            <span class="font-bold text-xs text-slate-800 dark:text-slate-100">${reward.title}</span>
+                        <div class="flex justify-between w-full items-center">
+                            <span class="text-[9px] font-bold uppercase text-slate-400 dark:text-slate-500">${reward.brand}</span>
+                            <span class="text-[9px] text-slate-400 font-medium">${c.date}</span>
                         </div>
-                        <span class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">Revealed</span>
+                        <div class="text-center">
+                            <span class="text-3xl block mb-1">${reward.emoji}</span>
+                            <span class="font-bold text-xs text-slate-800 dark:text-slate-100">${reward.title}</span>
+                            <span class="text-[9px] block text-emerald-600 dark:text-emerald-400 font-bold mt-1 tracking-wider">${reward.code}</span>
+                        </div>
+                        <span class="text-[9px] font-semibold text-slate-450 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">Revealed</span>
                     `;
+                    cardDiv.onclick = () => openRevealedModal(c.id, c.index);
                 } else {
                     cardDiv.innerHTML = `
-                        <span class="text-[10px] font-bold uppercase text-amber-100">Card #${i+1}</span>
+                        <div class="flex justify-between w-full items-center">
+                            <span class="text-[9px] font-bold uppercase text-amber-100">Reward Ticket</span>
+                            <span class="text-[9px] text-amber-100/80 font-medium">${c.date}</span>
+                        </div>
                         <div class="text-center">
                             <i class="fa-solid fa-gift text-3xl text-white animate-pulse"></i>
                             <span class="font-extrabold text-xs block mt-2">Tap to Scratch</span>
                         </div>
-                        <span class="text-[9px] font-bold bg-white/20 px-2 py-0.5 rounded-full">₹10 Savings Reward</span>
+                        <span class="text-[8px] font-bold bg-white/20 px-2 py-0.5 rounded-full">Income: ₹${c.txnAmount.toLocaleString('en-IN')}</span>
                     `;
-                    cardDiv.onclick = () => openScratchModal(i);
+                    cardDiv.onclick = () => openScratchModal(c.id, c.index);
                 }
                 deckContainer.appendChild(cardDiv);
-            }
+            });
         }
 
-        function openScratchModal(cardIndex) {
+        function openScratchModal(cardId, cardIndex) {
+            activeScratchId = cardId;
             activeScratchIndex = cardIndex;
             const reward = generateRewardForIndex(cardIndex);
             
+            document.getElementById('scratchModalTitle').innerText = "Scratch to Reveal";
+            document.getElementById('scratchModalDesc').innerText = "Scratch the surface canvas below!";
+            
             document.getElementById('rewardEmoji').innerText = reward.emoji;
+            document.getElementById('rewardBrand').innerText = reward.brand;
             document.getElementById('rewardTitle').innerText = reward.title;
             document.getElementById('rewardDesc').innerText = reward.desc;
-
+            document.getElementById('couponCodeDisplay').innerText = reward.code;
+            
+            document.getElementById('codeBlock').classList.add('hidden');
+            
+            const canvas = document.getElementById('scratchCanvas');
+            canvas.style.display = 'block';
+            canvas.style.opacity = '1';
+            
             const modal = document.getElementById('scratchModal');
             modal.classList.remove('hidden');
 
             initScratchCanvas();
         }
 
+        function openRevealedModal(cardId, cardIndex) {
+            const reward = generateRewardForIndex(cardIndex);
+            
+            document.getElementById('scratchModalTitle').innerText = "Your Coupon Code";
+            document.getElementById('scratchModalDesc').innerText = "Congratulations! Use this code at checkout.";
+            
+            document.getElementById('rewardEmoji').innerText = reward.emoji;
+            document.getElementById('rewardBrand').innerText = reward.brand;
+            document.getElementById('rewardTitle').innerText = reward.title;
+            document.getElementById('rewardDesc').innerText = reward.desc;
+            document.getElementById('couponCodeDisplay').innerText = reward.code;
+            
+            document.getElementById('codeBlock').classList.remove('hidden');
+            
+            const canvas = document.getElementById('scratchCanvas');
+            canvas.style.display = 'none';
+            
+            const modal = document.getElementById('scratchModal');
+            modal.classList.remove('hidden');
+        }
+
         function closeScratchModal() {
             document.getElementById('scratchModal').classList.add('hidden');
+            activeScratchId = null;
             activeScratchIndex = null;
+        }
+
+        function copyCouponCode(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.getElementById('copyBtn');
+                if (btn) {
+                    btn.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i> Copied!';
+                    btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-555');
+                    btn.classList.add('bg-slate-600');
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="fa-solid fa-copy mr-1.5"></i> Copy Code';
+                        btn.classList.add('bg-emerald-600', 'hover:bg-emerald-555');
+                        btn.classList.remove('bg-slate-600');
+                    }, 2000);
+                }
+            });
         }
 
         function initScratchCanvas() {
             const canvas = document.getElementById('scratchCanvas');
             const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
+            
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            
+            const width = rect.width;
+            const height = rect.height;
 
             const grad = ctx.createLinearGradient(0, 0, width, height);
-            grad.addColorStop(0, '#f59e0b');
-            grad.addColorStop(1, '#d97706');
+            grad.addColorStop(0, '#f6d365');
+            grad.addColorStop(0.3, '#fda085');
+            grad.addColorStop(0.6, '#f6d365');
+            grad.addColorStop(1, '#fda085');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, width, height);
 
+            ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+            ctx.lineWidth = 1;
+            for (let i = -width; i < width; i += 20) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i + height, height);
+                ctx.stroke();
+            }
+            
+            function drawStar(cx, cy, spikes, outerRadius, innerRadius) {
+                let rot = Math.PI / 2 * 3;
+                let x = cx;
+                let y = cy;
+                let step = Math.PI / spikes;
+
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - outerRadius)
+                for (let i = 0; i < spikes; i++) {
+                    x = cx + Math.cos(rot) * outerRadius;
+                    y = cy + Math.sin(rot) * outerRadius;
+                    ctx.lineTo(x, y)
+                    rot += step
+
+                    x = cx + Math.cos(rot) * innerRadius;
+                    y = cy + Math.sin(rot) * innerRadius;
+                    ctx.lineTo(x, y)
+                    rot += step
+                }
+                ctx.lineTo(cx, cy - outerRadius)
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.fill();
+            }
+
+            drawStar(30, 40, 5, 8, 4);
+            drawStar(width - 40, 50, 5, 10, 5);
+            drawStar(40, height - 50, 5, 12, 6);
+            drawStar(width - 50, height - 40, 5, 8, 4);
+            drawStar(width / 2, height / 2 - 25, 5, 15, 7);
+
+            ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(6, 6, width - 12, height - 12);
+
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 16px Outfit';
+            ctx.shadowColor = 'rgba(0,0,0,0.2)';
+            ctx.shadowBlur = 4;
+            ctx.font = 'bold 15px Outfit';
             ctx.textAlign = 'center';
-            ctx.fillText('SCRATCH HERE!', width / 2, height / 2);
+            ctx.fillText('SCRATCH TICKET', width / 2, height / 2 + 15);
+            
+            ctx.font = '500 10px Outfit';
+            ctx.fillText('SWIPE TO REVEAL', width / 2, height / 2 + 35);
+            
+            ctx.shadowBlur = 0;
 
             let isScratching = false;
+            let lastPoint = null;
 
             function getPointerPos(e) {
-                const rect = canvas.getBoundingClientRect();
+                const r = canvas.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
                 return {
-                    x: clientX - rect.left,
-                    y: clientY - rect.top
+                    x: clientX - r.left,
+                    y: clientY - r.top
                 };
             }
 
             function scratch(e) {
                 if (!isScratching) return;
                 const pos = getPointerPos(e);
+                
                 ctx.globalCompositeOperation = 'destination-out';
+                ctx.lineWidth = 32;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.strokeStyle = 'rgba(0,0,0,1)';
+                
                 ctx.beginPath();
-                ctx.arc(pos.x, pos.y, 20, 0, Math.PI * 2);
-                ctx.fill();
+                if (lastPoint) {
+                    ctx.moveTo(lastPoint.x, lastPoint.y);
+                    ctx.lineTo(pos.x, pos.y);
+                } else {
+                    ctx.moveTo(pos.x, pos.y);
+                    ctx.lineTo(pos.x + 0.1, pos.y);
+                }
+                ctx.stroke();
+                lastPoint = pos;
 
                 checkScratchPercentage();
             }
 
+            let isRevealed = false;
+
             function checkScratchPercentage() {
-                const imgData = ctx.getImageData(0, 0, width, height);
+                if (isRevealed) return;
+                
+                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 let clearedPixels = 0;
                 for (let i = 3; i < imgData.data.length; i += 4) {
                     if (imgData.data[i] === 0) clearedPixels++;
                 }
-                const percentCleared = (clearedPixels / (width * height)) * 100;
+                const percentCleared = (clearedPixels / (canvas.width * canvas.height)) * 100;
 
-                if (percentCleared > 40 && activeScratchIndex !== null) {
-                    scratchRewards[activeScratchIndex] = { revealed: true };
+                if (percentCleared > 45 && activeScratchId !== null) {
+                    isRevealed = true;
+                    scratchRewards[activeScratchId] = { revealed: true, dateRevealed: new Date().toLocaleDateString() };
                     localStorage.setItem(getKey('scratchRewards'), JSON.stringify(scratchRewards));
-                    calculateMetricsAndRefresh();
+                    
+                    if (typeof confetti === 'function') {
+                        confetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { y: 0.6 }
+                        });
+                    }
+
+                    canvas.style.opacity = '0';
+                    setTimeout(() => {
+                        canvas.style.display = 'none';
+                        document.getElementById('codeBlock').classList.remove('hidden');
+                    }, 300);
+
+                    renderScratchCardsDeck();
                 }
             }
 
-            canvas.onmousedown = (e) => { isScratching = true; scratch(e); };
+            canvas.onmousedown = (e) => { isScratching = true; lastPoint = getPointerPos(e); scratch(e); };
             canvas.onmousemove = scratch;
-            canvas.onmouseup = () => { isScratching = false; };
+            window.addEventListener('mouseup', () => { isScratching = false; lastPoint = null; });
 
-            canvas.ontouchstart = (e) => { isScratching = true; scratch(e); };
-            canvas.ontouchmove = scratch;
-            canvas.ontouchend = () => { isScratching = false; };
+            canvas.ontouchstart = (e) => { e.preventDefault(); isScratching = true; lastPoint = getPointerPos(e); scratch(e); };
+            canvas.ontouchmove = (e) => { e.preventDefault(); scratch(e); };
+            window.addEventListener('touchend', () => { isScratching = false; lastPoint = null; });
         }
 
         function saveAndSyncData() {
@@ -915,7 +1189,7 @@
 
         function exportData() {
             const bundleExportPackageData = {
-                version: "2.0.0",
+                version: "2.1.0",
                 user: currentUser,
                 timestamp: new Date().toISOString(),
                 transactions: transactions,
