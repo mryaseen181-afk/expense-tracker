@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RupeeMind - Indian Expense Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 999px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+        .scratch-canvas {
+            cursor: pointer;
+            touch-action: none;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+        }
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(16px);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-teal-50/20 to-indigo-50/20 text-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen pb-16">
+
+    <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-4 py-3 shadow-sm">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-emerald-600 via-teal-500 to-indigo-500 text-white p-2.5 rounded-2xl shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-wallet text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">Rupee<span class="text-emerald-600 dark:text-emerald-400">Mind</span></span>
+                    <span class="block text-[10px] font-medium text-slate-400 uppercase tracking-wider">Aesthetic Finance Manager</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 bg-slate-100/80 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
+                    <i class="fa-solid fa-circle-user text-sm text-emerald-600 dark:text-emerald-400 ml-1.5"></i>
+                    <select id="userSelect" class="bg-transparent text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer pr-1" onchange="switchUser(this.value)">
+                    </select>
+                </div>
+
+                <button id="themeToggle" class="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto mt-3 border-t border-slate-100 dark:border-slate-800/60 pt-2">
+            <div class="flex space-x-2 overflow-x-auto no-scrollbar py-1 text-xs font-semibold">
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </button>
+                <button onclick="switchTab('transactions')" id="tab-transactions" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100">
+                    <i class="fa-solid fa-receipt"></i> Transactions
+                </button>
+                <button onclick="switchTab('goals')" id="tab-goals" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100">
+                    <i class="fa-solid fa-bullseye"></i> Goals & Wishlist
+                </button>
+                <button onclick="switchTab('scratch')" id="tab-scratch" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 relative">
+                    <i class="fa-solid fa-gift text-amber-500"></i> Scratch Cards
+                    <span id="scratchBadge" class="bg-rose-500 text-white text-[10px] px-1.5 py-0.2 rounded-full font-bold hidden">0</span>
+                </button>
+                <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100">
+                    <i class="fa-solid fa-gear"></i> Settings
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 mt-6">
+        
+        <section id="content-dashboard" class="tab-content space-y-6">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Balance</p>
+                    <p id="totalBalance" class="text-2xl font-black mt-1 text-slate-900 dark:text-white">₹0.00</p>
+                    <div class="absolute -right-2 -bottom-2 opacity-10 text-slate-900 dark:text-white text-6xl"><i class="fa-solid fa-scale-balanced"></i></div>
+                </div>
+                <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                    <p class="text-xs font-semibold text-emerald-500 uppercase tracking-wider">Total Income</p>
+                    <p id="totalIncome" class="text-2xl font-black mt-1 text-emerald-600 dark:text-emerald-400">₹0.00</p>
+                    <div class="absolute -right-2 -bottom-2 opacity-10 text-emerald-500 text-6xl"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                </div>
+                <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                    <p class="text-xs font-semibold text-rose-500 uppercase tracking-wider">Total Expenses</p>
+                    <p id="totalExpenses" class="text-2xl font-black mt-1 text-rose-600 dark:text-rose-400">₹0.00</p>
+                    <div class="absolute -right-2 -bottom-2 opacity-10 text-rose-500 text-6xl"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                </div>
+                <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                    <p class="text-xs font-semibold text-amber-500 uppercase tracking-wider">Net Savings</p>
+                    <p id="totalSavings" class="text-2xl font-black mt-1 text-amber-600 dark:text-amber-400">₹0.00</p>
+                    <div class="absolute -right-2 -bottom-2 opacity-10 text-amber-500 text-6xl"><i class="fa-solid fa-piggy-bank"></i></div>
+                </div>
+            </div>
+
+            <div id="budgetWarning" class="hidden bg-rose-500/10 border border-rose-500/30 p-4 rounded-2xl flex items-center gap-3 text-rose-600 dark:text-rose-400 animate-pulse">
+                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                <div>
+                    <span class="font-bold text-sm">Budget Exceeded!</span> You have exceeded your targeted expenditure boundary limit.
+                </div>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+                    <div>
+                        <h3 class="font-bold text-lg">Expense Distribution</h3>
+                        <p class="text-xs text-slate-400">Categorical spending breakdown</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="budgetInput" class="text-xs font-medium text-slate-500">Monthly Budget (₹):</label>
+                        <input type="number" id="budgetInput" value="50000" class="w-28 px-3 py-1.5 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
+                    </div>
+                </div>
+                <div class="h-64 flex justify-center items-center">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="content-transactions" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm h-fit">
+                    <h3 id="formTitle" class="font-bold text-lg mb-4 text-slate-900 dark:text-white">Add Transaction</h3>
+                    <form id="txnForm" class="space-y-4">
+                        <input type="hidden" id="editTxnId">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase">Type</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button type="button" id="typeExpense" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900/50 ring-2 ring-rose-500/20" onclick="setTxnType('Expense')">Expense</button>
+                                <button type="button" id="typeIncome" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800" onclick="setTxnType('Income')">Income</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Description</label>
+                            <input type="text" id="txnDesc" required placeholder="e.g., Grocery, Rent, Bonus" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Amount (₹)</label>
+                                <input type="number" id="txnAmount" required min="1" placeholder="0" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Category</label>
+                                <select id="txnCategory" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                                    <option value="Food">Food</option>
+                                    <option value="Shopping">Shopping</option>
+                                    <option value="Bills">Bills</option>
+                                    <option value="Travel">Travel</option>
+                                    <option value="Education">Education</option>
+                                    <option value="Medical">Medical</option>
+                                    <option value="Salary">Salary</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Date</label>
+                            <input type="date" id="txnDate" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div class="flex gap-2 pt-2">
+                            <button type="submit" id="submitTxnBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-xl shadow-md transition-colors text-xs">Save Transaction</button>
+                            <button type="button" id="cancelEditBtn" class="hidden bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-4 py-2.5 rounded-xl text-xs" onclick="resetTxnForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="lg:col-span-2 glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <h3 class="font-bold text-lg">Transactions</h3>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="relative flex-1 sm:flex-initial">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                                <input type="text" id="txnSearch" placeholder="Search..." class="w-full sm:w-40 pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <select id="txnFilterCategory" class="px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
+                                <option value="All">All Categories</option>
+                                <option value="Food">Food</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Bills">Bills</option>
+                                <option value="Travel">Travel</option>
+                                <option value="Education">Education</option>
+                                <option value="Medical">Medical</option>
+                                <option value="Salary">Salary</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-200/80 dark:border-slate-800 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                                    <th class="py-3 px-2">Details</th>
+                                    <th class="py-3 px-2">Category</th>
+                                    <th class="py-3 px-2">Date</th>
+                                    <th class="py-3 px-2 text-right">Amount</th>
+                                    <th class="py-3 px-2 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="txnTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="noTxnMsg" class="hidden text-center py-8 text-slate-400">
+                        <i class="fa-solid fa-receipt text-3xl mb-2 block"></i> No matching transactions found.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="content-goals" class="tab-content hidden space-y-6">
+            <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-lg">My Goals & Wishlist</h3>
+                        <p class="text-xs text-slate-400">Set target savings for items you want to buy</p>
+                    </div>
+                    <button onclick="toggleWishlistForm()" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-3 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20"><i class="fa-solid fa-plus mr-1"></i>New Goal</button>
+                </div>
+
+                <form id="wishlistForm" class="hidden p-4 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 rounded-2xl space-y-3">
+                    <input type="hidden" id="editWishId">
+                    <input type="text" id="wishName" required placeholder="Item Name (e.g., iPhone, Laptop, Watch)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" id="wishTarget" required placeholder="Target Price (₹)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <select id="wishPriority" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                            <option value="High">High Priority</option>
+                            <option value="Medium" selected>Medium Priority</option>
+                            <option value="Low">Low Priority</option>
+                        </select>
+                    </div>
+                    <input type="text" id="wishNotes" placeholder="Additional notes..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    <div class="flex gap-2 pt-1">
+                        <button type="submit" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl">Save Goal</button>
+                        <button type="button" onclick="toggleWishlistForm()" class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-4 py-2 rounded-xl">Cancel</button>
+                    </div>
+                </form>
+
+                <div id="wishlistContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                </div>
+            </div>
+        </section>
+
+        <section id="content-scratch" class="tab-content hidden space-y-6">
+            <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-6">
+                <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase backdrop-blur-md">Savings Rewards</span>
+                        <h2 class="text-2xl font-black mt-2">Scratch & Win Cashbacks!</h2>
+                        <p class="text-xs text-amber-100 mt-1">Get <strong class="underline">1 Scratch Card for every ₹10 saved</strong> in Net Savings.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 text-center">
+                        <span class="block text-[10px] font-bold text-amber-200 uppercase">Available Cards</span>
+                        <span id="availableScratchCount" class="text-3xl font-black">0</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-base mb-3">Your Scratch Deck</h3>
+                    <div id="scratchDeck" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="content-settings" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                    <h3 class="font-bold text-lg"><i class="fa-solid fa-users text-emerald-500 mr-2"></i>User Profiles</h3>
+                    <form onsubmit="addUser(event)" class="flex gap-2">
+                        <input type="text" id="newUserName" required placeholder="New profile name..." class="flex-1 px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none">
+                        <button type="submit" class="bg-emerald-600 text-white text-xs px-4 py-2 rounded-xl font-semibold hover:bg-emerald-500">Create</button>
+                    </form>
+                    <div id="userList" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                    <h3 class="font-bold text-lg"><i class="fa-solid fa-database text-amber-500 mr-2"></i>Data & Backup</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="exportData()" class="flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 py-3 rounded-2xl text-xs font-semibold transition-colors"><i class="fa-solid fa-file-export text-slate-400"></i>Export Backup</button>
+                        <label class="flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 py-3 rounded-2xl text-xs font-semibold transition-colors cursor-pointer">
+                            <i class="fa-solid fa-file-import text-slate-400"></i>Import Backup
+                            <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
+                        </label>
+                    </div>
+                    <button onclick="resetAllData()" class="w-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 dark:hover:bg-rose-950/40 text-rose-600 border border-rose-200 dark:border-rose-900/50 font-semibold py-3 rounded-2xl text-xs transition-colors"><i class="fa-solid fa-trash-can mr-2"></i>Purge & Reset Profile Local Storage</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="scratchModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-sm w-full border border-slate-200 dark:border-slate-700 shadow-2xl text-center space-y-4 relative">
+            <button onclick="closeScratchModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-bold text-lg">Scratch to Reveal</h3>
+            <p class="text-xs text-slate-400">Scratch the surface canvas below!</p>
+            
+            <div class="relative w-64 h-64 mx-auto rounded-2xl overflow-hidden shadow-inner bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-950 dark:to-amber-900 border border-amber-300 dark:border-amber-700 flex flex-col justify-center items-center p-4">
+                <div id="rewardContent" class="space-y-2">
+                    <span id="rewardEmoji" class="text-5xl block animate-bounce">🎁</span>
+                    <h4 id="rewardTitle" class="text-xl font-black text-amber-700 dark:text-amber-300">₹0</h4>
+                    <p id="rewardDesc" class="text-xs font-semibold text-slate-600 dark:text-slate-300">Special Reward Revealed!</p>
+                </div>
+
+                <canvas id="scratchCanvas" width="256" height="256" class="scratch-canvas absolute inset-0 z-10"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Multi-User Execution Engine
+        let users = JSON.parse(localStorage.getItem('rupee_users')) || ['Default User'];
+        let currentUser = localStorage.getItem('rupee_current_user') || users[0];
+
+        if(!users.includes(currentUser)) {
+            currentUser = users[0];
+            localStorage.setItem('rupee_current_user', currentUser);
+        }
+
+        function getKey(key) {
+            return `rupee_${currentUser}_${key}`;
+        }
+
+        let transactions = JSON.parse(localStorage.getItem(getKey('transactions'))) || [];
+        let wishlist = JSON.parse(localStorage.getItem(getKey('wishlist'))) || [];
+        let scratchRewards = JSON.parse(localStorage.getItem(getKey('scratchRewards'))) || {};
+        let currentTxnType = 'Expense';
+        let expenseChart = null;
+        let activeScratchIndex = null;
+
+        // Navigation Tabs Controller
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100";
+            });
+
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.className = "tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all bg-emerald-600 text-white shadow-md shadow-emerald-600/20";
+
+            if (tabId === 'dashboard') renderChart();
+        }
+
+        function renderUserControls() {
+            const select = document.getElementById('userSelect');
+            select.innerHTML = '';
+            users.forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u;
+                opt.innerText = u;
+                if(u === currentUser) opt.selected = true;
+                select.appendChild(opt);
+            });
+
+            const list = document.getElementById('userList');
+            list.innerHTML = '';
+            users.forEach(u => {
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs";
+                div.innerHTML = `
+                    <span class="font-semibold ${u === currentUser ? 'text-emerald-600 dark:text-emerald-400' : ''}">${u} ${u === currentUser ? '(Active)' : ''}</span>
+                    ${users.length > 1 && u !== currentUser ? `<button onclick="removeUser('${u}')" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>` : ''}
+                `;
+                list.appendChild(div);
+            });
+
+            const userBudget = localStorage.getItem(getKey('budget'));
+            if (userBudget) document.getElementById('budgetInput').value = userBudget;
+        }
+
+        function switchUser(userName) {
+            currentUser = userName;
+            localStorage.setItem('rupee_current_user', currentUser);
+            transactions = JSON.parse(localStorage.getItem(getKey('transactions'))) || [];
+            wishlist = JSON.parse(localStorage.getItem(getKey('wishlist'))) || [];
+            scratchRewards = JSON.parse(localStorage.getItem(getKey('scratchRewards'))) || {};
+            
+            const savedBudget = localStorage.getItem(getKey('budget')) || 50000;
+            document.getElementById('budgetInput').value = savedBudget;
+            
+            resetTxnForm();
+            renderUserControls();
+            calculateMetricsAndRefresh();
+        }
+
+        function addUser(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('newUserName');
+            const name = nameInput.value.trim();
+            if(name && !users.includes(name)) {
+                users.push(name);
+                localStorage.setItem('rupee_users', JSON.stringify(users));
+                nameInput.value = '';
+                switchUser(name);
+            }
+        }
+
+        function removeUser(userName) {
+            if(confirm(`Confirm profile removal for "${userName}"?`)) {
+                users = users.filter(u => u !== userName);
+                localStorage.setItem('rupee_users', JSON.stringify(users));
+                localStorage.removeItem(`rupee_${userName}_transactions`);
+                localStorage.removeItem(`rupee_${userName}_wishlist`);
+                localStorage.removeItem(`rupee_${userName}_scratchRewards`);
+                localStorage.removeItem(`rupee_${userName}_budget`);
+                renderUserControls();
+            }
+        }
+
+        document.getElementById('txnDate').valueAsDate = new Date();
+
+        // Theme Toggle Handler
+        const themeToggle = document.getElementById('themeToggle');
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            renderChart();
+        });
+
+        function formatIndianCurrency(num) {
+            const absoluteValue = Math.abs(Number(num)).toFixed(2);
+            const [integerPart, decimalPart] = absoluteValue.split('.');
+            let lastThreeDigits = integerPart.substring(integerPart.length - 3);
+            const otherDigits = integerPart.substring(0, integerPart.length - 3);
+            if (otherDigits !== '') lastThreeDigits = ',' + lastThreeDigits;
+            const structuredResult = otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThreeDigits + '.' + decimalPart;
+            return num < 0 ? `- ₹${structuredResult}` : `₹${structuredResult}`;
+        }
+
+        function setTxnType(type) {
+            currentTxnType = type;
+            const expenseBtn = document.getElementById('typeExpense');
+            const incomeBtn = document.getElementById('typeIncome');
+            
+            if(type === 'Expense') {
+                expenseBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900/50 ring-2 ring-rose-500/20";
+                incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800";
+            } else {
+                incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/50 ring-2 ring-emerald-500/20";
+                expenseBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800";
+            }
+        }
+
+        document.getElementById('txnForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editTxnId').value;
+            const description = document.getElementById('txnDesc').value;
+            const amount = parseFloat(document.getElementById('txnAmount').value);
+            const category = document.getElementById('txnCategory').value;
+            const date = document.getElementById('txnDate').value;
+
+            const txnData = { id: id || Date.now().toString(), description, type: currentTxnType, amount, category, date };
+
+            if(id) {
+                transactions = transactions.map(t => t.id === id ? txnData : t);
+            } else {
+                transactions.push(txnData);
+            }
+
+            saveAndSyncData();
+            resetTxnForm();
+        });
+
+        function editTransaction(id) {
+            const target = transactions.find(t => t.id === id);
+            if(!target) return;
+
+            document.getElementById('editTxnId').value = target.id;
+            document.getElementById('txnDesc').value = target.description;
+            document.getElementById('txnAmount').value = target.amount;
+            document.getElementById('txnCategory').value = target.category;
+            document.getElementById('txnDate').value = target.date;
+            
+            setTxnType(target.type);
+            document.getElementById('formTitle').innerText = "Edit Transaction";
+            document.getElementById('submitTxnBtn').innerText = "Update Entry";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+        }
+
+        function deleteTransaction(id) {
+            if(confirm("Confirm removal structural record entry?")) {
+                transactions = transactions.filter(t => t.id !== id);
+                saveAndSyncData();
+            }
+        }
+
+        function resetTxnForm() {
+            document.getElementById('editTxnId').value = '';
+            document.getElementById('txnForm').reset();
+            document.getElementById('txnDate').valueAsDate = new Date();
+            setTxnType('Expense');
+            document.getElementById('formTitle').innerText = "Add Transaction";
+            document.getElementById('submitTxnBtn').innerText = "Save Transaction";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+        }
+
+        function calculateMetricsAndRefresh() {
+            let incomeTotal = 0;
+            let expenseTotal = 0;
+
+            transactions.forEach(t => {
+                if(t.type === 'Income') incomeTotal += t.amount;
+                else expenseTotal += t.amount;
+            });
+            const netSavings = incomeTotal - expenseTotal;
+            const totalBalance = netSavings;
+
+            document.getElementById('totalBalance').innerText = formatIndianCurrency(totalBalance);
+            document.getElementById('totalIncome').innerText = formatIndianCurrency(incomeTotal);
+            document.getElementById('totalExpenses').innerText = formatIndianCurrency(expenseTotal);
+            document.getElementById('totalSavings').innerText = formatIndianCurrency(netSavings);
+
+            const maxBudgetConstraintLimit = parseFloat(document.getElementById('budgetInput').value) || 0;
+            localStorage.setItem(getKey('budget'), maxBudgetConstraintLimit);
+
+            const warningBanner = document.getElementById('budgetWarning');
+            if(maxBudgetConstraintLimit > 0 && expenseTotal > maxBudgetConstraintLimit) {
+                warningBanner.classList.remove('hidden');
+            } else {
+                warningBanner.classList.add('hidden');
+            }
+
+            renderTransactionsList();
+            renderChart();
+            renderWishlistContainer();
+            renderScratchCardsDeck(netSavings);
+        }
+
+        function renderTransactionsList() {
+            const query = document.getElementById('txnSearch').value.toLowerCase();
+            const selectedCategory = document.getElementById('txnFilterCategory').value;
+            const container = document.getElementById('txnTableBody');
+            container.innerHTML = '';
+
+            const itemsFiltered = transactions.filter(t => {
+                const searchMatch = t.description.toLowerCase().includes(query) || t.category.toLowerCase().includes(query);
+                const categoryMatch = selectedCategory === 'All' || t.category === selectedCategory;
+                return searchMatch && categoryMatch;
+            }).sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            if(itemsFiltered.length === 0) {
+                document.getElementById('noTxnMsg').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('noTxnMsg').classList.add('hidden');
+
+            itemsFiltered.forEach(t => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-colors";
+                const amtColor = t.type === 'Income' ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-700 dark:text-slate-200';
+                const prefixSign = t.type === 'Income' ? '+' : '-';
+                
+                tr.innerHTML = `
+                    <td class="py-3 px-2 font-semibold text-slate-900 dark:text-white">${t.description}</td>
+                    <td class="py-3 px-2"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${t.category}</span></td>
+                    <td class="py-3 px-2 text-[11px] text-slate-400 font-medium">${t.date}</td>
+                    <td class="py-3 px-2 text-right ${amtColor}">${prefixSign} ₹${Math.abs(t.amount).toFixed(2)}</td>
+                    <td class="py-3 px-2 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <button onclick="editTransaction('${t.id}')" class="text-slate-400 hover:text-emerald-500 transition-colors"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteTransaction('${t.id}')" class="text-slate-400 hover:text-rose-500 transition-colors"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                container.appendChild(tr);
+            });
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            const categorySummaryMap = { Food: 0, Shopping: 0, Bills: 0, Travel: 0, Education: 0, Medical: 0, Others: 0 };
+            
+            transactions.filter(t => t.type === 'Expense').forEach(t => {
+                if(categorySummaryMap[t.category] !== undefined) categorySummaryMap[t.category] += t.amount;
+                else categorySummaryMap['Others'] += t.amount;
+            });
+
+            const labels = Object.keys(categorySummaryMap);
+            const dataValues = Object.values(categorySummaryMap);
+            const sumArrayElementsTotal = dataValues.reduce((a, b) => a + b, 0);
+
+            if (expenseChart) expenseChart.destroy();
+            if(sumArrayElementsTotal === 0) {
+                ctx.clearRect(0, 0, 200, 200);
+                return;
+            }
+
+            const activeThemeIsDark = document.documentElement.classList.contains('dark');
+            const fontPropertiesSetupColor = activeThemeIsDark ? '#94a3b8' : '#64748b';
+
+            expenseChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: ['#f43f5e', '#ec4899', '#3b82f6', '#06b6d4', '#10b981', '#eab308', '#64748b'],
+                        borderWidth: activeThemeIsDark ? 2 : 1,
+                        borderColor: activeThemeIsDark ? '#0f172a' : '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: fontPropertiesSetupColor,
+                                font: { family: 'Outfit', size: 11, weight: '600' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function toggleWishlistForm() {
+            const form = document.getElementById('wishlistForm');
+            form.classList.toggle('hidden');
+        }
+
+        document.getElementById('wishlistForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editWishId').value;
+            const name = document.getElementById('wishName').value;
+            const targetPrice = parseFloat(document.getElementById('wishTarget').value);
+            const priority = document.getElementById('wishPriority').value;
+            const notes = document.getElementById('wishNotes').value;
+
+            if(id) {
+                wishlist = wishlist.map(w => w.id === id ? { ...w, name, targetPrice, priority, notes } : w);
+            } else {
+                wishlist.push({ id: Date.now().toString(), name, targetPrice, priority, notes, purchased: false });
+            }
+
+            localStorage.setItem(getKey('wishlist'), JSON.stringify(wishlist));
+            calculateMetricsAndRefresh();
+            document.getElementById('wishlistForm').reset();
+            document.getElementById('editWishId').value = '';
+            toggleWishlistForm();
+        });
+
+        function renderWishlistContainer() {
+            const container = document.getElementById('wishlistContainer');
+            container.innerHTML = '';
+
+            let totalIncome = 0;
+            let totalExpense = 0;
+            transactions.forEach(t => { if(t.type==='Income') totalIncome += t.amount; else totalExpense += t.amount; });
+            const currentNetSurplusPoolBalance = totalIncome - totalExpense;
+
+            if(wishlist.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-6 text-xs text-slate-400"><i class="fa-solid fa-bullseye text-2xl mb-1 block"></i>No goals created yet.</div>`;
+                return;
+            }
+
+            wishlist.forEach((w, index) => {
+                const card = document.createElement('div');
+                const calculatedRatio = currentNetSurplusPoolBalance > 0 ? Math.min((currentNetSurplusPoolBalance / w.targetPrice) * 100, 100) : 0;
+                const progressWidthPercentage = w.purchased ? 100 : calculatedRatio;
+                
+                card.className = `p-4 rounded-2xl border transition-all ${w.purchased ? 'bg-slate-50/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 opacity-60' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800'}`;
+                
+                const priorityBadgeColor = w.priority === 'High' ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400' : w.priority === 'Medium' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400';
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start gap-2">
+                        <div>
+                            <span class="text-[9px] font-bold px-2 py-0.5 rounded-md ${priorityBadgeColor} tracking-wide uppercase inline-block mb-1">${w.priority} Priority</span>
+                            <h4 class="font-bold text-sm text-slate-900 dark:text-white ${w.purchased ? 'line-through text-slate-400' : ''}">${w.name}</h4>
+                            ${w.notes ? `<p class="text-[11px] text-slate-400 mt-0.5">${w.notes}</p>` : ''}
+                        </div>
+                        <div class="text-right">
+                            <span class="font-bold text-xs block text-slate-900 dark:text-white">₹${w.targetPrice.toLocaleString('en-IN')}</span>
+                            <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-md mt-1 inline-block">${w.purchased ? 'Acquired' : `${progressWidthPercentage.toFixed(0)}% Saved`}</span>
+                        </div>
+                    </div>
+
+                    <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full mt-3 overflow-hidden">
+                        <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-500" style="width: ${progressWidthPercentage}%"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-200/60 dark:border-slate-800 text-[11px]">
+                        <button onclick="togglePurchasedWish('${w.id}')" class="text-slate-500 hover:text-emerald-500 font-semibold flex items-center gap-1.5 transition-colors">
+                            <i class="${w.purchased ? 'fa-solid fa-square-check text-emerald-500' : 'fa-regular fa-square'}"></i> ${w.purchased ? 'Purchased' : 'Mark Bought'}
+                        </button>
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <button onclick="deleteWishItem('${w.id}')" class="hover:text-rose-500 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function togglePurchasedWish(id) {
+            wishlist = wishlist.map(w => w.id === id ? { ...w, purchased: !w.purchased } : w);
+            localStorage.setItem(getKey('wishlist'), JSON.stringify(wishlist));
+            calculateMetricsAndRefresh();
+        }
+
+        function deleteWishItem(id) {
+            if(confirm("Confirm goal removal?")) {
+                wishlist = wishlist.filter(w => w.id !== id);
+                localStorage.setItem(getKey('wishlist'), JSON.stringify(wishlist));
+                calculateMetricsAndRefresh();
+            }
+        }
+
+        // SCRATCH CARD SYSTEM REWARD COMPUTATION ENGINE
+        function generateRewardForIndex(idx) {
+            const rewardPool = [
+                { emoji: "🎉", title: "₹5 Cashback!", desc: "Saved into virtual wallet!" },
+                { emoji: "⚡", title: "₹10 Cashback!", desc: "Smart Saver Reward!" },
+                { emoji: "🌟", title: "₹25 Cashback!", desc: "Super Saver Achievement!" },
+                { emoji: "🚀", title: "₹50 Mega Cashback!", desc: "Financial Mastery Bonus!" },
+                { emoji: "💡", title: "Pro Tip", desc: "Automate 15% savings monthly!" },
+                { emoji: "🏆", title: "Rupee Master", desc: "Unlocked Milestone Streak!" }
+            ];
+            return rewardPool[idx % rewardPool.length];
+        }
+
+        function renderScratchCardsDeck(netSavings) {
+            const cardsEarnedCount = Math.max(0, Math.floor(netSavings / 10));
+            
+            document.getElementById('availableScratchCount').innerText = cardsEarnedCount;
+            const badge = document.getElementById('scratchBadge');
+            if(cardsEarnedCount > 0) {
+                badge.innerText = cardsEarnedCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            const deckContainer = document.getElementById('scratchDeck');
+            deckContainer.innerHTML = '';
+
+            if (cardsEarnedCount === 0) {
+                deckContainer.innerHTML = `
+                    <div class="col-span-full text-center py-8 text-slate-400 text-xs">
+                        <i class="fa-solid fa-piggy-bank text-3xl mb-2 block text-amber-400"></i>
+                        Save at least ₹10 to unlock your first Scratch Card!
+                    </div>
+                `;
+                return;
+            }
+
+            for (let i = 0; i < cardsEarnedCount; i++) {
+                const cardState = scratchRewards[i] || { revealed: false };
+                const cardDiv = document.createElement('div');
+                cardDiv.className = `aspect-square rounded-2xl p-4 border flex flex-col items-center justify-between cursor-pointer transition-all hover:scale-105 shadow-sm ${
+                    cardState.revealed 
+                        ? 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 opacity-80' 
+                        : 'bg-gradient-to-br from-amber-400 to-orange-500 text-white border-amber-300 shadow-amber-500/20'
+                }`;
+
+                if (cardState.revealed) {
+                    const reward = generateRewardForIndex(i);
+                    cardDiv.innerHTML = `
+                        <span class="text-[10px] font-bold uppercase text-slate-400">Card #${i+1}</span>
+                        <div class="text-center">
+                            <span class="text-2xl block mb-1">${reward.emoji}</span>
+                            <span class="font-bold text-xs text-slate-800 dark:text-slate-100">${reward.title}</span>
+                        </div>
+                        <span class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">Revealed</span>
+                    `;
+                } else {
+                    cardDiv.innerHTML = `
+                        <span class="text-[10px] font-bold uppercase text-amber-100">Card #${i+1}</span>
+                        <div class="text-center">
+                            <i class="fa-solid fa-gift text-3xl text-white animate-pulse"></i>
+                            <span class="font-extrabold text-xs block mt-2">Tap to Scratch</span>
+                        </div>
+                        <span class="text-[9px] font-bold bg-white/20 px-2 py-0.5 rounded-full">₹10 Savings Reward</span>
+                    `;
+                    cardDiv.onclick = () => openScratchModal(i);
+                }
+                deckContainer.appendChild(cardDiv);
+            }
+        }
+
+        function openScratchModal(cardIndex) {
+            activeScratchIndex = cardIndex;
+            const reward = generateRewardForIndex(cardIndex);
+            
+            document.getElementById('rewardEmoji').innerText = reward.emoji;
+            document.getElementById('rewardTitle').innerText = reward.title;
+            document.getElementById('rewardDesc').innerText = reward.desc;
+
+            const modal = document.getElementById('scratchModal');
+            modal.classList.remove('hidden');
+
+            initScratchCanvas();
+        }
+
+        function closeScratchModal() {
+            document.getElementById('scratchModal').classList.add('hidden');
+            activeScratchIndex = null;
+        }
+
+        function initScratchCanvas() {
+            const canvas = document.getElementById('scratchCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            const grad = ctx.createLinearGradient(0, 0, width, height);
+            grad.addColorStop(0, '#f59e0b');
+            grad.addColorStop(1, '#d97706');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 16px Outfit';
+            ctx.textAlign = 'center';
+            ctx.fillText('SCRATCH HERE!', width / 2, height / 2);
+
+            let isScratching = false;
+
+            function getPointerPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            }
+
+            function scratch(e) {
+                if (!isScratching) return;
+                const pos = getPointerPos(e);
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 20, 0, Math.PI * 2);
+                ctx.fill();
+
+                checkScratchPercentage();
+            }
+
+            function checkScratchPercentage() {
+                const imgData = ctx.getImageData(0, 0, width, height);
+                let clearedPixels = 0;
+                for (let i = 3; i < imgData.data.length; i += 4) {
+                    if (imgData.data[i] === 0) clearedPixels++;
+                }
+                const percentCleared = (clearedPixels / (width * height)) * 100;
+
+                if (percentCleared > 40 && activeScratchIndex !== null) {
+                    scratchRewards[activeScratchIndex] = { revealed: true };
+                    localStorage.setItem(getKey('scratchRewards'), JSON.stringify(scratchRewards));
+                    calculateMetricsAndRefresh();
+                }
+            }
+
+            canvas.onmousedown = (e) => { isScratching = true; scratch(e); };
+            canvas.onmousemove = scratch;
+            canvas.onmouseup = () => { isScratching = false; };
+
+            canvas.ontouchstart = (e) => { isScratching = true; scratch(e); };
+            canvas.ontouchmove = scratch;
+            canvas.ontouchend = () => { isScratching = false; };
+        }
+
+        function saveAndSyncData() {
+            localStorage.setItem(getKey('transactions'), JSON.stringify(transactions));
+            calculateMetricsAndRefresh();
+        }
+
+        document.getElementById('txnSearch').addEventListener('input', renderTransactionsList);
+        document.getElementById('txnFilterCategory').addEventListener('change', renderTransactionsList);
+        document.getElementById('budgetInput').addEventListener('input', calculateMetricsAndRefresh);
+
+        function exportData() {
+            const bundleExportPackageData = {
+                version: "2.0.0",
+                user: currentUser,
+                timestamp: new Date().toISOString(),
+                transactions: transactions,
+                wishlist: wishlist,
+                scratchRewards: scratchRewards,
+                budgetConfigLimit: document.getElementById('budgetInput').value
+            };
+            const representationStringDataStream = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(bundleExportPackageData, null, 2));
+            const dummyAnchorElementNodeElement = document.createElement('a');
+            dummyAnchorElementNodeElement.setAttribute("href", representationStringDataStream);
+            dummyAnchorElementNodeElement.setAttribute("download", `RupeeMind_${currentUser}_Backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(dummyAnchorElementNodeElement);
+            dummyAnchorElementNodeElement.click();
+            dummyAnchorElementNodeElement.remove();
+        }
+
+        function importData(event) {
+            const parsingFileReaderEngine = new FileReader();
+            parsingFileReaderEngine.onload = function(e) {
+                try {
+                    const extractedJsonParsedObjectTree = JSON.parse(e.target.result);
+                    if(extractedJsonParsedObjectTree.transactions) {
+                        transactions = extractedJsonParsedObjectTree.transactions || [];
+                        wishlist = extractedJsonParsedObjectTree.wishlist || [];
+                        scratchRewards = extractedJsonParsedObjectTree.scratchRewards || {};
+                        if(extractedJsonParsedObjectTree.budgetConfigLimit) {
+                            document.getElementById('budgetInput').value = extractedJsonParsedObjectTree.budgetConfigLimit;
+                        }
+                        saveAndSyncData();
+                        alert("Database configuration updated!");
+                    } else {
+                        alert("Invalid backup JSON structure.");
+                    }
+                } catch (err) {
+                    alert("Parsing error encountered during import.");
+                }
+            };
+            parsingFileReaderEngine.readAsText(event.target.files[0]);
+        }
+
+        function resetAllData() {
+            if(confirm(`Reset all stored records for ${currentUser}?`)) {
+                localStorage.removeItem(getKey('transactions'));
+                localStorage.removeItem(getKey('wishlist'));
+                localStorage.removeItem(getKey('scratchRewards'));
+                localStorage.removeItem(getKey('budget'));
+                transactions = [];
+                wishlist = [];
+                scratchRewards = {};
+                document.getElementById('budgetInput').value = 50000;
+                resetTxnForm();
+                saveAndSyncData();
+            }
+        }
+
+        // Bootstrap App Startup
+        renderUserControls();
+        calculateMetricsAndRefresh();
+    </script>
+</body>
+</html>
