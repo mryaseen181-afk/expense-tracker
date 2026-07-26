@@ -58,7 +58,7 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-teal-50 via-cyan-50/50 to-indigo-50/50 text-slate-800 dark:from-slate-950 dark:via-indigo-950/65 dark:to-slate-950 dark:text-teal-100 transition-colors duration-300 min-h-screen pb-24 md:pb-8">
+<body class="bg-gradient-to-br from-teal-50 via-cyan-50/50 to-indigo-50/50 text-slate-800 dark:from-indigo-950 dark:via-teal-950/65 dark:to-indigo-950 dark:text-teal-105 transition-colors duration-300 min-h-screen pb-24 md:pb-8">
 
     <!-- Start / Cloud Login & Registration Overlay -->
     <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-indigo-950 via-slate-950 to-emerald-950 p-4 animate-in fade-in duration-300">
@@ -122,7 +122,7 @@
     <!-- Main Application Wrapper -->
     <div id="appContainer" class="hidden">
         <!-- Top Navigation Header -->
-        <nav class="sticky top-0 z-40 bg-teal-50/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-teal-200/50 dark:border-indigo-900/50 px-4 py-3 shadow-sm">
+        <nav class="sticky top-0 z-40 bg-teal-50/80 dark:bg-indigo-950/85 backdrop-blur-md border-b border-teal-200/50 dark:border-indigo-900/50 px-4 py-3 shadow-sm">
             <div class="max-w-7xl mx-auto flex justify-between items-center gap-3">
                 <div class="flex items-center gap-3">
                     <div class="bg-gradient-to-tr from-emerald-600 via-teal-500 to-indigo-500 text-white p-2.5 rounded-2xl shadow-lg shadow-emerald-500/20">
@@ -174,7 +174,7 @@
         </nav>
 
         <!-- Mobile Bottom Navigation -->
-        <nav class="fixed bottom-0 left-0 right-0 z-40 bg-teal-50/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-teal-200/50 dark:border-indigo-900/50 px-2 py-2 shadow-lg md:hidden flex justify-around items-center">
+        <nav class="fixed bottom-0 left-0 right-0 z-40 bg-teal-50/90 dark:bg-indigo-950/95 backdrop-blur-lg border-t border-teal-200/50 dark:border-indigo-900/50 px-2 py-2 shadow-lg md:hidden flex justify-around items-center">
             <button onclick="switchTab('dashboard')" id="mobile-tab-dashboard" class="mobile-tab-btn flex flex-col items-center gap-1 text-emerald-600 dark:text-teal-350 cursor-pointer">
                 <i class="fa-solid fa-chart-pie text-lg"></i>
                 <span class="text-[9px] font-bold">Dashboard</span>
@@ -927,7 +927,7 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-teal-50/50 dark:hover:bg-indigo-950/40 transition-colors";
                 
-                let amtColor = 'text-slate-700 dark:text-slate-200';
+                let amtColor = 'text-slate-700 dark:text-teal-350';
                 let prefixSign = '-';
                 if(t.type === 'Income') {
                     amtColor = 'text-emerald-600 dark:text-teal-300 font-bold';
@@ -1263,7 +1263,7 @@
                 item.innerHTML = `
                     <div class="space-y-0.5">
                         <div class="flex items-center gap-1.5">
-                            <h4 class="font-extrabold text-xs text-teal-950 dark:text-slate-100">${u.friend}</h4>
+                            <h4 class="font-extrabold text-xs text-teal-950 dark:text-teal-100">${u.friend}</h4>
                             <span class="text-[8px] font-bold uppercase ${statusTextColor} bg-white dark:bg-indigo-950 px-1.5 py-0.2 rounded-full border border-current">${typeLabel}</span>
                         </div>
                         <p class="text-[10px] text-teal-500 font-medium">${u.date} ${u.notes ? `• ${u.notes}` : ''}</p>
