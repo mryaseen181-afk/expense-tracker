@@ -7,7 +7,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -31,10 +30,6 @@
         .dark ::-webkit-scrollbar-thumb {
             background: #334155;
         }
-        .scratch-canvas {
-            cursor: pointer;
-            touch-action: none;
-        }
         .glass-card {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(16px);
@@ -43,7 +38,6 @@
             background: rgba(30, 41, 59, 0.75);
             backdrop-filter: blur(16px);
         }
-        /* Mobile scroll utility */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -94,9 +88,8 @@
                 <button onclick="switchTab('goals')" id="tab-goals" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer">
                     <i class="fa-solid fa-bullseye"></i> Goals & Wishlist
                 </button>
-                <button onclick="switchTab('scratch')" id="tab-scratch" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer relative">
-                    <i class="fa-solid fa-gift text-amber-500"></i> Scratch Cards
-                    <span id="scratchBadge" class="bg-rose-500 text-white text-[10px] px-1.5 py-0.2 rounded-full font-bold hidden">0</span>
+                <button onclick="switchTab('wallet')" id="tab-wallet" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer relative">
+                    <i class="fa-solid fa-wallet text-amber-500"></i> My Wallet
                 </button>
                 <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer">
                     <i class="fa-solid fa-gear"></i> Settings
@@ -119,10 +112,9 @@
             <i class="fa-solid fa-bullseye text-lg"></i>
             <span class="text-[9px] font-semibold">Goals</span>
         </button>
-        <button onclick="switchTab('scratch')" id="mobile-tab-scratch" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-850 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer relative">
-            <i class="fa-solid fa-gift text-lg text-amber-500"></i>
-            <span class="text-[9px] font-semibold">Scratch</span>
-            <span id="mobileScratchBadge" class="absolute top-0 right-3 bg-rose-500 text-white text-[8px] px-1 py-0.2 rounded-full font-bold hidden">0</span>
+        <button onclick="switchTab('wallet')" id="mobile-tab-wallet" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-850 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer relative">
+            <i class="fa-solid fa-wallet text-lg text-amber-500"></i>
+            <span class="text-[9px] font-semibold">Wallet</span>
         </button>
         <button onclick="switchTab('settings')" id="mobile-tab-settings" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-850 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer">
             <i class="fa-solid fa-gear text-lg"></i>
@@ -131,7 +123,7 @@
     </nav>
 
     <!-- Floating Action Button (FAB) for entry additions -->
-    <button onclick="openTxnModal()" class="fixed bottom-20 right-6 md:bottom-8 md:right-8 z-40 bg-gradient-to-tr from-emerald-600 to-teal-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/35 hover:scale-105 active:scale-95 transition-transform cursor-pointer">
+    <button onclick="openTxnModal()" class="fixed bottom-20 right-6 md:bottom-8 md:right-8 z-40 bg-gradient-to-tr from-emerald-600 to-teal-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/35 hover:scale-105 active:scale-95 transition-transform cursor-pointer animate-bounce">
         <i class="fa-solid fa-plus text-2xl"></i>
     </button>
 
@@ -215,6 +207,7 @@
                         <thead>
                             <tr class="border-b border-slate-200/80 dark:border-slate-800 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
                                 <th class="py-3 px-2">Details</th>
+                                <th class="py-3 px-2">Payment Mode</th>
                                 <th class="py-3 px-2">Category</th>
                                 <th class="py-3 px-2">Date</th>
                                 <th class="py-3 px-2 text-right">Amount</th>
@@ -265,24 +258,89 @@
             </div>
         </section>
 
-        <!-- Scratch Cards Section -->
-        <section id="content-scratch" class="tab-content hidden space-y-6">
-            <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-6">
-                <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <!-- My Wallet Section (Replaces Scratch Cards) -->
+        <section id="content-wallet" class="tab-content hidden space-y-6 animate-in fade-in duration-200">
+            <!-- Active Wallet Carousel/Grid -->
+            <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                <div class="flex justify-between items-center">
                     <div>
-                        <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase backdrop-blur-md">Earnings Rewards</span>
-                        <h2 class="text-2xl font-black mt-2">Scratch & Get Coupons!</h2>
-                        <p class="text-xs text-amber-100 mt-1">Get <strong>1 card for any Income</strong> and <strong>2 cards for Income >= ₹5,000</strong>.</p>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white">Active Accounts & Wallets</h3>
+                        <p class="text-xs text-slate-400">Horizontal scroll to view your visual payment cards</p>
                     </div>
-                    <div class="bg-white/10 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 text-center">
-                        <span class="block text-[10px] font-bold text-amber-200 uppercase">Available Tickets</span>
-                        <span id="availableScratchCount" class="text-3xl font-black animate-pulse">0</span>
-                    </div>
+                    <button onclick="toggleWalletForm()" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-3.5 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20 cursor-pointer"><i class="fa-solid fa-plus mr-1"></i>New Account</button>
                 </div>
 
-                <div>
-                    <h3 class="font-bold text-base mb-3">Your Scratch Deck</h3>
-                    <div id="scratchDeck" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <!-- Add Wallet form -->
+                <form id="walletForm" class="hidden p-4 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-750 rounded-2xl space-y-3">
+                    <h4 class="font-bold text-xs uppercase text-slate-400 tracking-wider">Create Custom Account / Wallet</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <input type="text" id="walletName" required placeholder="Account Name (e.g. Paytm, SBI, Cash)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <input type="number" id="walletInitialBalance" required placeholder="Starting Balance (₹)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <input type="text" id="walletNumber" placeholder="Masked ID / Card Number (e.g. •••• 5678)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <select id="walletType" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                            <option value="Bank">Bank Account</option>
+                            <option value="Cash">Physical Cash</option>
+                            <option value="Card">Credit/Debit Card</option>
+                            <option value="E-Wallet">Digital / E-Wallet</option>
+                        </select>
+                        <select id="walletTheme" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                            <option value="from-indigo-650 to-blue-500">Midnight Cobalt (Blue/Indigo)</option>
+                            <option value="from-emerald-600 to-teal-500">Tropical Jade (Green/Teal)</option>
+                            <option value="from-rose-500 to-amber-500">Volcanic Sunset (Rose/Gold)</option>
+                            <option value="from-amber-400 to-orange-600">Golden Honey (Amber/Orange)</option>
+                            <option value="from-slate-800 to-slate-950">Stealth Noir (Slate/Dark)</option>
+                            <option value="from-purple-600 to-indigo-700">Neon Violet (Purple/Indigo)</option>
+                        </select>
+                    </div>
+                    <div class="flex gap-2 pt-1">
+                        <button type="button" onclick="saveNewWallet(event)" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl cursor-pointer">Create Account</button>
+                        <button type="button" onclick="toggleWalletForm()" class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-4 py-2 rounded-xl cursor-pointer">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Cards list wrapper -->
+                <div id="walletCardsContainer" class="flex gap-4 overflow-x-auto py-2 no-scrollbar scroll-smooth">
+                    <!-- Dynamic Wallet Cards generated here -->
+                </div>
+            </div>
+
+            <!-- Inter-Wallet Transfer Drawer -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Transfer Funds Card -->
+                <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                    <h3 class="font-bold text-base text-slate-900 dark:text-white"><i class="fa-solid fa-arrow-right-arrow-left text-teal-500 mr-2"></i>Inter-Account Transfer</h3>
+                    <p class="text-xs text-slate-400">Instantly shift funds between your active pockets (Creates internal records).</p>
+                    
+                    <form id="transferForm" onsubmit="transferFunds(event)" class="space-y-3">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Source Account</label>
+                                <select id="transferSrc" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:border-emerald-500">
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Destination Account</label>
+                                <select id="transferDest" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:border-emerald-500">
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Amount (₹)</label>
+                            <input type="number" id="transferAmount" required min="1" placeholder="0" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-semibold py-2.5 rounded-xl text-xs shadow-md cursor-pointer hover:scale-101 active:scale-99 transition-all">Execute Transfer</button>
+                    </form>
+                </div>
+
+                <!-- Spending Analytics by Wallet Card -->
+                <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                    <h3 class="font-bold text-base text-slate-900 dark:text-white"><i class="fa-solid fa-chart-simple text-amber-500 mr-2"></i>Account Allocations</h3>
+                    <p class="text-xs text-slate-400">Total liquidity configuration distribution across linked accounts</p>
+                    
+                    <div id="walletBalancesList" class="space-y-3 max-h-48 overflow-y-auto pr-1">
+                        <!-- Dynamic list of wallet balances -->
                     </div>
                 </div>
             </div>
@@ -310,7 +368,7 @@
                             <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
                         </label>
                     </div>
-                    <button onclick="resetAllData()" class="w-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 dark:hover:bg-rose-950/40 text-rose-600 border border-rose-200 dark:border-rose-900/50 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-trash-can mr-2"></i>Purge & Reset Profile Local Storage</button>
+                    <button onclick="resetAllData()" class="w-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 border border-rose-200 dark:border-rose-900/50 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-trash-can mr-2"></i>Purge & Reset Profile Local Storage</button>
                 </div>
             </div>
         </section>
@@ -331,9 +389,17 @@
                         <button type="button" id="typeIncome" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-650 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 cursor-pointer" onclick="setTxnType('Income')">Income</button>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Description</label>
-                    <input type="text" id="txnDesc" required placeholder="e.g., Grocery, Salary, Rent" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Description</label>
+                        <input type="text" id="txnDesc" required placeholder="e.g., Grocery, Salary, Rent" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Wallet / Account</label>
+                        <select id="txnWallet" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -366,36 +432,6 @@
         </div>
     </div>
 
-    <!-- Scratch Reward Modal -->
-    <div id="scratchModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-sm w-full border border-slate-200 dark:border-slate-700 shadow-2xl text-center space-y-4 relative animate-in fade-in zoom-in-95 duration-200">
-            <button onclick="closeScratchModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 id="scratchModalTitle" class="font-bold text-lg text-slate-900 dark:text-white">Scratch to Reveal</h3>
-            <p id="scratchModalDesc" class="text-xs text-slate-400">Scratch the surface canvas below!</p>
-            
-            <div class="relative w-64 h-64 mx-auto rounded-2xl overflow-hidden shadow-inner bg-gradient-to-br from-slate-50 to-indigo-50/50 dark:from-slate-900 dark:to-slate-850 border border-slate-200 dark:border-slate-700 flex flex-col justify-center items-center p-4">
-                <div id="rewardContent" class="space-y-3 z-0 w-full">
-                    <span id="rewardEmoji" class="text-5xl block animate-bounce">🎁</span>
-                    <h4 id="rewardBrand" class="text-[10px] font-black tracking-widest text-slate-400 uppercase">BRAND</h4>
-                    <h4 id="rewardTitle" class="text-lg font-black text-slate-900 dark:text-white">Reward Coupon</h4>
-                    <p id="rewardDesc" class="text-xs font-semibold text-slate-500 dark:text-slate-400 max-w-[200px] mx-auto">Special Reward Revealed!</p>
-                    
-                    <!-- Copyable Code Block -->
-                    <div id="codeBlock" class="mt-2 hidden px-4">
-                        <div class="bg-slate-100 dark:bg-slate-800 border border-dashed border-emerald-500/40 dark:border-emerald-500/25 py-2 px-3 rounded-lg text-xs font-bold text-emerald-600 dark:text-emerald-400 select-all tracking-wider mb-2" id="couponCodeDisplay">
-                            CODE123
-                        </div>
-                        <button id="copyBtn" onclick="copyCouponCode(document.getElementById('couponCodeDisplay').innerText)" class="w-full bg-emerald-600 hover:bg-emerald-505 text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow-md shadow-emerald-600/10 cursor-pointer flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-copy"></i> Copy Code
-                        </button>
-                    </div>
-                </div>
-
-                <canvas id="scratchCanvas" width="256" height="256" class="scratch-canvas absolute inset-0 z-10 transition-opacity duration-300"></canvas>
-            </div>
-        </div>
-    </div>
-
     <script>
         // Multi-User Execution Engine
         let users = JSON.parse(localStorage.getItem('rupee_users')) || ['Default User'];
@@ -412,11 +448,19 @@
 
         let transactions = JSON.parse(localStorage.getItem(getKey('transactions'))) || [];
         let wishlist = JSON.parse(localStorage.getItem(getKey('wishlist'))) || [];
-        let scratchRewards = JSON.parse(localStorage.getItem(getKey('scratchRewards'))) || {};
+        
+        // Multi-Wallet system storage
+        let wallets = JSON.parse(localStorage.getItem(getKey('wallets')));
+        if (!wallets || wallets.length === 0) {
+            wallets = [
+                { id: 'wallet-cash', name: 'Pocket Cash', type: 'Cash', number: '•••• 0001', initialBalance: 5000, balance: 5000, theme: 'from-amber-400 to-orange-600', icon: 'fa-money-bill-1' },
+                { id: 'wallet-bank', name: 'SBI Bank Account', type: 'Bank', number: '•••• 1234', initialBalance: 45000, balance: 45000, theme: 'from-indigo-650 via-teal-500 to-emerald-500', icon: 'fa-building-columns' }
+            ];
+            localStorage.setItem(getKey('wallets'), JSON.stringify(wallets));
+        }
+
         let currentTxnType = 'Expense';
         let expenseChart = null;
-        let activeScratchId = null;
-        let activeScratchIndex = null;
 
         // Navigation Tabs Controller
         function switchTab(tabId) {
@@ -443,6 +487,7 @@
             }
 
             if (tabId === 'dashboard') renderChart();
+            if (tabId === 'wallet') renderWalletsDeck();
         }
 
         function renderUserControls() {
@@ -477,7 +522,15 @@
             localStorage.setItem('rupee_current_user', currentUser);
             transactions = JSON.parse(localStorage.getItem(getKey('transactions'))) || [];
             wishlist = JSON.parse(localStorage.getItem(getKey('wishlist'))) || [];
-            scratchRewards = JSON.parse(localStorage.getItem(getKey('scratchRewards'))) || {};
+            
+            wallets = JSON.parse(localStorage.getItem(getKey('wallets')));
+            if (!wallets || wallets.length === 0) {
+                wallets = [
+                    { id: 'wallet-cash', name: 'Pocket Cash', type: 'Cash', number: '•••• 0001', initialBalance: 5000, balance: 5000, theme: 'from-amber-400 to-orange-600', icon: 'fa-money-bill-1' },
+                    { id: 'wallet-bank', name: 'SBI Bank Account', type: 'Bank', number: '•••• 1234', initialBalance: 45000, balance: 45000, theme: 'from-indigo-655 via-teal-505 to-emerald-505', icon: 'fa-building-columns' }
+                ];
+                localStorage.setItem(getKey('wallets'), JSON.stringify(wallets));
+            }
             
             const savedBudget = localStorage.getItem(getKey('budget')) || 50000;
             document.getElementById('budgetInput').value = savedBudget;
@@ -505,7 +558,7 @@
                 localStorage.setItem('rupee_users', JSON.stringify(users));
                 localStorage.removeItem(`rupee_${userName}_transactions`);
                 localStorage.removeItem(`rupee_${userName}_wishlist`);
-                localStorage.removeItem(`rupee_${userName}_scratchRewards`);
+                localStorage.removeItem(`rupee_${userName}_wallets`);
                 localStorage.removeItem(`rupee_${userName}_budget`);
                 renderUserControls();
             }
@@ -549,7 +602,7 @@
             
             if(type === 'Expense') {
                 expenseBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-955/30 dark:text-rose-400 dark:border-rose-900/50 ring-2 ring-rose-500/20 cursor-pointer";
-                incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-650 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 cursor-pointer";
+                incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 cursor-pointer";
             } else {
                 incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-955/30 dark:text-emerald-400 dark:border-emerald-900/50 ring-2 ring-emerald-500/20 cursor-pointer";
                 expenseBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-65 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 cursor-pointer";
@@ -557,12 +610,24 @@
         }
 
         function openTxnModal() {
+            populateWalletDropdowns();
             document.getElementById('txnModal').classList.remove('hidden');
         }
 
         function closeTxnModal() {
             document.getElementById('txnModal').classList.add('hidden');
             resetTxnForm();
+        }
+
+        function populateWalletDropdowns() {
+            const dropdown = document.getElementById('txnWallet');
+            dropdown.innerHTML = '';
+            wallets.forEach(w => {
+                const opt = document.createElement('option');
+                opt.value = w.id;
+                opt.innerText = `${w.name} (Bal: ₹${w.balance.toLocaleString('en-IN')})`;
+                dropdown.appendChild(opt);
+            });
         }
 
         document.getElementById('txnForm').addEventListener('submit', function(e) {
@@ -572,8 +637,9 @@
             const amount = parseFloat(document.getElementById('txnAmount').value);
             const category = document.getElementById('txnCategory').value;
             const date = document.getElementById('txnDate').value;
+            const walletId = document.getElementById('txnWallet').value;
 
-            const txnData = { id: id || Date.now().toString(), description, type: currentTxnType, amount, category, date };
+            const txnData = { id: id || Date.now().toString(), description, type: currentTxnType, amount, category, date, walletId };
 
             if(id) {
                 transactions = transactions.map(t => t.id === id ? txnData : t);
@@ -589,11 +655,17 @@
             const target = transactions.find(t => t.id === id);
             if(!target) return;
 
+            populateWalletDropdowns();
+
             document.getElementById('editTxnId').value = target.id;
             document.getElementById('txnDesc').value = target.description;
             document.getElementById('txnAmount').value = target.amount;
             document.getElementById('txnCategory').value = target.category;
             document.getElementById('txnDate').value = target.date;
+            
+            if(target.walletId) {
+                document.getElementById('txnWallet').value = target.walletId;
+            }
             
             setTxnType(target.type);
             document.getElementById('formTitle').innerText = "Edit Transaction";
@@ -621,15 +693,34 @@
         }
 
         function calculateMetricsAndRefresh() {
+            // Seed starting balance
+            wallets.forEach(w => {
+                w.balance = Number(w.initialBalance) || 0;
+            });
+
             let incomeTotal = 0;
             let expenseTotal = 0;
 
             transactions.forEach(t => {
-                if(t.type === 'Income') incomeTotal += t.amount;
-                else expenseTotal += t.amount;
+                if(t.type === 'Income') {
+                    incomeTotal += t.amount;
+                    const wallet = wallets.find(w => w.id === t.walletId);
+                    if(wallet) wallet.balance += t.amount;
+                } else if(t.type === 'Expense') {
+                    expenseTotal += t.amount;
+                    const wallet = wallets.find(w => w.id === t.walletId);
+                    if(wallet) wallet.balance -= t.amount;
+                } else if(t.type === 'Transfer') {
+                    const src = wallets.find(w => w.id === t.walletId);
+                    const dest = wallets.find(w => w.id === t.destWalletId);
+                    if(src) src.balance -= t.amount;
+                    if(dest) dest.balance += t.amount;
+                }
             });
+
+            // If a wallet balance drops below 0 and it's not a credit card, we could show alert (optional)
             const netSavings = incomeTotal - expenseTotal;
-            const totalBalance = netSavings;
+            const totalBalance = wallets.reduce((acc, w) => acc + (w.type === 'Card' ? 0 : w.balance), 0); // Credit cards are liabilities
 
             document.getElementById('totalBalance').innerText = formatIndianCurrency(totalBalance);
             document.getElementById('totalIncome').innerText = formatIndianCurrency(incomeTotal);
@@ -649,7 +740,7 @@
             renderTransactionsList();
             renderChart();
             renderWishlistContainer();
-            renderScratchCardsDeck();
+            renderWalletsDeck();
         }
 
         function renderTransactionsList() {
@@ -673,17 +764,29 @@
             itemsFiltered.forEach(t => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-colors";
-                const amtColor = t.type === 'Income' ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-700 dark:text-slate-200';
-                const prefixSign = t.type === 'Income' ? '+' : '-';
+                
+                let amtColor = 'text-slate-700 dark:text-slate-200';
+                let prefixSign = '-';
+                if(t.type === 'Income') {
+                    amtColor = 'text-emerald-600 dark:text-emerald-400 font-bold';
+                    prefixSign = '+';
+                } else if(t.type === 'Transfer') {
+                    amtColor = 'text-blue-500 font-semibold';
+                    prefixSign = '⇄';
+                }
+                
+                const w = wallets.find(wall => wall.id === t.walletId);
+                const wName = w ? w.name : 'Unknown';
                 
                 tr.innerHTML = `
                     <td class="py-3 px-2 font-semibold text-slate-900 dark:text-white">${t.description}</td>
+                    <td class="py-3 px-2"><span class="px-2 py-0.5 rounded-lg text-[10px] bg-slate-150 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200/50 dark:border-slate-700/50">${wName}</span></td>
                     <td class="py-3 px-2"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${t.category}</span></td>
                     <td class="py-3 px-2 text-[11px] text-slate-400 font-medium">${t.date}</td>
                     <td class="py-3 px-2 text-right ${amtColor}">${prefixSign} ₹${Math.abs(t.amount).toFixed(2)}</td>
                     <td class="py-3 px-2 text-center">
                         <div class="flex items-center justify-center gap-2">
-                            <button onclick="editTransaction('${t.id}')" class="text-slate-400 hover:text-emerald-500 transition-colors cursor-pointer"><i class="fa-solid fa-pen-to-square"></i></button>
+                            ${t.type !== 'Transfer' ? `<button onclick="editTransaction('${t.id}')" class="text-slate-400 hover:text-emerald-500 transition-colors cursor-pointer"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
                             <button onclick="deleteTransaction('${t.id}')" class="text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </td>
@@ -791,8 +894,8 @@
                     <div class="flex justify-between items-start gap-2">
                         <div>
                             <span class="px-2 py-0.5 rounded-md text-[9px] font-bold ${
-                                w.priority === 'High' ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/30 dark:text-rose-400' : 
-                                w.priority === 'Medium' ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/30 dark:text-amber-400' :
+                                w.priority === 'High' ? 'bg-rose-50 text-rose-600 dark:bg-rose-955/30 dark:text-rose-400' : 
+                                w.priority === 'Medium' ? 'bg-amber-50 text-amber-600 dark:bg-amber-955/30 dark:text-amber-400' :
                                 'bg-slate-100 text-slate-650 dark:bg-slate-800 dark:text-slate-400'
                             }">${w.priority} Priority</span>
                             <h4 class="font-bold text-sm text-slate-900 dark:text-white mt-1.5 ${w.purchased ? 'line-through text-slate-400' : ''}">${w.name}</h4>
@@ -835,351 +938,184 @@
             }
         }
 
-        // SCRATCH CARD SYSTEM REWARD COMPUTATION ENGINE
-        function generateRewardForIndex(idx) {
-            const rewardPool = [
-                { brand: "Swiggy", emoji: "🍔", title: "Flat 50% OFF", code: "SWIGGY50", desc: "Get 50% off up to ₹100 on your next food order!" },
-                { brand: "Zomato", emoji: "🍕", title: "Flat ₹150 OFF", code: "ZOMATO150", desc: "Save up to ₹150 on gourmet food orders!" },
-                { brand: "Amazon Pay", emoji: "🛒", title: "₹100 Cashback", code: "AMZNGIFT100", desc: "Flat ₹100 cashback on purchasing an Amazon Gift Voucher!" },
-                { brand: "Myntra", emoji: "🛍️", title: "Flat ₹300 OFF", code: "MYNTRA300", desc: "Get flat ₹300 off on fashion orders above ₹1,499!" },
-                { brand: "Ajio", emoji: "👔", title: "Extra 33% OFF", code: "AJIOMANIA", desc: "Extra 33% off on selected wardrobe styles!" },
-                { brand: "BoAt", emoji: "🎧", title: "Extra 15% OFF", code: "BOAT15", desc: "Enjoy 15% off on high-fidelity audio wearables!" },
-                { brand: "BookMyShow", emoji: "🎬", title: "Buy 1 Get 1", code: "BMSFREE", desc: "Buy one movie ticket and get the second free!" },
-                { brand: "Domino's", emoji: "🍕", title: "₹100 Cashback", code: "DOMINOS100", desc: "Enjoy a flat ₹100 cashback on your favorite pizzas!" }
-            ];
-            return rewardPool[idx % rewardPool.length];
+        // WALLET SYSTEM LOGIC
+        function toggleWalletForm() {
+            document.getElementById('walletForm').classList.toggle('hidden');
         }
 
-        function getScratchCards() {
-            let cards = [];
-            const incomeTxns = transactions.filter(t => t.type === 'Income').sort((a,b) => new Date(a.date) - new Date(b.date));
+        function saveNewWallet(e) {
+            e.preventDefault();
+            const name = document.getElementById('walletName').value.trim();
+            const initialBalance = parseFloat(document.getElementById('walletInitialBalance').value) || 0;
+            const number = document.getElementById('walletNumber').value.trim() || '•••• ' + Math.floor(1000 + Math.random() * 9000);
+            const type = document.getElementById('walletType').value;
+            const theme = document.getElementById('walletTheme').value;
             
-            incomeTxns.forEach(t => {
-                const count = t.amount >= 5000 ? 2 : 1;
-                for (let i = 0; i < count; i++) {
-                    cards.push({
-                        id: `${t.id}-${i}`,
-                        txnDesc: t.description,
-                        txnAmount: t.amount,
-                        date: t.date,
-                        index: cards.length
-                    });
-                }
-            });
-            return cards;
+            let icon = 'fa-wallet';
+            if (type === 'Bank') icon = 'fa-building-columns';
+            else if (type === 'Cash') icon = 'fa-money-bill-1';
+            else if (type === 'Card') icon = 'fa-credit-card';
+
+            const newWallet = {
+                id: 'wallet-' + Date.now(),
+                name,
+                type,
+                number,
+                initialBalance,
+                balance: initialBalance,
+                theme,
+                icon
+            };
+
+            wallets.push(newWallet);
+            localStorage.setItem(getKey('wallets'), JSON.stringify(wallets));
+            
+            document.getElementById('walletForm').reset();
+            toggleWalletForm();
+            calculateMetricsAndRefresh();
         }
 
-        function renderScratchCardsDeck() {
-            const cards = getScratchCards();
-            const cardsEarnedCount = cards.length;
-            
-            let unrevealedCount = 0;
-            cards.forEach(c => {
-                if(!scratchRewards[c.id] || !scratchRewards[c.id].revealed) {
-                    unrevealedCount++;
-                }
-            });
-
-            document.getElementById('availableScratchCount').innerText = unrevealedCount;
-            const badge = document.getElementById('scratchBadge');
-            const mobileBadge = document.getElementById('mobileScratchBadge');
-            
-            if(unrevealedCount > 0) {
-                badge.innerText = unrevealedCount;
-                badge.classList.remove('hidden');
-                if (mobileBadge) {
-                    mobileBadge.innerText = unrevealedCount;
-                    mobileBadge.classList.remove('hidden');
-                }
-            } else {
-                badge.classList.add('hidden');
-                if (mobileBadge) mobileBadge.classList.add('hidden');
+        function deleteWallet(id) {
+            if (wallets.length <= 1) {
+                alert("You must keep at least one active wallet.");
+                return;
             }
+            if (confirm("Are you sure you want to remove this account? All associated transactions will default to your first remaining account.")) {
+                const remaining = wallets.filter(w => w.id !== id);
+                const replacementId = remaining[0].id;
+                
+                transactions = transactions.map(t => {
+                    if (t.walletId === id) t.walletId = replacementId;
+                    if (t.destWalletId === id) t.destWalletId = replacementId;
+                    return t;
+                });
+                
+                wallets = remaining;
+                localStorage.setItem(getKey('wallets'), JSON.stringify(wallets));
+                saveAndSyncData();
+            }
+        }
 
-            const deckContainer = document.getElementById('scratchDeck');
-            deckContainer.innerHTML = '';
+        function renderWalletsDeck() {
+            const deck = document.getElementById('walletCardsContainer');
+            deck.innerHTML = '';
 
-            if (cardsEarnedCount === 0) {
-                deckContainer.innerHTML = `
-                    <div class="col-span-full text-center py-8 text-slate-400 text-xs">
-                        <i class="fa-solid fa-gift text-3xl mb-2 block text-amber-400"></i>
-                        Earn scratch card tickets by adding Income transactions!
+            wallets.forEach(w => {
+                const card = document.createElement('div');
+                // Premium glass-designed CSS credit card visual representation
+                card.className = `min-w-[280px] h-44 rounded-3xl p-5 bg-gradient-to-br ${w.theme} text-white flex flex-col justify-between shadow-lg shadow-slate-500/10 dark:shadow-none relative overflow-hidden select-none`;
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start z-10">
+                        <div>
+                            <span class="text-[9px] font-bold tracking-widest uppercase opacity-80">${w.type} Account</span>
+                            <h4 class="font-extrabold text-base tracking-tight leading-tight mt-0.5">${w.name}</h4>
+                        </div>
+                        <div class="text-xl opacity-90"><i class="fa-solid ${w.icon}"></i></div>
+                    </div>
+                    
+                    <div class="z-10 mt-2">
+                        <span class="text-[9px] font-bold uppercase tracking-wider opacity-60">Account Number</span>
+                        <p class="font-mono text-sm tracking-widest mt-0.5">${w.number}</p>
+                    </div>
+
+                    <div class="flex justify-between items-end z-10 mt-auto">
+                        <div>
+                            <span class="text-[9px] font-bold uppercase tracking-wider opacity-70">Current Liquidity</span>
+                            <p class="font-black text-xl tracking-tight mt-0.5">₹${w.balance.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        </div>
+                        <button onclick="deleteWallet('${w.id}')" class="text-white/60 hover:text-white text-xs p-1.5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer" title="Delete Wallet"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                    <!-- Ambient light effect on card -->
+                    <div class="absolute -right-10 -bottom-10 w-32 h-32 rounded-full bg-white/10 blur-2xl"></div>
+                `;
+                deck.appendChild(card);
+            });
+
+            // Also populate the transfer selects
+            const srcSelect = document.getElementById('transferSrc');
+            const destSelect = document.getElementById('transferDest');
+            srcSelect.innerHTML = '';
+            destSelect.innerHTML = '';
+
+            wallets.forEach(w => {
+                const opt1 = document.createElement('option');
+                opt1.value = w.id;
+                opt1.innerText = `${w.name} (₹${w.balance.toLocaleString('en-IN')})`;
+                srcSelect.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = w.id;
+                opt2.innerText = `${w.name} (₹${w.balance.toLocaleString('en-IN')})`;
+                destSelect.appendChild(opt2);
+            });
+
+            // Balance allocation list
+            const balList = document.getElementById('walletBalancesList');
+            balList.innerHTML = '';
+            const grandTotal = wallets.reduce((acc, w) => acc + (w.type === 'Card' ? 0 : w.balance), 0) || 1;
+
+            wallets.forEach(w => {
+                const ratio = Math.max(0, Math.min(100, (w.balance / grandTotal) * 100));
+                const row = document.createElement('div');
+                row.className = "space-y-1.5 text-xs";
+                row.innerHTML = `
+                    <div class="flex justify-between font-semibold">
+                        <span class="text-slate-700 dark:text-slate-350">${w.name}</span>
+                        <span class="text-slate-900 dark:text-white font-bold">₹${w.balance.toLocaleString('en-IN')} (${ratio.toFixed(0)}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-300" style="width: ${ratio}%"></div>
                     </div>
                 `;
+                balList.appendChild(row);
+            });
+        }
+
+        function transferFunds(e) {
+            e.preventDefault();
+            const srcId = document.getElementById('transferSrc').value;
+            const destId = document.getElementById('transferDest').value;
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+
+            if (srcId === destId) {
+                alert("Source and Destination accounts cannot be the same.");
+                return;
+            }
+            if (amount <= 0) {
+                alert("Transfer amount must be positive.");
                 return;
             }
 
-            cards.forEach(c => {
-                const cardState = scratchRewards[c.id] || { revealed: false };
-                const cardDiv = document.createElement('div');
-                cardDiv.className = `aspect-square rounded-2xl p-4 border flex flex-col items-center justify-between cursor-pointer transition-all hover:scale-105 shadow-sm active:scale-95 ${
-                    cardState.revealed 
-                        ? 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800/80 opacity-90' 
-                        : 'bg-gradient-to-br from-amber-400 via-orange-400 to-rose-500 text-white border-amber-300 shadow-lg shadow-amber-500/10'
-                }`;
-
-                if (cardState.revealed) {
-                    const reward = generateRewardForIndex(c.index);
-                    cardDiv.innerHTML = `
-                        <div class="flex justify-between w-full items-center">
-                            <span class="text-[9px] font-bold uppercase text-slate-400 dark:text-slate-500">${reward.brand}</span>
-                            <span class="text-[9px] text-slate-400 font-medium">${c.date}</span>
-                        </div>
-                        <div class="text-center">
-                            <span class="text-3xl block mb-1">${reward.emoji}</span>
-                            <span class="font-bold text-xs text-slate-800 dark:text-slate-100">${reward.title}</span>
-                            <span class="text-[9px] block text-emerald-600 dark:text-emerald-400 font-bold mt-1 tracking-wider">${reward.code}</span>
-                        </div>
-                        <span class="text-[9px] font-semibold text-slate-450 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">Revealed</span>
-                    `;
-                    cardDiv.onclick = () => openRevealedModal(c.id, c.index);
-                } else {
-                    cardDiv.innerHTML = `
-                        <div class="flex justify-between w-full items-center">
-                            <span class="text-[9px] font-bold uppercase text-amber-100">Reward Ticket</span>
-                            <span class="text-[9px] text-amber-100/80 font-medium">${c.date}</span>
-                        </div>
-                        <div class="text-center">
-                            <i class="fa-solid fa-gift text-3xl text-white animate-pulse"></i>
-                            <span class="font-extrabold text-xs block mt-2">Tap to Scratch</span>
-                        </div>
-                        <span class="text-[8px] font-bold bg-white/20 px-2 py-0.5 rounded-full">Income: ₹${c.txnAmount.toLocaleString('en-IN')}</span>
-                    `;
-                    cardDiv.onclick = () => openScratchModal(c.id, c.index);
-                }
-                deckContainer.appendChild(cardDiv);
-            });
-        }
-
-        function openScratchModal(cardId, cardIndex) {
-            activeScratchId = cardId;
-            activeScratchIndex = cardIndex;
-            const reward = generateRewardForIndex(cardIndex);
+            const src = wallets.find(w => w.id === srcId);
+            const dest = wallets.find(w => w.id === destId);
             
-            document.getElementById('scratchModalTitle').innerText = "Scratch to Reveal";
-            document.getElementById('scratchModalDesc').innerText = "Scratch the surface canvas below!";
-            
-            document.getElementById('rewardEmoji').innerText = reward.emoji;
-            document.getElementById('rewardBrand').innerText = reward.brand;
-            document.getElementById('rewardTitle').innerText = reward.title;
-            document.getElementById('rewardDesc').innerText = reward.desc;
-            document.getElementById('couponCodeDisplay').innerText = reward.code;
-            
-            document.getElementById('codeBlock').classList.add('hidden');
-            
-            const canvas = document.getElementById('scratchCanvas');
-            canvas.style.display = 'block';
-            canvas.style.opacity = '1';
-            
-            const modal = document.getElementById('scratchModal');
-            modal.classList.remove('hidden');
-
-            initScratchCanvas();
-        }
-
-        function openRevealedModal(cardId, cardIndex) {
-            const reward = generateRewardForIndex(cardIndex);
-            
-            document.getElementById('scratchModalTitle').innerText = "Your Coupon Code";
-            document.getElementById('scratchModalDesc').innerText = "Congratulations! Use this code at checkout.";
-            
-            document.getElementById('rewardEmoji').innerText = reward.emoji;
-            document.getElementById('rewardBrand').innerText = reward.brand;
-            document.getElementById('rewardTitle').innerText = reward.title;
-            document.getElementById('rewardDesc').innerText = reward.desc;
-            document.getElementById('couponCodeDisplay').innerText = reward.code;
-            
-            document.getElementById('codeBlock').classList.remove('hidden');
-            
-            const canvas = document.getElementById('scratchCanvas');
-            canvas.style.display = 'none';
-            
-            const modal = document.getElementById('scratchModal');
-            modal.classList.remove('hidden');
-        }
-
-        function closeScratchModal() {
-            document.getElementById('scratchModal').classList.add('hidden');
-            activeScratchId = null;
-            activeScratchIndex = null;
-        }
-
-        function copyCouponCode(code) {
-            navigator.clipboard.writeText(code).then(() => {
-                const btn = document.getElementById('copyBtn');
-                if (btn) {
-                    btn.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i> Copied!';
-                    btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-555');
-                    btn.classList.add('bg-slate-600');
-                    setTimeout(() => {
-                        btn.innerHTML = '<i class="fa-solid fa-copy mr-1.5"></i> Copy Code';
-                        btn.classList.add('bg-emerald-600', 'hover:bg-emerald-555');
-                        btn.classList.remove('bg-slate-600');
-                    }, 2000);
-                }
-            });
-        }
-
-        function initScratchCanvas() {
-            const canvas = document.getElementById('scratchCanvas');
-            const ctx = canvas.getContext('2d');
-            
-            const rect = canvas.getBoundingClientRect();
-            const dpr = window.devicePixelRatio || 1;
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
-            ctx.scale(dpr, dpr);
-            
-            const width = rect.width;
-            const height = rect.height;
-
-            const grad = ctx.createLinearGradient(0, 0, width, height);
-            grad.addColorStop(0, '#f6d365');
-            grad.addColorStop(0.3, '#fda085');
-            grad.addColorStop(0.6, '#f6d365');
-            grad.addColorStop(1, '#fda085');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, width, height);
-
-            ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-            ctx.lineWidth = 1;
-            for (let i = -width; i < width; i += 20) {
-                ctx.beginPath();
-                ctx.moveTo(i, 0);
-                ctx.lineTo(i + height, height);
-                ctx.stroke();
-            }
-            
-            function drawStar(cx, cy, spikes, outerRadius, innerRadius) {
-                let rot = Math.PI / 2 * 3;
-                let x = cx;
-                let y = cy;
-                let step = Math.PI / spikes;
-
-                ctx.beginPath();
-                ctx.moveTo(cx, cy - outerRadius)
-                for (let i = 0; i < spikes; i++) {
-                    x = cx + Math.cos(rot) * outerRadius;
-                    y = cy + Math.sin(rot) * outerRadius;
-                    ctx.lineTo(x, y)
-                    rot += step
-
-                    x = cx + Math.cos(rot) * innerRadius;
-                    y = cy + Math.sin(rot) * innerRadius;
-                    ctx.lineTo(x, y)
-                    rot += step
-                }
-                ctx.lineTo(cx, cy - outerRadius)
-                ctx.closePath();
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-                ctx.fill();
+            if (src.balance < amount) {
+                alert(`Insufficient funds in ${src.name}! Current balance is ₹${src.balance.toLocaleString('en-IN')}.`);
+                return;
             }
 
-            drawStar(30, 40, 5, 8, 4);
-            drawStar(width - 40, 50, 5, 10, 5);
-            drawStar(40, height - 50, 5, 12, 6);
-            drawStar(width - 50, height - 40, 5, 8, 4);
-            drawStar(width / 2, height / 2 - 25, 5, 15, 7);
+            // Create transfer entry
+            const transferTxn = {
+                id: 'transfer-' + Date.now(),
+                description: `Transfer: ${src.name} ➔ ${dest.name}`,
+                type: 'Transfer',
+                amount: amount,
+                category: 'Others',
+                date: new Date().toISOString().split('T')[0],
+                walletId: srcId,
+                destWalletId: destId
+            };
 
-            ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-            ctx.lineWidth = 4;
-            ctx.strokeRect(6, 6, width - 12, height - 12);
-
-            ctx.fillStyle = '#ffffff';
-            ctx.shadowColor = 'rgba(0,0,0,0.2)';
-            ctx.shadowBlur = 4;
-            ctx.font = 'bold 15px Outfit';
-            ctx.textAlign = 'center';
-            ctx.fillText('SCRATCH TICKET', width / 2, height / 2 + 15);
-            
-            ctx.font = '500 10px Outfit';
-            ctx.fillText('SWIPE TO REVEAL', width / 2, height / 2 + 35);
-            
-            ctx.shadowBlur = 0;
-
-            let isScratching = false;
-            let lastPoint = null;
-
-            function getPointerPos(e) {
-                const r = canvas.getBoundingClientRect();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return {
-                    x: clientX - r.left,
-                    y: clientY - r.top
-                };
-            }
-
-            function scratch(e) {
-                if (!isScratching) return;
-                const pos = getPointerPos(e);
-                
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.lineWidth = 32;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.strokeStyle = 'rgba(0,0,0,1)';
-                
-                ctx.beginPath();
-                if (lastPoint) {
-                    ctx.moveTo(lastPoint.x, lastPoint.y);
-                    ctx.lineTo(pos.x, pos.y);
-                } else {
-                    ctx.moveTo(pos.x, pos.y);
-                    ctx.lineTo(pos.x + 0.1, pos.y);
-                }
-                ctx.stroke();
-                lastPoint = pos;
-
-                checkScratchPercentage();
-            }
-
-            let isRevealed = false;
-
-            function checkScratchPercentage() {
-                if (isRevealed) return;
-                
-                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                let clearedPixels = 0;
-                for (let i = 3; i < imgData.data.length; i += 4) {
-                    if (imgData.data[i] === 0) clearedPixels++;
-                }
-                const percentCleared = (clearedPixels / (canvas.width * canvas.height)) * 100;
-
-                if (percentCleared > 45 && activeScratchId !== null) {
-                    isRevealed = true;
-                    scratchRewards[activeScratchId] = { revealed: true, dateRevealed: new Date().toLocaleDateString() };
-                    localStorage.setItem(getKey('scratchRewards'), JSON.stringify(scratchRewards));
-                    
-                    if (typeof confetti === 'function') {
-                        confetti({
-                            particleCount: 100,
-                            spread: 70,
-                            origin: { y: 0.6 }
-                        });
-                    }
-
-                    canvas.style.opacity = '0';
-                    setTimeout(() => {
-                        canvas.style.display = 'none';
-                        document.getElementById('codeBlock').classList.remove('hidden');
-                    }, 300);
-
-                    renderScratchCardsDeck();
-                }
-            }
-
-            canvas.onmousedown = (e) => { isScratching = true; lastPoint = getPointerPos(e); scratch(e); };
-            canvas.onmousemove = scratch;
-            window.addEventListener('mouseup', () => { isScratching = false; lastPoint = null; });
-
-            canvas.ontouchstart = (e) => { e.preventDefault(); isScratching = true; lastPoint = getPointerPos(e); scratch(e); };
-            canvas.ontouchmove = (e) => { e.preventDefault(); scratch(e); };
-            window.addEventListener('touchend', () => { isScratching = false; lastPoint = null; });
+            transactions.push(transferTxn);
+            saveAndSyncData();
+            document.getElementById('transferForm').reset();
+            alert(`Successfully transferred ₹${amount.toLocaleString('en-IN')} from ${src.name} to ${dest.name}!`);
         }
 
         function saveAndSyncData() {
             localStorage.setItem(getKey('transactions'), JSON.stringify(transactions));
+            localStorage.setItem(getKey('wallets'), JSON.stringify(wallets));
             calculateMetricsAndRefresh();
         }
 
@@ -1189,12 +1125,12 @@
 
         function exportData() {
             const bundleExportPackageData = {
-                version: "2.1.0",
+                version: "3.0.0",
                 user: currentUser,
                 timestamp: new Date().toISOString(),
                 transactions: transactions,
                 wishlist: wishlist,
-                scratchRewards: scratchRewards,
+                wallets: wallets,
                 budgetConfigLimit: document.getElementById('budgetInput').value
             };
             const representationStringDataStream = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(bundleExportPackageData, null, 2));
@@ -1214,7 +1150,7 @@
                     if(extractedJsonParsedObjectTree.transactions) {
                         transactions = extractedJsonParsedObjectTree.transactions || [];
                         wishlist = extractedJsonParsedObjectTree.wishlist || [];
-                        scratchRewards = extractedJsonParsedObjectTree.scratchRewards || {};
+                        wallets = extractedJsonParsedObjectTree.wallets || [];
                         if(extractedJsonParsedObjectTree.budgetConfigLimit) {
                             document.getElementById('budgetInput').value = extractedJsonParsedObjectTree.budgetConfigLimit;
                         }
@@ -1234,11 +1170,14 @@
             if(confirm(`Reset all stored records for ${currentUser}?`)) {
                 localStorage.removeItem(getKey('transactions'));
                 localStorage.removeItem(getKey('wishlist'));
-                localStorage.removeItem(getKey('scratchRewards'));
+                localStorage.removeItem(getKey('wallets'));
                 localStorage.removeItem(getKey('budget'));
                 transactions = [];
                 wishlist = [];
-                scratchRewards = {};
+                wallets = [
+                    { id: 'wallet-cash', name: 'Pocket Cash', type: 'Cash', number: '•••• 0001', initialBalance: 5000, balance: 5000, theme: 'from-amber-400 to-orange-600', icon: 'fa-money-bill-1' },
+                    { id: 'wallet-bank', name: 'SBI Bank Account', type: 'Bank', number: '•••• 1234', initialBalance: 45000, balance: 45000, theme: 'from-indigo-650 via-teal-500 to-emerald-500', icon: 'fa-building-columns' }
+                ];
                 document.getElementById('budgetInput').value = 50000;
                 resetTxnForm();
                 saveAndSyncData();
