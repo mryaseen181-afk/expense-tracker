@@ -7,7 +7,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- CryptoJS CDN for secure client-side encryption -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +46,6 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        
         .card-perspective {
             perspective: 1000px;
         }
@@ -63,14 +61,14 @@
 <body class="bg-gradient-to-br from-slate-50 via-teal-50/20 to-indigo-50/20 text-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen pb-24 md:pb-8">
 
     <!-- Start / Cloud Login Screen -->
-    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-955 to-indigo-955 p-4 animate-in fade-in duration-300">
-        <div class="max-w-md w-full glass-card border border-white/20 dark:border-slate-800/80 p-8 rounded-3xl shadow-2xl space-y-6 text-center text-white">
+    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950 p-4 animate-in fade-in duration-300">
+        <div class="max-w-md w-full glass-card border border-white/10 dark:border-slate-800/80 p-8 rounded-3xl shadow-2xl space-y-6 text-center text-white">
             <div class="flex flex-col items-center gap-3">
-                <div class="bg-gradient-to-tr from-emerald-600 via-teal-500 to-indigo-500 text-white p-4 rounded-3xl shadow-lg shadow-emerald-500/25">
+                <div class="bg-gradient-to-tr from-emerald-600 to-indigo-650 text-white p-4 rounded-3xl shadow-lg shadow-emerald-500/25">
                     <i class="fa-solid fa-wallet text-3xl"></i>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black tracking-tight">Rupee<span class="text-emerald-400">Mind</span> Cloud</h2>
+                    <h2 class="text-2xl font-extrabold tracking-tight">Rupee<span class="text-emerald-450">Mind</span> Cloud</h2>
                     <p class="text-xs text-slate-400 mt-1">Multi-device Secure Cloud Sync</p>
                 </div>
             </div>
@@ -86,7 +84,7 @@
                     <input type="password" id="loginPassword" required placeholder="Enter password..." class="w-full px-4 py-3 text-xs rounded-2xl border border-slate-700 bg-slate-900/60 text-white focus:outline-none focus:border-emerald-500">
                 </div>
                 <div id="loginStatusMsg" class="text-xs font-semibold text-rose-400 hidden"></div>
-                <button type="submit" id="loginSubmitBtn" class="w-full bg-emerald-650 hover:bg-emerald-500 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer transition-colors flex items-center justify-center gap-2">
+                <button type="submit" id="loginSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3.5 rounded-2xl text-xs font-bold shadow-md cursor-pointer transition-colors flex items-center justify-center gap-2">
                     <span>Sign In / Sign Up</span>
                     <i class="fa-solid fa-cloud-arrow-up"></i>
                 </button>
@@ -120,7 +118,7 @@
                         <i class="fa-solid fa-sun hidden dark:block"></i>
                     </button>
 
-                    <button onclick="logoutSession()" class="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-rose-500 hover:scale-105 transition-transform cursor-pointer" title="Log Out">
+                    <button onclick="logoutSession()" class="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-rose-505 hover:scale-105 transition-transform cursor-pointer" title="Log Out">
                         <i class="fa-solid fa-right-from-bracket"></i>
                     </button>
                 </div>
@@ -141,38 +139,38 @@
                     <button onclick="switchTab('wallet')" id="tab-wallet" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-805 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer relative">
                         <i class="fa-solid fa-id-card text-amber-500"></i> My Cards & Cash
                     </button>
-                    <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-805 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer">
+                    <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-855 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer">
                         <i class="fa-solid fa-gear"></i> Settings
                     </button>
                 </div>
             </div>
         </nav>
 
-        <!-- Mobile Bottom Navigation (Visible only on Mobile) -->
+        <!-- Mobile Bottom Navigation -->
         <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-slate-200/80 dark:border-slate-800/80 px-2 py-2 shadow-lg md:hidden flex justify-around items-center">
-            <button onclick="switchTab('dashboard')" id="mobile-tab-dashboard" class="mobile-tab-btn flex flex-col items-center gap-1 text-emerald-600 dark:text-emerald-400 cursor-pointer">
+            <button onclick="switchTab('dashboard')" id="mobile-tab-dashboard" class="mobile-tab-btn flex flex-col items-center gap-1 text-emerald-605 dark:text-emerald-400 cursor-pointer">
                 <i class="fa-solid fa-chart-pie text-lg"></i>
                 <span class="text-[9px] font-bold">Dashboard</span>
             </button>
-            <button onclick="switchTab('transactions')" id="mobile-tab-transactions" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-855 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer">
+            <button onclick="switchTab('transactions')" id="mobile-tab-transactions" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-855 dark:text-slate-505 dark:hover:text-slate-200 cursor-pointer">
                 <i class="fa-solid fa-receipt text-lg"></i>
                 <span class="text-[9px] font-semibold">Txns</span>
             </button>
-            <button onclick="switchTab('goals')" id="mobile-tab-goals" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-855 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer">
+            <button onclick="switchTab('goals')" id="mobile-tab-goals" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-855 dark:text-slate-505 dark:hover:text-slate-200 cursor-pointer">
                 <i class="fa-solid fa-bullseye text-lg"></i>
                 <span class="text-[9px] font-semibold">Goals</span>
             </button>
-            <button onclick="switchTab('wallet')" id="mobile-tab-wallet" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-855 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer relative">
+            <button onclick="switchTab('wallet')" id="mobile-tab-wallet" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-855 dark:text-slate-505 dark:hover:text-slate-200 cursor-pointer relative">
                 <i class="fa-solid fa-id-card text-lg text-amber-500"></i>
                 <span class="text-[9px] font-semibold">Cards</span>
             </button>
-            <button onclick="switchTab('settings')" id="mobile-tab-settings" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-855 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer">
+            <button onclick="switchTab('settings')" id="mobile-tab-settings" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-855 dark:text-slate-555 dark:hover:text-slate-200 cursor-pointer">
                 <i class="fa-solid fa-gear text-lg"></i>
                 <span class="text-[9px] font-semibold">Settings</span>
             </button>
         </nav>
 
-        <!-- Floating Action Button (FAB) for entry additions -->
+        <!-- Floating Action Button (FAB) -->
         <button onclick="openTxnModal()" class="fixed bottom-20 right-6 md:bottom-8 md:right-8 z-40 bg-gradient-to-tr from-emerald-600 to-teal-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/35 hover:scale-105 active:scale-95 transition-transform cursor-pointer animate-bounce">
             <i class="fa-solid fa-plus text-2xl"></i>
         </button>
@@ -195,19 +193,19 @@
                     <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-855 shadow-sm relative overflow-hidden">
                         <p class="text-xs font-semibold text-rose-500 uppercase tracking-wider">Total Expenses</p>
                         <p id="totalExpenses" class="text-2xl font-black mt-1 text-rose-600 dark:text-rose-400">₹0.00</p>
-                        <div class="absolute -right-2 -bottom-2 opacity-10 text-rose-505 text-6xl"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                        <div class="absolute -right-2 -bottom-2 opacity-10 text-rose-500 text-6xl"><i class="fa-solid fa-arrow-trend-down"></i></div>
                     </div>
                     <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-855 shadow-sm relative overflow-hidden">
                         <p class="text-xs font-semibold text-amber-500 uppercase tracking-wider">Net Savings</p>
                         <p id="totalSavings" class="text-2xl font-black mt-1 text-amber-600 dark:text-amber-400">₹0.00</p>
-                        <div class="absolute -right-2 -bottom-2 opacity-10 text-amber-505 text-6xl"><i class="fa-solid fa-piggy-bank"></i></div>
+                        <div class="absolute -right-2 -bottom-2 opacity-10 text-amber-500 text-6xl"><i class="fa-solid fa-piggy-bank"></i></div>
                     </div>
                 </div>
 
                 <div id="budgetWarning" class="hidden bg-rose-500/10 border border-rose-500/30 p-4 rounded-2xl flex items-center gap-3 text-rose-650 dark:text-rose-400 animate-pulse">
                     <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
                     <div>
-                        <span class="font-bold text-sm">Budget Exceeded!</span> You have exceeded your targeted expenditure limit.
+                        <span class="font-bold text-sm">Budget Exceeded!</span> You have exceeded your targeted expenditure boundary limit.
                     </div>
                 </div>
 
@@ -308,47 +306,44 @@
             </section>
 
             <!-- My Cards & Cash Section -->
-            <section id="content-wallet" class="tab-content hidden space-y-6 animate-in fade-in duration-200">
+            <section id="content-wallet" class="tab-content hidden space-y-6 animate-in fade-in duration-250">
                 
                 <!-- Cash Overview & Piggy Bank -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Pocket Cash Account card -->
-                    <div class="bg-gradient-to-br from-teal-650 to-emerald-500 rounded-3xl p-6 text-white flex flex-col justify-between shadow-xl relative overflow-hidden select-none min-h-[170px]">
+                    <div class="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-3xl p-6 text-white flex flex-col justify-between shadow-xl relative overflow-hidden select-none min-h-[170px] border border-white/10">
                         <div class="z-10">
-                            <span class="text-[10px] font-bold tracking-widest uppercase opacity-75">Available Cash</span>
+                            <span class="text-[9px] font-bold tracking-widest uppercase opacity-75">Available Wallet Balance</span>
                             <h4 class="font-extrabold text-lg mt-0.5">My Cash Wallet</h4>
                         </div>
                         
                         <div class="z-10 my-3">
-                            <span class="text-[10px] font-bold uppercase tracking-wider opacity-60">Liquid Cash Balance</span>
+                            <span class="text-[9px] font-bold uppercase tracking-wider opacity-60">Liquid Cash</span>
                             <p class="font-black text-3xl tracking-tight mt-0.5" id="pocketCashDisplay">₹0.00</p>
                         </div>
                         
                         <div class="text-[10px] opacity-75 z-10">
-                            * Cloud Synchronized: Access from any device with Username + Password.
+                            * Cloud Synced (Encrypted)
                         </div>
-                        <div class="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-white/10 blur-xl"></div>
                     </div>
 
-                    <!-- Interactive Piggy Bank Card -->
                     <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm flex flex-col justify-between min-h-[170px]">
                         <div class="flex justify-between items-start">
                             <div>
                                 <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Savings Piggy Bank</h3>
-                                <p class="text-xs text-slate-400">Put loose change in here to save up offline!</p>
+                                <p class="text-xs text-slate-400">Store loose change locally.</p>
                             </div>
                             <span class="text-3xl animate-pulse" id="piggyIcon">🐷</span>
                         </div>
 
                         <div class="my-2">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Accumulated Savings</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Piggy Savings</span>
                             <p class="font-black text-2xl text-emerald-600 dark:text-emerald-400 mt-0.5" id="piggyBankDisplay">₹0.00</p>
                         </div>
 
                         <div class="grid grid-cols-3 gap-2">
                             <button onclick="feedPiggy(100)" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold py-2 rounded-xl text-xs transition-colors cursor-pointer text-center">+ ₹100</button>
                             <button onclick="feedPiggy(500)" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold py-2 rounded-xl text-xs transition-colors cursor-pointer text-center">+ ₹500</button>
-                            <button onclick="withdrawPiggy()" class="bg-rose-50 hover:bg-rose-100 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 font-bold py-2 rounded-xl text-xs transition-colors cursor-pointer text-center">Cash Out</button>
+                            <button onclick="withdrawPiggy()" class="bg-rose-55/20 hover:bg-rose-100 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 font-bold py-2 rounded-xl text-xs transition-colors cursor-pointer text-center">Cash Out</button>
                         </div>
                     </div>
                 </div>
@@ -358,7 +353,7 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <h3 class="font-bold text-lg text-slate-900 dark:text-white">My Cards & IDs</h3>
-                            <p class="text-xs text-slate-400">Manage virtual membership cards and national ID replicas (both sides are printable!).</p>
+                            <p class="text-xs text-slate-400">Access clean, classic, and aesthetic printable virtual card replicas.</p>
                         </div>
                         <button onclick="toggleCardForm()" class="text-xs bg-emerald-600 hover:bg-emerald-505 text-white font-medium px-3.5 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20 cursor-pointer"><i class="fa-solid fa-plus mr-1"></i>New Card</button>
                     </div>
@@ -379,37 +374,37 @@
                             <div id="field-theme" class="hidden">
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Theme</label>
                                 <select id="newCardTheme" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                                    <option value="from-indigo-650 to-blue-500">Stealth Blue</option>
-                                    <option value="from-emerald-600 to-teal-500">Forest Green</option>
-                                    <option value="from-rose-500 to-amber-500">Sunset Rose</option>
-                                    <option value="from-slate-800 to-slate-950">Midnight Black</option>
+                                    <option value="from-slate-800 to-slate-950">Classic Obsidian</option>
+                                    <option value="from-emerald-700 to-emerald-950">Emerald Green</option>
+                                    <option value="from-indigo-900 to-slate-900">Classic Navy</option>
+                                    <option value="from-stone-700 to-stone-900">Warm Stone</option>
                                 </select>
                             </div>
                         </div>
 
                         <!-- Dynamic Card Input Fields -->
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="cardInputs">
-                            <!-- Fields are injected dynamically by JavaScript depending on selected type -->
+                            <!-- Injected by JS -->
                         </div>
 
                         <div class="flex gap-2 pt-1">
-                            <button type="button" onclick="saveNewCard(event)" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl cursor-pointer">Create & Save Card</button>
+                            <button type="button" onclick="saveNewCard(event)" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl cursor-pointer">Create Card</button>
                             <button type="button" onclick="toggleCardForm()" class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-4 py-2 rounded-xl cursor-pointer">Cancel</button>
                         </div>
                     </div>
 
                     <!-- Printable Cards Deck -->
                     <div id="printableCardsDeck" class="space-y-6">
-                        <!-- Dynamic double-sided card templates will render here -->
+                        <!-- Rendered by JS -->
                     </div>
                 </div>
 
-                <!-- Udhar Book (Lend & Borrow Tracker) -->
+                <!-- Udhar Book -->
                 <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
                     <div class="flex justify-between items-center">
                         <div>
                             <h3 class="font-bold text-lg text-slate-900 dark:text-white">Udhar Book (Debts ledger)</h3>
-                            <p class="text-xs text-slate-400">Keep track of cash lent to or borrowed from friends & family offline.</p>
+                            <p class="text-xs text-slate-400">Keep track of cash lent to or borrowed from friends offline.</p>
                         </div>
                         <button onclick="toggleUdharForm()" class="text-xs bg-emerald-600 hover:bg-emerald-505 text-white font-medium px-3.5 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20 cursor-pointer"><i class="fa-solid fa-plus mr-1"></i>New Entry</button>
                     </div>
@@ -426,7 +421,7 @@
                                 <option value="Lent">You Lent (Friend owes you)</option>
                                 <option value="Borrowed">You Borrowed (You owe friend)</option>
                             </select>
-                            <input type="text" id="udharNotes" placeholder="Optional notes (e.g. Lunch, cab fare)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-855 focus:outline-none">
+                            <input type="text" id="udharNotes" placeholder="Optional notes" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
                         </div>
                         <div class="flex gap-2 pt-1">
                             <button type="button" onclick="saveUdharEntry(event)" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl cursor-pointer">Save Entry</button>
@@ -434,21 +429,19 @@
                         </div>
                     </form>
 
-                    <!-- Udhar Book Summary Row -->
                     <div class="grid grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200/50 dark:border-slate-800/80">
                         <div class="text-center border-r border-slate-200/85 dark:border-slate-800">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase">Total to Collect</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase">Total to Collect</span>
                             <p class="text-lg font-black text-emerald-600 dark:text-emerald-400 mt-0.5" id="udharCollectDisplay">₹0.00</p>
                         </div>
                         <div class="text-center">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase">Total to Pay</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase">Total to Pay</span>
                             <p class="text-lg font-black text-rose-500 mt-0.5" id="udharPayDisplay">₹0.00</p>
                         </div>
                     </div>
 
-                    <!-- Udhar Records List -->
                     <div id="udharList" class="space-y-2 max-h-72 overflow-y-auto pr-1">
-                        <!-- Dynamic debt list entries go here -->
+                        <!-- Rendered by JS -->
                     </div>
                 </div>
             </section>
@@ -456,11 +449,10 @@
             <!-- Settings Section -->
             <section id="content-settings" class="tab-content hidden space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Clean local cache controls -->
                     <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
                         <h3 class="font-bold text-lg"><i class="fa-solid fa-users text-emerald-500 mr-2"></i>Profile Management</h3>
                         <p class="text-xs text-slate-400">Currently logged in as <span class="font-bold text-slate-900 dark:text-white" id="settingsActiveUser"></span>.</p>
-                        <button onclick="logoutSession()" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-805 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-right-from-bracket mr-2"></i>Log Out Session</button>
+                        <button onclick="logoutSession()" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-right-from-bracket mr-2"></i>Log Out Session</button>
                     </div>
 
                     <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
@@ -472,7 +464,7 @@
                                 <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
                             </label>
                         </div>
-                        <button onclick="resetAllData()" class="w-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 border border-rose-200 dark:border-rose-900/55 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-trash-can mr-2"></i>Clear Local Cache & Reset</button>
+                        <button onclick="resetAllData()" class="w-full bg-rose-50 hover:bg-rose-105 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 border border-rose-200 dark:border-rose-900/55 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-trash-can mr-2"></i>Clear Local Cache & Reset</button>
                     </div>
                 </div>
             </section>
@@ -496,7 +488,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Description</label>
-                    <input type="text" id="txnDesc" required placeholder="e.g., Grocery, Salary, Rent" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                    <input type="text" id="txnDesc" required placeholder="e.g., Grocery, Rent" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -530,11 +522,10 @@
     </div>
 
     <script>
-        // Multi-device synchronization state
+        // Session and states
         let currentUser = localStorage.getItem('rupee_current_user') || '';
         let currentPassword = localStorage.getItem('rupee_current_password') || '';
         
-        // Dynamic state arrays
         let transactions = [];
         let wishlist = [];
         let udharList = [];
@@ -542,14 +533,13 @@
         let currentTxnType = 'Expense';
         let expenseChart = null;
 
-        // Public cloud bucket configuration URL
         const CLOUD_DB_BASE_URL = "https://kvdb.io/rupeemind_vault_v2/";
 
         function getKey(key) {
             return `rupee_${currentUser}_${key}`;
         }
 
-        // Handle cloud database logging and account setup
+        // Login Overlay controller
         async function handleCloudLogin(e) {
             e.preventDefault();
             const userField = document.getElementById('loginUsername');
@@ -562,18 +552,16 @@
 
             if (!username || !password) return;
 
-            statusMsg.innerText = "Synchronizing with Cloud Vault...";
+            statusMsg.innerText = "Connecting to Cloud Vault...";
             statusMsg.classList.remove('hidden');
             submitBtn.disabled = true;
 
             try {
-                // Fetch existing cloud data record
                 const response = await fetch(CLOUD_DB_BASE_URL + username);
                 
-                // User does not exist, trigger self-creation check
                 if (response.status === 404) {
-                    if (confirm(`Username "${username}" does not exist in the cloud database. Would you like to create a new profile with the entered password?`)) {
-                        statusMsg.innerText = "Provisioning new cloud profile...";
+                    if (confirm(`Username "${username}" does not exist in the database. Would you like to create a new profile with the entered password?`)) {
+                        statusMsg.innerText = "Registering new account...";
                         
                         const passwordHash = CryptoJS.SHA256(password).toString();
                         const initialPayload = {
@@ -586,7 +574,6 @@
                         const encrypted = CryptoJS.AES.encrypt(JSON.stringify(initialPayload), password).toString();
                         const dataBundle = { passwordHash, payload: encrypted };
 
-                        // Store in KVDB
                         await fetch(CLOUD_DB_BASE_URL + username, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -607,7 +594,7 @@
                     const passwordHash = CryptoJS.SHA256(password).toString();
 
                     if (dataBundle.passwordHash === passwordHash) {
-                        statusMsg.innerText = "Decrypting secure credentials...";
+                        statusMsg.innerText = "Loading profile ledger...";
                         try {
                             const decryptedBytes = CryptoJS.AES.decrypt(dataBundle.payload, password);
                             const decryptedStr = decryptedBytes.toString(CryptoJS.enc.Utf8);
@@ -620,22 +607,21 @@
 
                             initAppSession(payload);
                         } catch (decryptError) {
-                            statusMsg.innerText = "Failed to decrypt cloud data. Check password.";
+                            statusMsg.innerText = "Decryption error. Check password.";
                         }
                     } else {
                         statusMsg.innerText = "Incorrect password! Access denied.";
                     }
                 } else {
-                    statusMsg.innerText = "Server sync failed. Please try again.";
+                    statusMsg.innerText = "Access timeout. Please try again.";
                 }
             } catch (err) {
-                statusMsg.innerText = "Network sync timeout. Please connect to internet.";
+                statusMsg.innerText = "Network sync timeout. Re-try.";
             } finally {
                 submitBtn.disabled = false;
             }
         }
 
-        // Initialize active session
         function initAppSession(payload) {
             transactions = payload.transactions || [];
             wishlist = payload.wishlist || [];
@@ -650,7 +636,6 @@
             const savedBudget = localStorage.getItem(getKey('budget')) || 50000;
             document.getElementById('budgetInput').value = savedBudget;
 
-            // Clear inputs
             document.getElementById('loginUsername').value = '';
             document.getElementById('loginPassword').value = '';
             document.getElementById('loginStatusMsg').classList.add('hidden');
@@ -660,17 +645,14 @@
             switchTab('dashboard');
         }
 
-        // Local triggers for cloud writes
         async function saveAndSyncData() {
             if (!currentUser || !currentPassword) return;
 
-            // Save locally as a secondary backup
             localStorage.setItem(getKey('transactions'), JSON.stringify(transactions));
             localStorage.setItem(getKey('cards'), JSON.stringify(cards));
             localStorage.setItem(getKey('udhar'), JSON.stringify(udharList));
             calculateMetricsAndRefresh();
 
-            // Sync encrypted data to the cloud
             const dataToEncrypt = { transactions, wishlist, udharList, cards };
             const encrypted = CryptoJS.AES.encrypt(JSON.stringify(dataToEncrypt), currentPassword).toString();
             const passwordHash = CryptoJS.SHA256(currentPassword).toString();
@@ -683,11 +665,10 @@
                     body: JSON.stringify(dataBundle)
                 });
             } catch (err) {
-                console.warn("Cloud backup write failed. Cache saved locally.");
+                console.warn("Cloud sync fail. Stored offline.");
             }
         }
 
-        // Log out active profile
         function logoutSession() {
             currentUser = '';
             currentPassword = '';
@@ -697,7 +678,7 @@
             document.getElementById('loginScreen').classList.remove('hidden');
         }
 
-        // Navigation Tabs Controller
+        // Tab selection switch
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             
@@ -709,7 +690,8 @@
                 btn.className = "mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-655 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer";
             });
 
-            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+            const targetSection = document.getElementById(`content-${tabId}`);
+            if (targetSection) targetSection.classList.remove('hidden');
             
             const activeBtn = document.getElementById(`tab-${tabId}`);
             if (activeBtn) {
@@ -731,31 +713,39 @@
         }
 
         function renderUserControls() {
-            const list = document.getElementById('userList');
-            list.innerHTML = '';
-            const div = document.createElement('div');
-            div.className = "flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs";
-            div.innerHTML = `
-                <span class="font-semibold text-emerald-650 dark:text-emerald-400">${currentUser} (Active)</span>
-            `;
-            list.appendChild(div);
-
             const userBudget = localStorage.getItem(getKey('budget'));
             if (userBudget) document.getElementById('budgetInput').value = userBudget;
         }
 
-        function removeUser() {
-            if(confirm(`Purge local cache backup for "${currentUser}"? The cloud version will remain intact.`)) {
-                localStorage.removeItem(`rupee_${currentUser}_transactions`);
-                localStorage.removeItem(`rupee_${currentUser}_wishlist`);
-                localStorage.removeItem(`rupee_${currentUser}_cards`);
-                localStorage.removeItem(`rupee_${currentUser}_udhar`);
-                localStorage.removeItem(`rupee_${currentUser}_budget`);
-                logoutSession();
-            }
+        // Theme Toggle Handler
+        const themeToggle = document.getElementById('themeToggle');
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
         }
 
-        // Toggle form types
+        themeToggle.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            renderChart();
+        });
+
+        function formatIndianCurrency(num) {
+            const absoluteValue = Math.abs(Number(num)).toFixed(2);
+            const [integerPart, decimalPart] = absoluteValue.split('.');
+            let lastThreeDigits = integerPart.substring(integerPart.length - 3);
+            const otherDigits = integerPart.substring(0, integerPart.length - 3);
+            if (otherDigits !== '') lastThreeDigits = ',' + lastThreeDigits;
+            const structuredResult = otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThreeDigits + '.' + decimalPart;
+            return num < 0 ? `- ₹${structuredResult}` : `₹${structuredResult}`;
+        }
+
         function setTxnType(type) {
             currentTxnType = type;
             const expenseBtn = document.getElementById('typeExpense');
@@ -774,55 +764,9 @@
             document.getElementById('txnModal').classList.remove('hidden');
         }
 
-        // ...
         function closeTxnModal() {
             document.getElementById('txnModal').classList.add('hidden');
             resetTxnForm();
-        }
-
-        document.getElementById('txnForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const id = document.getElementById('editTxnId').value;
-            const description = document.getElementById('txnDesc').value;
-            const amount = parseFloat(document.getElementById('txnAmount').value);
-            const category = document.getElementById('txnCategory').value;
-            const date = document.getElementById('txnDate').value;
-
-            const txnData = { id: id || Date.now().toString(), description, type: currentTxnType, amount, category, date };
-
-            if(id) {
-                transactions = transactions.map(t => t.id === id ? txnData : t);
-            } else {
-                transactions.push(txnData);
-            }
-
-            saveAndSyncData();
-            closeTxnModal();
-        });
-
-        function editTransaction(id) {
-            const target = transactions.find(t => t.id === id);
-            if(!target) return;
-
-            document.getElementById('editTxnId').value = target.id;
-            document.getElementById('txnDesc').value = target.description;
-            document.getElementById('txnAmount').value = target.amount;
-            document.getElementById('txnCategory').value = target.category;
-            document.getElementById('txnDate').value = target.date;
-            
-            setTxnType(target.type);
-            document.getElementById('formTitle').innerText = "Edit Transaction";
-            document.getElementById('submitTxnBtn').innerText = "Update Entry";
-            document.getElementById('cancelEditBtn').classList.remove('hidden');
-            
-            openTxnModal();
-        }
-
-        function deleteTransaction(id) {
-            if(confirm("Confirm removal of this transaction entry?")) {
-                transactions = transactions.filter(t => t.id !== id);
-                saveAndSyncData();
-            }
         }
 
         function resetTxnForm() {
@@ -1142,539 +1086,7 @@
             }
         }
 
-        // UDHAR BOOK DEBT LEDGER SYSTEM
-        function toggleUdharForm() {
-            document.getElementById('udharForm').classList.toggle('hidden');
-        }
-
-        function saveUdharEntry(e) {
-            e.preventDefault();
-            const friend = document.getElementById('udharFriend').value.trim();
-            const amount = parseFloat(document.getElementById('udharAmount').value) || 0;
-            const type = document.getElementById('udharType').value;
-            const notes = document.getElementById('udharNotes').value.trim();
-
-            if (amount <= 0 || !friend) {
-                alert("Please enter a valid name and positive cash amount.");
-                return;
-            }
-
-            const newEntry = {
-                id: 'udhar-' + Date.now(),
-                friend,
-                amount,
-                type,
-                notes,
-                date: new Date().toLocaleDateString()
-            };
-
-            udharList.push(newEntry);
-            localStorage.setItem(getKey('udhar'), JSON.stringify(udharList));
-            document.getElementById('udharForm').reset();
-            toggleUdharForm();
-            saveAndSyncData();
-        }
-
-        function settleUdhar(id) {
-            const index = udharList.findIndex(u => u.id === id);
-            if (index === -1) return;
-            const entry = udharList[index];
-
-            if (confirm(`Confirm settlement of ₹${entry.amount} with ${entry.friend}?`)) {
-                const settlementTxn = {
-                    id: 'settle-' + Date.now(),
-                    description: entry.type === 'Lent' 
-                        ? `Udhar Settled: ${entry.friend} repaid debt`
-                        : `Udhar Settled: Repaid ${entry.friend}`,
-                    type: entry.type === 'Lent' ? 'Income' : 'Expense',
-                    amount: entry.amount,
-                    category: 'Others',
-                    date: new Date().toISOString().split('T')[0]
-                };
-
-                transactions.push(settlementTxn);
-                udharList.splice(index, 1);
-                localStorage.setItem(getKey('udhar'), JSON.stringify(udharList));
-                
-                saveAndSyncData();
-                alert("Debt settled and recorded in transaction ledger.");
-            }
-        }
-
-        function deleteUdhar(id) {
-            if (confirm("Delete this Udhar entry without recording a cash settlement?")) {
-                udharList = udharList.filter(u => u.id !== id);
-                localStorage.setItem(getKey('udhar'), JSON.stringify(udharList));
-                saveAndSyncData();
-            }
-        }
-
-        function renderUdharBook() {
-            const list = document.getElementById('udharList');
-            list.innerHTML = '';
-
-            let collectTotal = 0;
-            let payTotal = 0;
-
-            if (udharList.length === 0) {
-                list.innerHTML = `<div class="text-center py-6 text-xs text-slate-400"><i class="fa-solid fa-book-open text-2xl mb-1 block"></i>Udhar Book is empty. No outstanding debts.</div>`;
-                document.getElementById('udharCollectDisplay').innerText = '₹0.00';
-                document.getElementById('udharPayDisplay').innerText = '₹0.00';
-                return;
-            }
-
-            udharList.forEach(u => {
-                if (u.type === 'Lent') collectTotal += u.amount;
-                else payTotal += u.amount;
-
-                const statusBgColor = u.type === 'Lent' 
-                    ? 'bg-emerald-50 border-emerald-100 dark:bg-emerald-955/20 dark:border-emerald-900/50' 
-                    : 'bg-rose-50 border-rose-105 dark:bg-rose-955/20 dark:border-rose-900/50';
-                
-                const statusTextColor = u.type === 'Lent' 
-                    ? 'text-emerald-700 dark:text-emerald-400' 
-                    : 'text-rose-600 dark:text-rose-400';
-                
-                const typeLabel = u.type === 'Lent' ? 'Lent (To Collect)' : 'Borrowed (To Pay)';
-
-                const item = document.createElement('div');
-                item.className = `p-3.5 rounded-2xl border flex justify-between items-center ${statusBgColor} transition-all`;
-                
-                item.innerHTML = `
-                    <div class="space-y-0.5">
-                        <div class="flex items-center gap-1.5">
-                            <h4 class="font-extrabold text-xs text-slate-800 dark:text-slate-105">${u.friend}</h4>
-                            <span class="text-[8px] font-bold uppercase ${statusTextColor} bg-white dark:bg-slate-900 px-1.5 py-0.2 rounded-full border border-current">${typeLabel}</span>
-                        </div>
-                        <p class="text-[10px] text-slate-400 font-medium">${u.date} ${u.notes ? `• ${u.notes}` : ''}</p>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <span class="font-black text-xs ${statusTextColor}">₹${u.amount.toLocaleString('en-IN')}</span>
-                        <div class="flex gap-1.5">
-                            <button onclick="settleUdhar('${u.id}')" class="bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-655 dark:text-slate-300 font-bold px-2.5 py-1 rounded-xl text-[10px] transition-colors cursor-pointer flex items-center gap-1">
-                                <i class="fa-solid fa-circle-check text-emerald-500"></i> Settle
-                            </button>
-                            <button onclick="deleteUdhar('${u.id}')" class="text-slate-400 hover:text-rose-500 p-1 text-xs cursor-pointer"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                    </div>
-                `;
-                list.appendChild(item);
-            });
-
-            document.getElementById('udharCollectDisplay').innerText = formatIndianCurrency(collectTotal);
-            document.getElementById('udharPayDisplay').innerText = formatIndianCurrency(payTotal);
-        }
-
-        // CARDS UI STATE
-        function toggleCardForm() {
-            document.getElementById('cardFormContainer').classList.toggle('hidden');
-        }
-
-        function checkAndSeedDefaultCard() {
-            if (cards.length === 0) {
-                const defaultCard = {
-                    id: 'card-rupeemind',
-                    type: 'RupeeMind',
-                    name: currentUser,
-                    memberId: 'RM-' + Math.floor(1000 + Math.random() * 9000) + '-' + Math.floor(1000 + Math.random() * 9000),
-                    dateJoined: new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short' })
-                };
-                cards = [defaultCard];
-                saveAndSyncData();
-            }
-        }
-
-        function adjustCardFormFields(type) {
-            const inputs = document.getElementById('cardInputs');
-            const themeSel = document.getElementById('field-theme');
-            
-            inputs.innerHTML = '';
-            themeSel.classList.add('hidden');
-
-            if (type === 'Aadhaar') {
-                inputs.innerHTML = `
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Full Name</label>
-                        <input type="text" id="addAadhaarName" required placeholder="As on Aadhaar" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Aadhaar Number (12 Digits)</label>
-                        <input type="text" id="addAadhaarNum" required maxlength="12" placeholder="e.g. 543212349876" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Date of Birth</label>
-                        <input type="text" id="addAadhaarDob" required placeholder="DD/MM/YYYY" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Gender</label>
-                        <select id="addAadhaarGender" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                            <option value="Male">Male / पुरुष</option>
-                            <option value="Female">Female / महिला</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Father's or Spouse's Name</label>
-                        <input type="text" id="addAadhaarRelative" required placeholder="S/O or W/O Name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Address</label>
-                        <input type="text" id="addAadhaarAddress" required placeholder="Full residential address" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none col-span-1 sm:col-span-2">
-                    </div>
-                `;
-            } else if (type === 'Google') {
-                inputs.innerHTML = `
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Developer Name</label>
-                        <input type="text" id="addGoogleName" required placeholder="Developer profile name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Developer ID</label>
-                        <input type="text" id="addGoogleDevId" required placeholder="e.g. GP-74328-984" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Associated Email</label>
-                        <input type="email" id="addGoogleEmail" required placeholder="yourname@gmail.com" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Member Since</label>
-                        <input type="text" id="addGoogleSince" required placeholder="e.g. Jul 2026" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                `;
-            } else if (type === 'Custom') {
-                themeSel.classList.remove('hidden');
-                inputs.innerHTML = `
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Title</label>
-                        <input type="text" id="addCustomTitle" required placeholder="e.g. Gym Club, Library Card" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Holder Name</label>
-                        <input type="text" id="addCustomName" required placeholder="Your full name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Number / Member ID</label>
-                        <input type="text" id="addCustomNumber" required placeholder="e.g. ID-453-23" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Valid Upto / Expiry</label>
-                        <input type="text" id="addCustomExpiry" required placeholder="MM/YY or Date" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Backside Description</label>
-                        <input type="text" id="addCustomDesc" placeholder="e.g. Terms, contact number" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                    </div>
-                `;
-            }
-        }
-
-        function getCardFrontHTML(c) {
-            if (c.type === 'RupeeMind') {
-                return `
-                    <div class="w-full h-full bg-gradient-to-br from-slate-900 via-emerald-950 to-indigo-950 text-white p-4 flex flex-col justify-between select-none relative overflow-hidden">
-                        <div class="absolute inset-0 opacity-15 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-teal-300 via-slate-700 to-indigo-900"></div>
-                        <div class="flex justify-between items-start z-10">
-                            <div>
-                                <span class="text-[8px] font-black uppercase tracking-widest text-emerald-400">RupeeMind Prime</span>
-                                <h4 class="font-extrabold text-sm tracking-tight leading-tight mt-0.5">${c.name}</h4>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-cyan-400 via-pink-400 to-yellow-300 opacity-85 shadow-md shadow-cyan-500/20"></div>
-                                <i class="fa-solid fa-shield-halved text-emerald-400 text-sm"></i>
-                            </div>
-                        </div>
-
-                        <div class="z-10 mt-1">
-                            <span class="text-[7px] font-bold uppercase tracking-wider opacity-50">Member Access ID</span>
-                            <p class="font-mono text-xs tracking-widest text-slate-200 mt-0.5">${c.memberId}</p>
-                        </div>
-                        <div class="flex justify-between items-end z-10 text-[8px] font-semibold text-slate-350 mt-1">
-                            <span>MEMBER SINCE: ${c.dateJoined}</span>
-                            <span class="font-black text-[9px] text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200">RUPEEMIND PLATINUM</span>
-                        </div>
-                    </div>
-                `;
-            } else if (c.type === 'Aadhaar') {
-                return `
-                    <div class="w-full h-full bg-gradient-to-b from-orange-50/70 via-white to-emerald-50/70 text-slate-800 p-3 flex flex-col justify-between select-none relative border border-slate-200">
-                        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-white to-emerald-600"></div>
-                        <div class="absolute right-12 bottom-8 opacity-[0.06] text-rose-600 pointer-events-none">
-                            <i class="fa-solid fa-fingerprint text-7xl"></i>
-                        </div>
-                        <div class="flex justify-between items-center border-b border-rose-500/20 pb-1 text-[7.5px] leading-tight font-extrabold mt-1">
-                            <div class="text-left text-orange-600">भारत सरकार<br><span class="text-[6.5px] text-slate-500 font-bold block">GOVERNMENT OF INDIA</span></div>
-                            <div class="text-right text-emerald-700">भारतीय विशिष्ट पहचान प्राधिकरण<br><span class="text-[6.5px] text-slate-500 font-bold block">UNIQUE IDENTIFICATION AUTHORITY OF INDIA</span></div>
-                        </div>
-                        <div class="flex gap-3 items-center my-1">
-                            <div class="w-11 h-14 bg-slate-50 border border-slate-250 flex items-center justify-center rounded overflow-hidden relative shadow-inner">
-                                <i class="fa-solid fa-user text-2xl text-slate-300"></i>
-                                <div class="absolute bottom-0 inset-x-0 bg-rose-500/80 text-[6px] font-bold text-center text-white py-0.2">UIDAI</div>
-                            </div>
-                            <div class="text-[8.5px] leading-tight space-y-0.5 flex-1 font-semibold text-slate-700">
-                                <p class="font-black text-[10px] text-slate-900">${c.name}</p>
-                                <p><span class="text-slate-400 font-medium">जन्म तिथि / DOB:</span> ${c.dob}</p>
-                                <p><span class="text-slate-400 font-medium">लिंग / Gender:</span> ${c.gender}</p>
-                            </div>
-                        </div>
-                        <div class="text-center py-0.5 border-t border-rose-500/20 mt-0.5">
-                            <p class="font-mono text-xs font-black text-slate-900 tracking-wider">${c.aadhaarNum}</p>
-                            <p class="text-[6.5px] font-bold text-rose-600 tracking-tight">मेरा आधार, मेरी पहचान</p>
-                        </div>
-                    </div>
-                `;
-            } else if (c.type === 'Google') {
-                return `
-                    <div class="w-full h-full bg-white text-slate-800 p-4 flex flex-col justify-between select-none relative overflow-hidden border border-slate-200">
-                        <div class="absolute top-0 left-0 right-0 h-1.5 flex">
-                            <div class="w-1/4 h-full bg-[#4285F4]"></div>
-                            <div class="w-1/4 h-full bg-[#EA4335]"></div>
-                            <div class="w-1/4 h-full bg-[#FBBC05]"></div>
-                            <div class="w-1/4 h-full bg-[#34A853]"></div>
-                        </div>
-                        
-                        <div class="flex justify-between items-start z-10 mt-1">
-                            <div>
-                                <span class="text-[8px] font-extrabold uppercase tracking-widest text-[#4285F4]">Google Developer ID</span>
-                                <div class="z-10 mt-2">
-                                    <h4 class="font-black text-sm tracking-tight leading-tight text-slate-900">${c.name}</h4>
-                                    <span class="text-[8.5px] text-[#4285F4] block mt-0.5 font-bold">${c.email}</span>
-                                </div>
-                            </div>
-                            <div class="text-2xl flex items-center gap-1">
-                                <i class="fa-brands fa-google text-[#4285F4]"></i>
-                            </div>
-                        </div>
-
-                        <div class="z-10 flex justify-between items-end gap-3 mt-1 py-1 border-t border-slate-100">
-                            <div>
-                                <span class="text-[7px] font-bold uppercase tracking-wider text-slate-400">Developer Account ID</span>
-                                <p class="font-mono text-xs tracking-tight text-slate-800 font-bold">${c.devId}</p>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-between items-end z-10 text-[8px] font-semibold text-slate-400 mt-1">
-                            <span>PLATFORM VERIFIED</span>
-                            <span class="font-bold text-[#34A853]">SINCE: ${c.since}</span>
-                        </div>
-                    </div>
-                `;
-            } else if (c.type === 'Custom') {
-                return `
-                    <div class="w-full h-full bg-gradient-to-br ${c.theme} text-white p-4 flex flex-col justify-between select-none relative overflow-hidden">
-                        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-white to-transparent"></div>
-                        <div class="flex justify-between items-start z-10">
-                            <div>
-                                <span class="text-[8px] font-black uppercase tracking-widest opacity-75">${c.title}</span>
-                                <h4 class="font-extrabold text-sm tracking-tight leading-tight mt-0.5">${c.name}</h4>
-                            </div>
-                            <div class="text-base opacity-90"><i class="fa-solid fa-address-card"></i></div>
-                        </div>
-
-                        <div class="z-10">
-                            <span class="text-[7px] font-bold uppercase tracking-wider opacity-50">Card Registration ID</span>
-                            <p class="font-mono text-xs tracking-widest mt-0.5">${c.number}</p>
-                        </div>
-                        <div class="flex justify-between items-end z-10 text-[8px] font-semibold opacity-80">
-                            <span>VALID THRU: ${c.expiry}</span>
-                            <span class="font-extrabold uppercase tracking-wide">SECURE ID</span>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        function getCardBackHTML(c) {
-            if (c.type === 'RupeeMind') {
-                return `
-                    <div class="w-full h-full bg-slate-950 text-slate-400 p-4 flex flex-col justify-between select-none relative text-[7.5px] leading-relaxed border border-slate-900">
-                        <div class="h-6 bg-slate-900 w-full rounded flex items-center justify-between px-3">
-                            <span class="text-[6.5px] font-bold text-slate-500 uppercase tracking-widest">Magnetic Stripe Security</span>
-                            <span class="font-mono tracking-widest text-[8.5px] text-white">RM-SECURE-KEY</span>
-                        </div>
-                        <div class="space-y-1 my-1 opacity-70">
-                            <p class="font-bold text-slate-200">RUPEEMIND OFFLINE REPLICA</p>
-                            <p>• Data saved inside this model exists completely inside local client storage.</p>
-                            <p>• RupeeMind is designed for local bookkeeping and offline audit capabilities.</p>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <p class="text-[5.5px] uppercase tracking-wider opacity-50">Local Signature Panel</p>
-                                <p class="font-mono text-[8px] text-white font-semibold mt-0.5 underline decoration-emerald-500 decoration-wavy">LOCAL-ONLY STORAGE</p>
-                            </div>
-                            <div class="w-8 h-8 bg-white p-0.5 rounded flex items-center justify-center shadow">
-                                <i class="fa-solid fa-qrcode text-2xl text-slate-900"></i>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (c.type === 'Aadhaar') {
-                return `
-                    <div class="w-full h-full bg-gradient-to-b from-orange-50/20 via-white to-emerald-50/20 text-slate-800 p-3 flex flex-col justify-between select-none relative border border-slate-250 text-[7.5px] leading-tight">
-                        <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-white to-emerald-600"></div>
-                        <div class="flex justify-between items-center border-b border-rose-500/20 pb-0.5 font-bold text-[7.5px] text-slate-505">
-                            <span>पता / Address:</span>
-                            <span class="text-rose-600 font-extrabold">भारतीय विशिष्ट पहचान प्राधिकरण</span>
-                        </div>
-                        <div class="my-1.5 text-slate-700 leading-normal flex-1 font-semibold">
-                            <p class="text-slate-900"><span class="text-slate-400 font-medium">आत्मज / S/O / W/O:</span> ${c.relative}</p>
-                            <p class="text-[7.5px] mt-0.5 text-slate-800 leading-relaxed">${c.address}</p>
-                        </div>
-                        <div class="flex justify-between items-end border-t border-slate-200/80 pt-1.5 mt-0.5">
-                            <div class="w-16 h-5 bg-slate-50 flex items-center justify-center rounded border border-slate-200">
-                                <i class="fa-solid fa-barcode text-xl text-slate-850"></i>
-                            </div>
-                            <div class="text-[9.5px] font-black tracking-wider text-slate-900 flex-1 text-center font-mono">${c.aadhaarNum}</div>
-                            <div class="w-6 h-6 bg-white border border-slate-300 p-0.5 rounded flex items-center justify-center shadow-sm">
-                                <i class="fa-solid fa-qrcode text-lg text-slate-900"></i>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (c.type === 'Google') {
-                return `
-                    <div class="w-full h-full bg-slate-50 text-slate-500 p-4 flex flex-col justify-between select-none relative text-[7px] leading-relaxed border border-slate-200">
-                        <div class="absolute bottom-0 left-0 right-0 h-1 flex">
-                            <div class="w-1/4 h-full bg-[#4285F4]"></div>
-                            <div class="w-1/4 h-full bg-[#EA4335]"></div>
-                            <div class="w-1/4 h-full bg-[#FBBC05]"></div>
-                            <div class="w-1/4 h-full bg-[#34A853]"></div>
-                        </div>
-                        <div class="space-y-0.5">
-                            <p class="font-bold text-slate-800 text-[8px] uppercase tracking-wide">Google Play Console Member</p>
-                            <p>• Access play developer resources at play.google.com/console.</p>
-                            <p>• Keep this local ID profile secure; do not share developer key coordinates.</p>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <p class="text-[5.5px] uppercase tracking-wider opacity-60">Verified Dev</p>
-                                <p class="font-semibold text-[8px] text-slate-805 mt-0.5">PLAY-CONSOLE-DEV</p>
-                            </div>
-                            <div class="w-14 h-4 bg-slate-100 flex items-center justify-center rounded border border-slate-200">
-                                <i class="fa-solid fa-barcode text-slate-800 text-lg"></i>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (c.type === 'Custom') {
-                return `
-                    <div class="w-full h-full bg-slate-950 text-slate-400 p-4 flex flex-col justify-between select-none relative text-[7.5px] leading-relaxed border border-slate-900">
-                        <div class="h-6 bg-slate-900 w-full rounded flex items-center justify-between px-3">
-                            <span class="text-[6.5px] font-bold text-slate-500 uppercase tracking-widest">Secure Member ID Stripe</span>
-                            <span class="font-mono tracking-widest text-[8.5px] text-white">CUSTOM-SECURE</span>
-                        </div>
-                        <div class="space-y-1 my-1 opacity-70">
-                            <p class="font-bold text-slate-200">MEMBERSHIP CARD TERMS</p>
-                            <p>${c.desc}</p>
-                            <p>• Handover card front panel at check-in station desk for scanning verification.</p>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <p class="text-[5.5px] uppercase tracking-wider opacity-50">Holder signature</p>
-                                <p class="font-semibold text-[8px] text-white mt-0.5">VERIFIED MEMBER</p>
-                            </div>
-                            <div class="w-8 h-8 bg-white p-0.5 rounded flex items-center justify-center shadow">
-                                <i class="fa-solid fa-barcode text-xl text-slate-905"></i>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        function renderCardsDeck() {
-            const container = document.getElementById('printableCardsDeck');
-            container.innerHTML = '';
-
-            cards.forEach(c => {
-                const frontHTML = getCardFrontHTML(c);
-                const backHTML = getCardBackHTML(c);
-
-                const cardWrapper = document.createElement('div');
-                cardWrapper.className = "p-5 bg-white/50 dark:bg-slate-900/40 rounded-3xl border border-slate-200 dark:border-slate-800/80 shadow-sm flex flex-col lg:flex-row gap-5 justify-between items-center card-container-lift";
-                
-                cardWrapper.innerHTML = `
-                    <div class="flex flex-col flex-1 leading-snug w-full">
-                        <h4 class="font-black text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                            <i class="fa-solid fa-id-card text-amber-500"></i> ${c.type === 'Custom' ? c.title : c.type + ' Card'}
-                        </h4>
-                        <p class="text-xs text-slate-400 mt-1">Holder: ${c.name}</p>
-                        <div class="flex gap-2 mt-4">
-                            <button onclick="printCard('${c.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-md shadow-emerald-500/10"><i class="fa-solid fa-print"></i> Print Card</button>
-                            ${c.id !== 'card-rupeemind' ? `<button onclick="deleteCard('${c.id}')" class="border border-rose-500/20 hover:bg-rose-500/5 text-rose-500 font-semibold px-4 py-2 rounded-xl text-xs cursor-pointer"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
-                        </div>
-                    </div>
-
-                    <!-- Double-Sided CR80 Cards (Front & Back) -->
-                    <div class="flex flex-col sm:flex-row gap-4 items-center justify-center card-perspective">
-                        <div class="w-[280px] h-[176px] rounded-2xl overflow-hidden shadow-lg border border-slate-200/60 dark:border-slate-850 transform transition-transform hover:scale-103 duration-300">
-                            ${frontHTML}
-                        </div>
-                        <div class="w-[280px] h-[176px] rounded-2xl overflow-hidden shadow-lg border border-slate-200/60 dark:border-slate-850 transform transition-transform hover:scale-103 duration-300">
-                            ${backHTML}
-                        </div>
-                    </div>
-                `;
-                container.appendChild(cardWrapper);
-            });
-        }
-
-        // Print engine for cards
-        function printCard(cardId) {
-            const card = cards.find(c => c.id === cardId);
-            if (!card) return;
-
-            const frontHTML = getCardFrontHTML(card);
-            const backHTML = getCardBackHTML(card);
-
-            const printWindow = window.open('', '_blank', 'width=800,height=600');
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>Print Card - ${card.type}</title>
-                    <script src="https://cdn.tailwindcss.com"><\/script>
-                    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-                    <style>
-                        body { font-family: 'Outfit', sans-serif; margin: 20px; }
-                        @media print {
-                            body { margin: 0; background: white; }
-                            .no-print { display: none; }
-                            .print-layout {
-                                border: none !important;
-                                box-shadow: none !important;
-                            }
-                        }
-                        .card-print-box {
-                            width: 85.6mm;
-                            height: 53.98mm;
-                            border: 1px solid #ddd;
-                            border-radius: 12px;
-                            overflow: hidden;
-                            position: relative;
-                            page-break-inside: avoid;
-                        }
-                    </style>
-                </head>
-                <body class="flex flex-col items-center gap-6 py-8">
-                    <div class="no-print mb-4 flex gap-2">
-                        <button onclick="window.print()" class="bg-emerald-600 text-white font-semibold px-4 py-2 rounded-xl text-xs shadow-md">Print Card (PDF)</button>
-                        <button onclick="window.close()" class="bg-slate-200 text-slate-805 font-semibold px-4 py-2 rounded-xl text-xs">Close</button>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-6 justify-center items-center print-layout">
-                        <div class="card-print-box shadow-lg">${frontHTML}</div>
-                        <div class="card-print-box shadow-lg">${backHTML}</div>
-                    </div>
-                    <script>
-                        window.onload = function() {
-                            setTimeout(() => { window.print(); }, 500);
-                        }
-                    <\/script>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
-        }
-
-        // UDHAR BOOK DEBT LEDGER SYSTEM
+        // UDHAR BOOK LEDGER SYSTEM
         function toggleUdharForm() {
             document.getElementById('udharForm').classList.toggle('hidden');
         }
@@ -1800,15 +1212,441 @@
             document.getElementById('cardFormContainer').classList.toggle('hidden');
         }
 
+        function checkAndSeedDefaultCard() {
+            if (cards.length === 0) {
+                const defaultCard = {
+                    id: 'card-rupeemind',
+                    type: 'RupeeMind',
+                    name: currentUser,
+                    memberId: 'RM-' + Math.floor(1000 + Math.random() * 9000) + '-' + Math.floor(1000 + Math.random() * 9000),
+                    dateJoined: new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short' })
+                };
+                cards = [defaultCard];
+                saveAndSyncData();
+            }
+        }
+
+        function adjustCardFormFields(type) {
+            const inputs = document.getElementById('cardInputs');
+            const themeSel = document.getElementById('field-theme');
+            
+            inputs.innerHTML = '';
+            themeSel.classList.add('hidden');
+
+            if (type === 'Aadhaar') {
+                inputs.innerHTML = `
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Full Name</label>
+                        <input type="text" id="addAadhaarName" required placeholder="As on Aadhaar" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Aadhaar Number (12 Digits)</label>
+                        <input type="text" id="addAadhaarNum" required maxlength="12" placeholder="e.g. 543212349876" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Date of Birth</label>
+                        <input type="text" id="addAadhaarDob" required placeholder="DD/MM/YYYY" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Gender</label>
+                        <select id="addAadhaarGender" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                            <option value="Male">Male / पुरुष</option>
+                            <option value="Female">Female / महिला</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Father's or Spouse's Name</label>
+                        <input type="text" id="addAadhaarRelative" required placeholder="S/O or W/O Name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Address</label>
+                        <input type="text" id="addAadhaarAddress" required placeholder="Full residential address" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none col-span-1 sm:col-span-2">
+                    </div>
+                `;
+            } else if (type === 'Google') {
+                inputs.innerHTML = `
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Developer Name</label>
+                        <input type="text" id="addGoogleName" required placeholder="Developer profile name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Developer ID</label>
+                        <input type="text" id="addGoogleDevId" required placeholder="e.g. GP-74328-984" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Associated Email</label>
+                        <input type="email" id="addGoogleEmail" required placeholder="yourname@gmail.com" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Member Since</label>
+                        <input type="text" id="addGoogleSince" required placeholder="e.g. Jul 2026" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                `;
+            } else if (type === 'Custom') {
+                themeSel.classList.remove('hidden');
+                inputs.innerHTML = `
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Title</label>
+                        <input type="text" id="addCustomTitle" required placeholder="e.g. Gym Club, Library Card" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Holder Name</label>
+                        <input type="text" id="addCustomName" required placeholder="Your name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Number / Member ID</label>
+                        <input type="text" id="addCustomNumber" required placeholder="e.g. ID-453-23" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Valid Upto / Expiry</label>
+                        <input type="text" id="addCustomExpiry" required placeholder="MM/YY or Date" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Backside Description</label>
+                        <input type="text" id="addCustomDesc" placeholder="e.g. Terms, contact number" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                    </div>
+                `;
+            }
+        }
+
+        function saveNewCard(e) {
+            e.preventDefault();
+            const type = document.getElementById('newCardType').value;
+            const theme = document.getElementById('newCardTheme').value;
+            let cardData = { id: 'card-' + Date.now(), type, theme };
+
+            if (type === 'Aadhaar') {
+                const name = document.getElementById('addAadhaarName').value.trim();
+                const rawNum = document.getElementById('addAadhaarNum').value.trim();
+                const dob = document.getElementById('addAadhaarDob').value.trim();
+                const gender = document.getElementById('addAadhaarGender').value;
+                const relative = document.getElementById('addAadhaarRelative').value.trim();
+                const address = document.getElementById('addAadhaarAddress').value.trim();
+
+                if (rawNum.length !== 12 || isNaN(rawNum)) {
+                    alert("Aadhaar Number must be exactly 12 digits.");
+                    return;
+                }
+                
+                const numFormatted = rawNum.replace(/(\d{4})(\d{4})(\d{4})/, '$1 $2 $3');
+                cardData = { ...cardData, name, aadhaarNum: numFormatted, dob, gender, relative, address };
+            } else if (type === 'Google') {
+                const name = document.getElementById('addGoogleName').value.trim();
+                const devId = document.getElementById('addGoogleDevId').value.trim();
+                const email = document.getElementById('addGoogleEmail').value.trim();
+                const since = document.getElementById('addGoogleSince').value.trim();
+
+                cardData = { ...cardData, name, devId, email, since };
+            } else if (type === 'Custom') {
+                const title = document.getElementById('addCustomTitle').value.trim();
+                const name = document.getElementById('addCustomName').value.trim();
+                const number = document.getElementById('addCustomNumber').value.trim();
+                const expiry = document.getElementById('addCustomExpiry').value.trim();
+                const desc = document.getElementById('addCustomDesc').value.trim() || 'Offline Virtual ID replica.';
+
+                cardData = { ...cardData, title, name, number, expiry, desc };
+            }
+
+            cards.push(cardData);
+            toggleCardForm();
+            adjustCardFormFields(type);
+            saveAndSyncData();
+        }
+
+        function deleteCard(id) {
+            if (id === 'card-rupeemind') {
+                alert("The default RupeeMind ID cannot be deleted.");
+                return;
+            }
+            if (confirm("Confirm removal of this card from organizer?")) {
+                cards = cards.filter(c => c.id !== id);
+                saveAndSyncData();
+            }
+        }
+
+        function getCardFrontHTML(c) {
+            if (c.type === 'RupeeMind') {
+                return `
+                    <div class="w-full h-full bg-gradient-to-br from-slate-900 to-indigo-950 text-white p-5 flex flex-col justify-between select-none relative overflow-hidden rounded-2xl border border-white/5 shadow-inner">
+                        <div class="flex justify-between items-start z-10">
+                            <div>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-emerald-400">RupeeMind Card</span>
+                                <h4 class="font-extrabold text-sm tracking-tight leading-tight mt-0.5">${c.name}</h4>
+                            </div>
+                            <i class="fa-solid fa-circle-nodes text-emerald-450 text-sm"></i>
+                        </div>
+                        <div class="z-10">
+                            <span class="text-[7px] font-bold uppercase tracking-wider opacity-50">Member Access ID</span>
+                            <p class="font-mono text-xs tracking-widest text-slate-200 mt-0.5">${c.memberId}</p>
+                        </div>
+                        <div class="flex justify-between items-end z-10 text-[8px] font-semibold text-slate-400">
+                            <span>SINCE: ${c.dateJoined}</span>
+                            <span class="font-black text-[9px] text-emerald-450">PLATINUM</span>
+                        </div>
+                    </div>
+                `;
+            } else if (c.type === 'Aadhaar') {
+                return `
+                    <div class="w-full h-full bg-white text-slate-800 p-3.5 flex flex-col justify-between select-none relative border border-slate-200 rounded-2xl shadow-inner">
+                        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-white to-emerald-600"></div>
+                        <div class="flex justify-between items-center border-b border-rose-500/20 pb-1 text-[7.5px] leading-tight font-extrabold">
+                            <div class="text-left text-orange-600">भारत सरकार<br><span class="text-[6.5px] text-slate-500 font-bold block">GOVERNMENT OF INDIA</span></div>
+                            <div class="text-right text-emerald-700">भारतीय विशिष्ट पहचान प्राधिकरण<br><span class="text-[6.5px] text-slate-500 font-bold block">UIDAI</span></div>
+                        </div>
+                        <div class="flex gap-3 items-center my-1">
+                            <div class="w-11 h-13 bg-slate-50 border border-slate-200 flex items-center justify-center rounded overflow-hidden relative shadow-inner">
+                                <i class="fa-solid fa-user text-xl text-slate-300"></i>
+                            </div>
+                            <div class="text-[8.5px] leading-tight space-y-0.5 flex-1 font-semibold text-slate-700">
+                                <p class="font-black text-[10px] text-slate-900">${c.name}</p>
+                                <p><span class="text-slate-400 font-medium">DOB:</span> ${c.dob}</p>
+                                <p><span class="text-slate-400 font-medium">Gender:</span> ${c.gender}</p>
+                            </div>
+                        </div>
+                        <div class="text-center py-0.5 border-t border-rose-500/20 mt-0.5">
+                            <p class="font-mono text-xs font-black text-slate-900 tracking-wider">${c.aadhaarNum}</p>
+                        </div>
+                    </div>
+                `;
+            } else if (c.type === 'Google') {
+                return `
+                    <div class="w-full h-full bg-white text-slate-800 p-5 flex flex-col justify-between select-none relative overflow-hidden border border-slate-200 rounded-2xl shadow-inner">
+                        <div class="absolute top-0 left-0 right-0 h-1.5 flex">
+                            <div class="w-1/4 h-full bg-[#4285F4]"></div>
+                            <div class="w-1/4 h-full bg-[#EA4335]"></div>
+                            <div class="w-1/4 h-full bg-[#FBBC05]"></div>
+                            <div class="w-1/4 h-full bg-[#34A853]"></div>
+                        </div>
+                        <div class="flex justify-between items-start z-10 mt-1">
+                            <div>
+                                <span class="text-[7.5px] font-extrabold uppercase tracking-widest text-slate-400">Google Developer</span>
+                                <h4 class="font-black text-sm tracking-tight leading-tight text-slate-900 mt-0.5">${c.name}</h4>
+                                <span class="text-[8.5px] text-[#4285F4] block mt-0.5 font-bold">${c.email}</span>
+                            </div>
+                            <i class="fa-brands fa-google text-[#4285F4] text-lg"></i>
+                        </div>
+                        <div class="z-10 mt-1 py-1 border-t border-slate-100 flex justify-between items-end">
+                            <div>
+                                <span class="text-[7px] font-bold uppercase tracking-wider text-slate-400">Developer ID</span>
+                                <p class="font-mono text-xs tracking-tight text-slate-850 font-bold">${c.devId}</p>
+                            </div>
+                            <span class="text-[8px] font-bold text-[#34A853]">SINCE: ${c.since}</span>
+                        </div>
+                    </div>
+                `;
+            } else if (c.type === 'Custom') {
+                return `
+                    <div class="w-full h-full bg-gradient-to-br ${c.theme} text-white p-5 flex flex-col justify-between select-none relative overflow-hidden rounded-2xl border border-white/5 shadow-inner">
+                        <div class="flex justify-between items-start z-10">
+                            <div>
+                                <span class="text-[8px] font-black uppercase tracking-widest opacity-75">${c.title}</span>
+                                <h4 class="font-extrabold text-sm tracking-tight leading-tight mt-0.5">${c.name}</h4>
+                            </div>
+                            <i class="fa-solid fa-address-card text-white/80"></i>
+                        </div>
+                        <div class="z-10">
+                            <span class="text-[7px] font-bold uppercase tracking-wider opacity-50">Registration ID</span>
+                            <p class="font-mono text-xs tracking-widest mt-0.5">${c.number}</p>
+                        </div>
+                        <div class="flex justify-between items-end z-10 text-[8px] font-semibold opacity-85">
+                            <span>VALID THRU: ${c.expiry}</span>
+                            <span class="font-extrabold tracking-wide">MEMBER</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function getCardBackHTML(c) {
+            if (c.type === 'RupeeMind') {
+                return `
+                    <div class="w-full h-full bg-slate-950 text-slate-400 p-5 flex flex-col justify-between select-none relative text-[7.5px] leading-relaxed border border-slate-900 rounded-2xl">
+                        <div class="h-6 bg-slate-900 w-full rounded flex items-center justify-between px-3">
+                            <span class="text-[6.5px] font-bold text-slate-500 uppercase tracking-widest">Magnetic Security</span>
+                            <span class="font-mono tracking-widest text-[8.5px] text-white">RM-SECURE</span>
+                        </div>
+                        <div class="space-y-1 opacity-70">
+                            <p class="font-bold text-slate-200">RUPEEMIND CARD</p>
+                            <p>• Data saved inside this model exists completely inside secure client local storage.</p>
+                            <p>• RupeeMind is designed for local bookkeeping and offline audit capabilities.</p>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <p class="font-mono text-[8px] text-white font-semibold underline decoration-emerald-500">CLOUD-SECURED</p>
+                            <div class="w-8 h-8 bg-white p-0.5 rounded shadow">
+                                <i class="fa-solid fa-qrcode text-2xl text-slate-900"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (c.type === 'Aadhaar') {
+                return `
+                    <div class="w-full h-full bg-white text-slate-800 p-3.5 flex flex-col justify-between select-none relative border border-slate-200 rounded-2xl text-[7.5px] leading-tight">
+                        <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-white to-emerald-600"></div>
+                        <div class="flex justify-between items-center border-b border-rose-500/20 pb-0.5 font-bold text-[7.5px] text-slate-500">
+                            <span>Address:</span>
+                            <span class="text-rose-600 font-extrabold">भारत सरकार</span>
+                        </div>
+                        <div class="my-1 text-slate-700 leading-normal flex-1 font-semibold">
+                            <p class="text-slate-900"><span class="text-slate-400 font-medium">S/O / W/O:</span> ${c.relative}</p>
+                            <p class="text-[7.5px] mt-0.5 text-slate-800 leading-relaxed">${c.address}</p>
+                        </div>
+                        <div class="flex justify-between items-end border-t border-slate-200/80 pt-1.5 mt-0.5">
+                            <div class="text-[9.5px] font-black tracking-wider text-slate-900 flex-1 font-mono">${c.aadhaarNum}</div>
+                            <div class="w-6 h-6 bg-white border border-slate-300 p-0.5 rounded shadow-sm">
+                                <i class="fa-solid fa-qrcode text-lg text-slate-900"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (c.type === 'Google') {
+                return `
+                    <div class="w-full h-full bg-slate-50 text-slate-500 p-5 flex flex-col justify-between select-none relative text-[7px] leading-relaxed border border-slate-200 rounded-2xl">
+                        <div class="absolute bottom-0 left-0 right-0 h-1 flex">
+                            <div class="w-1/4 h-full bg-[#4285F4]"></div>
+                            <div class="w-1/4 h-full bg-[#EA4335]"></div>
+                            <div class="w-1/4 h-full bg-[#FBBC05]"></div>
+                            <div class="w-1/4 h-full bg-[#34A853]"></div>
+                        </div>
+                        <div class="space-y-0.5">
+                            <p class="font-bold text-slate-800 text-[8px] uppercase tracking-wide">Google Play Console Member</p>
+                            <p>• Access play developer resources at play.google.com/console.</p>
+                            <p>• Keep this local ID profile secure; do not share developer key coordinates.</p>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <p class="font-semibold text-[8px] text-slate-805">PLAY-CONSOLE-DEV</p>
+                            <div class="w-14 h-4 bg-slate-100 flex items-center justify-center rounded border border-slate-200">
+                                <i class="fa-solid fa-barcode text-slate-800 text-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (c.type === 'Custom') {
+                return `
+                    <div class="w-full h-full bg-slate-950 text-slate-400 p-5 flex flex-col justify-between select-none relative text-[7.5px] leading-relaxed border border-slate-900 rounded-2xl">
+                        <div class="h-6 bg-slate-900 w-full rounded flex items-center justify-between px-3">
+                            <span class="text-[6.5px] font-bold text-slate-500 uppercase tracking-widest">Secure Stripe</span>
+                            <span class="font-mono tracking-widest text-[8.5px] text-white">CUSTOM-SECURE</span>
+                        </div>
+                        <div class="space-y-1 my-1 opacity-70">
+                            <p>${c.desc}</p>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <p class="font-semibold text-[8px] text-white">VERIFIED MEMBER</p>
+                            <div class="w-8 h-8 bg-white p-0.5 rounded shadow">
+                                <i class="fa-solid fa-barcode text-xl text-slate-900"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderCardsDeck() {
+            const container = document.getElementById('printableCardsDeck');
+            container.innerHTML = '';
+
+            cards.forEach(c => {
+                const frontHTML = getCardFrontHTML(c);
+                const backHTML = getCardBackHTML(c);
+
+                const cardWrapper = document.createElement('div');
+                cardWrapper.className = "p-5 bg-white/50 dark:bg-slate-900/40 rounded-3xl border border-slate-250 dark:border-slate-800/80 shadow-sm flex flex-col lg:flex-row gap-5 justify-between items-center card-container-lift";
+                
+                cardWrapper.innerHTML = `
+                    <div class="flex flex-col flex-1 leading-snug w-full">
+                        <h4 class="font-black text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-id-card text-amber-500"></i> ${c.type === 'Custom' ? c.title : c.type + ' Card'}
+                        </h4>
+                        <p class="text-xs text-slate-400 mt-1">Holder: ${c.name}</p>
+                        <div class="flex gap-2 mt-4">
+                            <button onclick="printCard('${c.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-md shadow-emerald-500/10"><i class="fa-solid fa-print"></i> Print Card</button>
+                            ${c.id !== 'card-rupeemind' ? `<button onclick="deleteCard('${c.id}')" class="border border-rose-500/20 hover:bg-rose-500/5 text-rose-505 font-semibold px-4 py-2 rounded-xl text-xs cursor-pointer"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Double-Sided CR80 Cards (Front & Back) -->
+                    <div class="flex flex-col sm:flex-row gap-4 items-center justify-center card-perspective">
+                        <div class="w-[280px] h-[176px] rounded-2xl overflow-hidden shadow-lg border border-slate-200/60 dark:border-slate-850 transform transition-transform hover:scale-103 duration-300">
+                            ${frontHTML}
+                        </div>
+                        <div class="w-[280px] h-[176px] rounded-2xl overflow-hidden shadow-lg border border-slate-200/60 dark:border-slate-850 transform transition-transform hover:scale-103 duration-300">
+                            ${backHTML}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(cardWrapper);
+            });
+        }
+
+        // Print engine for cards
+        function printCard(cardId) {
+            const card = cards.find(c => c.id === cardId);
+            if (!card) return;
+
+            const frontHTML = getCardFrontHTML(card);
+            const backHTML = getCardBackHTML(card);
+
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print Card - ${card.type}</title>
+                    <script src="https://cdn.tailwindcss.com"><\/script>
+                    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+                    <style>
+                        body { font-family: 'Outfit', sans-serif; margin: 20px; }
+                        @media print {
+                            body { margin: 0; background: white; }
+                            .no-print { display: none; }
+                            .print-layout {
+                                border: none !important;
+                                box-shadow: none !important;
+                            }
+                        }
+                        .card-print-box {
+                            width: 85.6mm;
+                            height: 53.98mm;
+                            border: 1px solid #ddd;
+                            border-radius: 12px;
+                            overflow: hidden;
+                            position: relative;
+                            page-break-inside: avoid;
+                        }
+                    </style>
+                </head>
+                <body class="flex flex-col items-center gap-6 py-8">
+                    <div class="no-print mb-4 flex gap-2">
+                        <button onclick="window.print()" class="bg-emerald-600 text-white font-semibold px-4 py-2 rounded-xl text-xs shadow-md">Print Card (PDF)</button>
+                        <button onclick="window.close()" class="bg-slate-200 text-slate-805 font-semibold px-4 py-2 rounded-xl text-xs">Close</button>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-6 justify-center items-center print-layout">
+                        <div class="card-print-box shadow-lg">${frontHTML}</div>
+                        <div class="card-print-box shadow-lg">${backHTML}</div>
+                    </div>
+                    <script>
+                        window.onload = function() {
+                            setTimeout(() => { window.print(); }, 550);
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        document.getElementById('txnSearch').addEventListener('input', renderTransactionsList);
+        document.getElementById('txnFilterCategory').addEventListener('change', renderTransactionsList);
+        document.getElementById('budgetInput').addEventListener('input', calculateMetricsAndRefresh);
+
         function exportData() {
             const bundleExportPackageData = {
-                version: "6.0.0",
+                version: "6.1.0",
                 user: currentUser,
                 timestamp: new Date().toISOString(),
-                transactions: transactions,
-                wishlist: wishlist,
-                cards: cards,
-                udharList: udharList,
+                transactions,
+                wishlist,
+                cards,
+                udharList,
                 budgetConfigLimit: document.getElementById('budgetInput').value
             };
             const representationStringDataStream = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(bundleExportPackageData, null, 2));
@@ -1861,7 +1699,6 @@
         // Bootstrap App Startup
         window.onload = function() {
             if (currentUser && currentPassword) {
-                // Auto login on same session
                 const initialPayload = {
                     transactions: JSON.parse(localStorage.getItem(getKey('transactions'))) || [],
                     wishlist: JSON.parse(localStorage.getItem(getKey('wishlist'))) || [],
