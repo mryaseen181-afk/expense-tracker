@@ -25,18 +25,18 @@
             background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: #99f6e4;
             border-radius: 999px;
         }
         .dark ::-webkit-scrollbar-thumb {
-            background: #334155;
+            background: #1e1b4b;
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(240, 253, 250, 0.8);
             backdrop-filter: blur(16px);
         }
         .dark .glass-card {
-            background: rgba(30, 41, 59, 0.75);
+            background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(16px);
         }
         .no-scrollbar::-webkit-scrollbar {
@@ -54,39 +54,66 @@
         }
         .card-container-lift:hover {
             transform: translateY(-4px) rotateX(2deg) rotateY(-1deg);
-            box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 12px 24px -10px rgba(13, 148, 136, 0.2);
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 via-teal-50/20 to-indigo-50/20 text-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen pb-24 md:pb-8">
+<body class="bg-gradient-to-br from-teal-50 via-cyan-50/50 to-indigo-50/50 text-slate-800 dark:from-slate-950 dark:via-indigo-950/65 dark:to-slate-950 dark:text-teal-100 transition-colors duration-300 min-h-screen pb-24 md:pb-8">
 
-    <!-- Start / Cloud Login Screen -->
-    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950 p-4 animate-in fade-in duration-300">
-        <div class="max-w-md w-full glass-card border border-white/10 dark:border-slate-800/80 p-8 rounded-3xl shadow-2xl space-y-6 text-center text-white">
+    <!-- Start / Cloud Login & Registration Overlay -->
+    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-indigo-950 via-slate-950 to-emerald-950 p-4 animate-in fade-in duration-300">
+        <div class="max-w-md w-full glass-card border border-teal-500/20 dark:border-indigo-500/30 p-8 rounded-3xl shadow-2xl space-y-6 text-center text-white">
             <div class="flex flex-col items-center gap-3">
-                <div class="bg-gradient-to-tr from-emerald-600 to-indigo-650 text-white p-4 rounded-3xl shadow-lg shadow-emerald-500/25">
+                <div class="bg-gradient-to-tr from-emerald-500 to-teal-400 text-white p-4 rounded-3xl shadow-lg shadow-emerald-500/25">
                     <i class="fa-solid fa-wallet text-3xl"></i>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-extrabold tracking-tight">Rupee<span class="text-emerald-450">Mind</span> Cloud</h2>
-                    <p class="text-xs text-slate-400 mt-1">Multi-device Secure Cloud Sync</p>
+                    <h2 class="text-2xl font-extrabold tracking-tight">Rupee<span class="text-teal-400">Mind</span> Cloud</h2>
+                    <p class="text-xs text-teal-300 mt-1">Multi-device Secure Cloud Sync</p>
                 </div>
             </div>
 
-            <!-- Login / Sign Up Form -->
-            <form onsubmit="handleCloudLogin(event)" class="space-y-4 text-left">
+            <!-- Sign In vs Register Tabs -->
+            <div class="flex border-b border-teal-900 dark:border-indigo-900/50 p-1 bg-teal-950/40 rounded-2xl">
+                <button onclick="toggleAuthTab('signin')" id="tabBtnSignIn" class="flex-1 py-2 text-xs font-bold rounded-xl transition-all bg-emerald-600 text-white">Sign In</button>
+                <button onclick="toggleAuthTab('register')" id="tabBtnRegister" class="flex-1 py-2 text-xs font-bold rounded-xl transition-all text-teal-300 hover:text-white">Register</button>
+            </div>
+
+            <!-- Sign In Form -->
+            <form id="signInForm" onsubmit="handleCloudSignIn(event)" class="space-y-4 text-left">
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Username</label>
-                    <input type="text" id="loginUsername" required placeholder="Enter username..." class="w-full px-4 py-3 text-xs rounded-2xl border border-slate-700 bg-slate-900/60 text-white focus:outline-none focus:border-emerald-500">
+                    <label class="block text-[10px] font-bold text-teal-300 uppercase tracking-wider mb-1">Username</label>
+                    <input type="text" id="signinUsername" required placeholder="Enter username..." class="w-full px-4 py-3 text-xs rounded-2xl border border-teal-800 bg-teal-950/60 text-white focus:outline-none focus:border-teal-400">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Password</label>
-                    <input type="password" id="loginPassword" required placeholder="Enter password..." class="w-full px-4 py-3 text-xs rounded-2xl border border-slate-700 bg-slate-900/60 text-white focus:outline-none focus:border-emerald-500">
+                    <label class="block text-[10px] font-bold text-teal-300 uppercase tracking-wider mb-1">Password</label>
+                    <input type="password" id="signinPassword" required placeholder="Enter password..." class="w-full px-4 py-3 text-xs rounded-2xl border border-teal-800 bg-teal-950/60 text-white focus:outline-none focus:border-teal-400">
                 </div>
-                <div id="loginStatusMsg" class="text-xs font-semibold text-rose-400 hidden"></div>
-                <button type="submit" id="loginSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3.5 rounded-2xl text-xs font-bold shadow-md cursor-pointer transition-colors flex items-center justify-center gap-2">
-                    <span>Sign In / Sign Up</span>
-                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                <div id="signinStatusMsg" class="text-xs font-semibold text-rose-400 hidden"></div>
+                <button type="submit" id="signinSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3.5 rounded-2xl text-xs font-bold shadow-md cursor-pointer transition-colors flex items-center justify-center gap-2">
+                    <span>Sign In</span>
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" onsubmit="handleCloudRegister(event)" class="space-y-4 text-left hidden">
+                <div>
+                    <label class="block text-[10px] font-bold text-teal-300 uppercase tracking-wider mb-1">Desired Username</label>
+                    <input type="text" id="registerUsername" required placeholder="Choose username..." class="w-full px-4 py-3 text-xs rounded-2xl border border-teal-800 bg-teal-950/60 text-white focus:outline-none focus:border-teal-400">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-teal-300 uppercase tracking-wider mb-1">Password</label>
+                    <input type="password" id="registerPassword" required placeholder="Choose password..." class="w-full px-4 py-3 text-xs rounded-2xl border border-teal-800 bg-teal-950/60 text-white focus:outline-none focus:border-teal-400">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-teal-300 uppercase tracking-wider mb-1">Confirm Password</label>
+                    <input type="password" id="registerConfirmPassword" required placeholder="Retype password..." class="w-full px-4 py-3 text-xs rounded-2xl border border-teal-800 bg-teal-950/60 text-white focus:outline-none focus:border-teal-400">
+                </div>
+                <div id="registerStatusMsg" class="text-xs font-semibold text-rose-400 hidden"></div>
+                <button type="submit" id="registerSubmitBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3.5 rounded-2xl text-xs font-bold shadow-md cursor-pointer transition-colors flex items-center justify-center gap-2">
+                    <span>Create Account</span>
+                    <i class="fa-solid fa-user-plus"></i>
                 </button>
             </form>
         </div>
@@ -95,51 +122,51 @@
     <!-- Main Application Wrapper -->
     <div id="appContainer" class="hidden">
         <!-- Top Navigation Header -->
-        <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-4 py-3 shadow-sm">
+        <nav class="sticky top-0 z-40 bg-teal-50/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-teal-200/50 dark:border-indigo-900/50 px-4 py-3 shadow-sm">
             <div class="max-w-7xl mx-auto flex justify-between items-center gap-3">
                 <div class="flex items-center gap-3">
                     <div class="bg-gradient-to-tr from-emerald-600 via-teal-500 to-indigo-500 text-white p-2.5 rounded-2xl shadow-lg shadow-emerald-500/20">
                         <i class="fa-solid fa-wallet text-xl"></i>
                     </div>
                     <div>
-                        <span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">Rupee<span class="text-emerald-600 dark:text-emerald-400">Mind</span></span>
-                        <span class="block text-[10px] font-medium text-slate-400 uppercase tracking-wider">Aesthetic Finance Manager</span>
+                        <span class="text-xl font-extrabold tracking-tight text-teal-900 dark:text-white font-black">Rupee<span class="text-emerald-600 dark:text-teal-300">Mind</span></span>
+                        <span class="block text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider">Aesthetic Finance Manager</span>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <div class="flex items-center gap-2 bg-slate-100/80 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 text-xs font-bold">
-                        <i class="fa-solid fa-cloud text-emerald-600 dark:text-emerald-400 ml-1"></i>
-                        <span id="activeUserNameDisplay" class="text-slate-700 dark:text-slate-200 pr-1"></span>
+                    <div class="flex items-center gap-2 bg-teal-100/50 dark:bg-indigo-950/60 p-1.5 rounded-2xl border border-teal-250 dark:border-indigo-900/50 text-xs font-bold">
+                        <i class="fa-solid fa-cloud text-emerald-600 dark:text-teal-350 ml-1"></i>
+                        <span id="activeUserNameDisplay" class="text-teal-900 dark:text-teal-100 pr-1"></span>
                     </div>
 
-                    <button id="themeToggle" class="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:scale-105 transition-transform cursor-pointer">
+                    <button id="themeToggle" class="p-2.5 rounded-2xl bg-teal-100/80 dark:bg-indigo-950 text-teal-800 dark:text-teal-300 hover:scale-105 transition-transform cursor-pointer">
                         <i class="fa-solid fa-moon dark:hidden"></i>
                         <i class="fa-solid fa-sun hidden dark:block"></i>
                     </button>
 
-                    <button onclick="logoutSession()" class="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-rose-505 hover:scale-105 transition-transform cursor-pointer" title="Log Out">
+                    <button onclick="logoutSession()" class="p-2.5 rounded-2xl bg-teal-100/80 dark:bg-indigo-950 text-rose-500 hover:scale-105 transition-transform cursor-pointer" title="Log Out">
                         <i class="fa-solid fa-right-from-bracket"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Desktop Navigation Tabs (Hidden on Mobile) -->
-            <div class="max-w-7xl mx-auto mt-3 border-t border-slate-100 dark:border-slate-800/60 pt-2 hidden md:block">
+            <div class="max-w-7xl mx-auto mt-3 border-t border-teal-200/50 dark:border-indigo-950/60 pt-2 hidden md:block">
                 <div class="flex space-x-2 py-1 text-xs font-semibold">
                     <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all bg-emerald-600 text-white shadow-md shadow-emerald-600/20 cursor-pointer">
                         <i class="fa-solid fa-chart-pie"></i> Dashboard
                     </button>
-                    <button onclick="switchTab('transactions')" id="tab-transactions" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer">
+                    <button onclick="switchTab('transactions')" id="tab-transactions" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-teal-700 hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-100 cursor-pointer">
                         <i class="fa-solid fa-receipt"></i> Transactions
                     </button>
-                    <button onclick="switchTab('goals')" id="tab-goals" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer">
+                    <button onclick="switchTab('goals')" id="tab-goals" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-teal-700 hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-100 cursor-pointer">
                         <i class="fa-solid fa-bullseye"></i> Goals & Wishlist
                     </button>
-                    <button onclick="switchTab('wallet')" id="tab-wallet" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-805 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer relative">
+                    <button onclick="switchTab('wallet')" id="tab-wallet" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-teal-700 hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-100 cursor-pointer relative">
                         <i class="fa-solid fa-id-card text-amber-500"></i> My Cards & Cash
                     </button>
-                    <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-855 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer">
+                    <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-teal-700 hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-100 cursor-pointer">
                         <i class="fa-solid fa-gear"></i> Settings
                     </button>
                 </div>
@@ -147,24 +174,24 @@
         </nav>
 
         <!-- Mobile Bottom Navigation -->
-        <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-slate-200/80 dark:border-slate-800/80 px-2 py-2 shadow-lg md:hidden flex justify-around items-center">
-            <button onclick="switchTab('dashboard')" id="mobile-tab-dashboard" class="mobile-tab-btn flex flex-col items-center gap-1 text-emerald-605 dark:text-emerald-400 cursor-pointer">
+        <nav class="fixed bottom-0 left-0 right-0 z-40 bg-teal-50/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-teal-200/50 dark:border-indigo-900/50 px-2 py-2 shadow-lg md:hidden flex justify-around items-center">
+            <button onclick="switchTab('dashboard')" id="mobile-tab-dashboard" class="mobile-tab-btn flex flex-col items-center gap-1 text-emerald-600 dark:text-teal-350 cursor-pointer">
                 <i class="fa-solid fa-chart-pie text-lg"></i>
                 <span class="text-[9px] font-bold">Dashboard</span>
             </button>
-            <button onclick="switchTab('transactions')" id="mobile-tab-transactions" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-855 dark:text-slate-505 dark:hover:text-slate-200 cursor-pointer">
+            <button onclick="switchTab('transactions')" id="mobile-tab-transactions" class="mobile-tab-btn flex flex-col items-center gap-1 text-teal-600/70 hover:text-teal-900 dark:text-teal-500 dark:hover:text-teal-200 cursor-pointer">
                 <i class="fa-solid fa-receipt text-lg"></i>
                 <span class="text-[9px] font-semibold">Txns</span>
             </button>
-            <button onclick="switchTab('goals')" id="mobile-tab-goals" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-855 dark:text-slate-505 dark:hover:text-slate-200 cursor-pointer">
+            <button onclick="switchTab('goals')" id="mobile-tab-goals" class="mobile-tab-btn flex flex-col items-center gap-1 text-teal-600/70 hover:text-teal-900 dark:text-teal-500 dark:hover:text-teal-200 cursor-pointer">
                 <i class="fa-solid fa-bullseye text-lg"></i>
                 <span class="text-[9px] font-semibold">Goals</span>
             </button>
-            <button onclick="switchTab('wallet')" id="mobile-tab-wallet" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-855 dark:text-slate-505 dark:hover:text-slate-200 cursor-pointer relative">
+            <button onclick="switchTab('wallet')" id="mobile-tab-wallet" class="mobile-tab-btn flex flex-col items-center gap-1 text-teal-600/70 hover:text-teal-900 dark:text-teal-500 dark:hover:text-teal-200 cursor-pointer relative">
                 <i class="fa-solid fa-id-card text-lg text-amber-500"></i>
                 <span class="text-[9px] font-semibold">Cards</span>
             </button>
-            <button onclick="switchTab('settings')" id="mobile-tab-settings" class="mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-855 dark:text-slate-555 dark:hover:text-slate-200 cursor-pointer">
+            <button onclick="switchTab('settings')" id="mobile-tab-settings" class="mobile-tab-btn flex flex-col items-center gap-1 text-teal-600/70 hover:text-teal-900 dark:text-teal-500 dark:hover:text-teal-200 cursor-pointer">
                 <i class="fa-solid fa-gear text-lg"></i>
                 <span class="text-[9px] font-semibold">Settings</span>
             </button>
@@ -180,24 +207,24 @@
             <!-- Dashboard Section -->
             <section id="content-dashboard" class="tab-content space-y-6">
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-855 shadow-sm relative overflow-hidden">
-                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Cash</p>
-                        <p id="totalBalance" class="text-2xl font-black mt-1 text-slate-900 dark:text-white">₹0.00</p>
-                        <div class="absolute -right-2 -bottom-2 opacity-10 text-slate-900 dark:text-white text-6xl"><i class="fa-solid fa-scale-balanced"></i></div>
+                    <div class="glass-card p-5 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm relative overflow-hidden">
+                        <p class="text-xs font-semibold text-teal-600 uppercase tracking-wider">Total Cash</p>
+                        <p id="totalBalance" class="text-2xl font-black mt-1 text-teal-950 dark:text-white">₹0.00</p>
+                        <div class="absolute -right-2 -bottom-2 opacity-10 text-teal-650 dark:text-white text-6xl"><i class="fa-solid fa-scale-balanced"></i></div>
                     </div>
-                    <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-855 shadow-sm relative overflow-hidden">
+                    <div class="glass-card p-5 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm relative overflow-hidden">
                         <p class="text-xs font-semibold text-emerald-500 uppercase tracking-wider">Total Income</p>
-                        <p id="totalIncome" class="text-2xl font-black mt-1 text-emerald-600 dark:text-emerald-400">₹0.00</p>
+                        <p id="totalIncome" class="text-2xl font-black mt-1 text-emerald-650 dark:text-teal-300">₹0.00</p>
                         <div class="absolute -right-2 -bottom-2 opacity-10 text-emerald-500 text-6xl"><i class="fa-solid fa-arrow-trend-up"></i></div>
                     </div>
-                    <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-855 shadow-sm relative overflow-hidden">
+                    <div class="glass-card p-5 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm relative overflow-hidden">
                         <p class="text-xs font-semibold text-rose-500 uppercase tracking-wider">Total Expenses</p>
-                        <p id="totalExpenses" class="text-2xl font-black mt-1 text-rose-600 dark:text-rose-400">₹0.00</p>
+                        <p id="totalExpenses" class="text-2xl font-black mt-1 text-rose-600 dark:text-rose-455">₹0.00</p>
                         <div class="absolute -right-2 -bottom-2 opacity-10 text-rose-500 text-6xl"><i class="fa-solid fa-arrow-trend-down"></i></div>
                     </div>
-                    <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-855 shadow-sm relative overflow-hidden">
+                    <div class="glass-card p-5 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm relative overflow-hidden">
                         <p class="text-xs font-semibold text-amber-500 uppercase tracking-wider">Net Savings</p>
-                        <p id="totalSavings" class="text-2xl font-black mt-1 text-amber-600 dark:text-amber-400">₹0.00</p>
+                        <p id="totalSavings" class="text-2xl font-black mt-1 text-amber-600 dark:text-amber-455">₹0.00</p>
                         <div class="absolute -right-2 -bottom-2 opacity-10 text-amber-500 text-6xl"><i class="fa-solid fa-piggy-bank"></i></div>
                     </div>
                 </div>
@@ -209,15 +236,15 @@
                     </div>
                 </div>
 
-                <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm">
+                <div class="glass-card p-6 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm">
                     <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
                         <div>
                             <h3 class="font-bold text-lg">Expense Distribution</h3>
-                            <p class="text-xs text-slate-400">Categorical spending breakdown</p>
+                            <p class="text-xs text-teal-605">Categorical spending breakdown</p>
                         </div>
                         <div class="flex items-center gap-2">
-                            <label for="budgetInput" class="text-xs font-medium text-slate-505">Monthly Budget (₹):</label>
-                            <input type="number" id="budgetInput" value="50000" class="w-28 px-3 py-1.5 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
+                            <label for="budgetInput" class="text-xs font-medium text-teal-700">Monthly Budget (₹):</label>
+                            <input type="number" id="budgetInput" value="50000" class="w-28 px-3 py-1.5 text-xs font-bold rounded-xl border border-teal-200 dark:border-indigo-850 bg-teal-50 dark:bg-indigo-950 focus:outline-none focus:border-teal-400">
                         </div>
                     </div>
                     <div class="h-64 flex justify-center items-center">
@@ -228,15 +255,15 @@
 
             <!-- Transactions Tab Section -->
             <section id="content-transactions" class="tab-content hidden space-y-6">
-                <div class="w-full glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                <div class="w-full glass-card p-6 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <h3 class="font-bold text-lg">Transactions</h3>
                         <div class="flex flex-wrap items-center gap-2">
                             <div class="relative flex-1 sm:flex-initial">
-                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                                <input type="text" id="txnSearch" placeholder="Search..." class="w-full sm:w-40 pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-teal-400 text-xs"></i>
+                                <input type="text" id="txnSearch" placeholder="Search..." class="w-full sm:w-40 pl-8 pr-3 py-1.5 text-xs rounded-xl border border-teal-250 dark:border-indigo-900 bg-teal-50 dark:bg-indigo-950 focus:outline-none focus:border-teal-400">
                             </div>
-                            <select id="txnFilterCategory" class="px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
+                            <select id="txnFilterCategory" class="px-3 py-1.5 text-xs rounded-xl border border-teal-250 dark:border-indigo-900 bg-teal-50 dark:bg-indigo-950 focus:outline-none focus:border-teal-400">
                                 <option value="All">All Categories</option>
                                 <option value="Food">Food</option>
                                 <option value="Shopping">Shopping</option>
@@ -253,7 +280,7 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="border-b border-slate-200/80 dark:border-slate-800 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                                <tr class="border-b border-teal-200/80 dark:border-indigo-900 text-teal-500/70 text-[10px] font-bold uppercase tracking-wider">
                                     <th class="py-3 px-2">Details</th>
                                     <th class="py-3 px-2">Category</th>
                                     <th class="py-3 px-2">Date</th>
@@ -261,11 +288,11 @@
                                     <th class="py-3 px-2 text-center">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="txnTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                            <tbody id="txnTableBody" class="divide-y divide-teal-100 dark:divide-indigo-950 text-xs">
                             </tbody>
                         </table>
                     </div>
-                    <div id="noTxnMsg" class="hidden text-center py-8 text-slate-400">
+                    <div id="noTxnMsg" class="hidden text-center py-8 text-teal-500/50">
                         <i class="fa-solid fa-receipt text-3xl mb-2 block"></i> No matching transactions found.
                     </div>
                 </div>
@@ -273,30 +300,30 @@
 
             <!-- Goals & Wishlist Section -->
             <section id="content-goals" class="tab-content hidden space-y-6">
-                <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                <div class="glass-card p-6 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm space-y-4">
                     <div class="flex justify-between items-center">
                         <div>
                             <h3 class="font-bold text-lg">My Goals & Wishlist</h3>
-                            <p class="text-xs text-slate-400">Set savings targets for items you want to purchase</p>
+                            <p class="text-xs text-teal-605">Set savings targets for items you want to purchase</p>
                         </div>
                         <button onclick="toggleWishlistForm()" class="text-xs bg-emerald-600 hover:bg-emerald-505 text-white font-medium px-3 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20 cursor-pointer"><i class="fa-solid fa-plus mr-1"></i>New Goal</button>
                     </div>
 
-                    <form id="wishlistForm" class="hidden p-4 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-2xl space-y-3">
+                    <form id="wishlistForm" class="hidden p-4 bg-teal-50/80 dark:bg-indigo-955/20 border border-teal-200 dark:border-indigo-900 rounded-2xl space-y-3">
                         <input type="hidden" id="editWishId">
-                        <input type="text" id="wishName" required placeholder="Item Name (e.g., iPhone, Laptop, Watch)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                        <input type="text" id="wishName" required placeholder="Item Name (e.g., iPhone, Laptop, Watch)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-850 bg-white dark:bg-indigo-950 focus:outline-none">
                         <div class="grid grid-cols-2 gap-2">
-                            <input type="number" id="wishTarget" required placeholder="Target Price (₹)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
-                            <select id="wishPriority" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-855 focus:outline-none">
+                            <input type="number" id="wishTarget" required placeholder="Target Price (₹)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-850 bg-white dark:bg-indigo-950 focus:outline-none">
+                            <select id="wishPriority" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-855 bg-white dark:bg-indigo-950 focus:outline-none">
                                 <option value="High">High Priority</option>
                                 <option value="Medium" selected>Medium Priority</option>
                                 <option value="Low">Low Priority</option>
                             </select>
                         </div>
-                        <input type="text" id="wishNotes" placeholder="Additional notes..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                        <input type="text" id="wishNotes" placeholder="Additional notes..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-850 bg-white dark:bg-indigo-950 focus:outline-none">
                         <div class="flex gap-2 pt-1">
                             <button type="submit" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl cursor-pointer">Save Goal</button>
-                            <button type="button" onclick="toggleWishlistForm()" class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-4 py-2 rounded-xl cursor-pointer">Cancel</button>
+                            <button type="button" onclick="toggleWishlistForm()" class="bg-teal-200 dark:bg-indigo-900 text-teal-900 dark:text-teal-200 text-xs px-4 py-2 rounded-xl cursor-pointer">Cancel</button>
                         </div>
                     </form>
 
@@ -310,7 +337,7 @@
                 
                 <!-- Cash Overview & Piggy Bank -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-3xl p-6 text-white flex flex-col justify-between shadow-xl relative overflow-hidden select-none min-h-[170px] border border-white/10">
+                    <div class="bg-gradient-to-br from-teal-950 to-indigo-950 rounded-3xl p-6 text-white flex flex-col justify-between shadow-xl relative overflow-hidden select-none min-h-[170px] border border-teal-500/20">
                         <div class="z-10">
                             <span class="text-[9px] font-bold tracking-widest uppercase opacity-75">Available Wallet Balance</span>
                             <h4 class="font-extrabold text-lg mt-0.5">My Cash Wallet</h4>
@@ -326,58 +353,58 @@
                         </div>
                     </div>
 
-                    <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm flex flex-col justify-between min-h-[170px]">
+                    <div class="glass-card p-6 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm flex flex-col justify-between min-h-[170px]">
                         <div class="flex justify-between items-start">
                             <div>
-                                <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Savings Piggy Bank</h3>
-                                <p class="text-xs text-slate-400">Store loose change locally.</p>
+                                <h3 class="font-extrabold text-base text-teal-950 dark:text-white">Savings Piggy Bank</h3>
+                                <p class="text-xs text-teal-650">Store loose change locally.</p>
                             </div>
                             <span class="text-3xl animate-pulse" id="piggyIcon">🐷</span>
                         </div>
 
                         <div class="my-2">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Piggy Savings</span>
-                            <p class="font-black text-2xl text-emerald-600 dark:text-emerald-400 mt-0.5" id="piggyBankDisplay">₹0.00</p>
+                            <span class="text-[9px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider">Piggy Savings</span>
+                            <p class="font-black text-2xl text-emerald-600 dark:text-teal-300 mt-0.5" id="piggyBankDisplay">₹0.00</p>
                         </div>
 
                         <div class="grid grid-cols-3 gap-2">
-                            <button onclick="feedPiggy(100)" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold py-2 rounded-xl text-xs transition-colors cursor-pointer text-center">+ ₹100</button>
-                            <button onclick="feedPiggy(500)" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold py-2 rounded-xl text-xs transition-colors cursor-pointer text-center">+ ₹500</button>
-                            <button onclick="withdrawPiggy()" class="bg-rose-55/20 hover:bg-rose-100 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 font-bold py-2 rounded-xl text-xs transition-colors cursor-pointer text-center">Cash Out</button>
+                            <button onclick="feedPiggy(100)" class="bg-teal-50 hover:bg-teal-100 dark:bg-indigo-950 dark:hover:bg-indigo-900 text-teal-950 dark:text-teal-100 font-bold py-2 rounded-xl text-xs transition-colors cursor-pointer text-center">+ ₹100</button>
+                            <button onclick="feedPiggy(500)" class="bg-teal-50 hover:bg-teal-100 dark:bg-indigo-950 dark:hover:bg-indigo-900 text-teal-950 dark:text-teal-100 font-bold py-2 rounded-xl text-xs transition-colors cursor-pointer text-center">+ ₹500</button>
+                            <button onclick="withdrawPiggy()" class="bg-rose-50 hover:bg-rose-100 dark:bg-rose-955/25 dark:hover:bg-rose-955/45 text-rose-600 font-bold py-2 rounded-xl text-xs transition-colors cursor-pointer text-center">Cash Out</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Printable Virtual Cards Panel -->
-                <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                <div class="glass-card p-6 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm space-y-4">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h3 class="font-bold text-lg text-slate-900 dark:text-white">My Cards & IDs</h3>
-                            <p class="text-xs text-slate-400">Access clean, classic, and aesthetic printable virtual card replicas.</p>
+                            <h3 class="font-bold text-lg text-teal-950 dark:text-white">My Cards & IDs</h3>
+                            <p class="text-xs text-teal-650">Access clean, classic, and aesthetic printable virtual card replicas.</p>
                         </div>
                         <button onclick="toggleCardForm()" class="text-xs bg-emerald-600 hover:bg-emerald-505 text-white font-medium px-3.5 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20 cursor-pointer"><i class="fa-solid fa-plus mr-1"></i>New Card</button>
                     </div>
 
                     <!-- Add Card Form -->
-                    <div id="cardFormContainer" class="hidden p-4 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-2xl space-y-3">
-                        <h4 class="font-bold text-xs uppercase text-slate-400 tracking-wider">Create Custom Card Replica</h4>
+                    <div id="cardFormContainer" class="hidden p-4 bg-teal-50/80 dark:bg-indigo-955/20 border border-teal-200 dark:border-teal-900 rounded-2xl space-y-3">
+                        <h4 class="font-bold text-xs uppercase text-teal-650 tracking-wider">Create Custom Card Replica</h4>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Type</label>
-                                <select id="newCardType" onchange="adjustCardFormFields(this.value)" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                                <label class="block text-[10px] font-bold text-teal-650 uppercase mb-1">Card Type</label>
+                                <select id="newCardType" onchange="adjustCardFormFields(this.value)" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                                     <option value="Aadhaar">Aadhaar Card (India National ID)</option>
                                     <option value="Google">Google Developer / Play Card</option>
                                     <option value="Custom">Custom Membership / Business Card</option>
                                 </select>
                             </div>
                             <div id="field-theme" class="hidden">
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Theme</label>
-                                <select id="newCardTheme" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
-                                    <option value="from-slate-800 to-slate-950">Classic Obsidian</option>
-                                    <option value="from-emerald-700 to-emerald-950">Emerald Green</option>
+                                <label class="block text-[10px] font-bold text-teal-650 uppercase mb-1">Card Theme</label>
+                                <select id="newCardTheme" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
+                                    <option value="from-teal-900 to-indigo-950">Classic Obsidian</option>
+                                    <option value="from-emerald-700 to-teal-950">Emerald Green</option>
                                     <option value="from-indigo-900 to-slate-900">Classic Navy</option>
-                                    <option value="from-stone-700 to-stone-900">Warm Stone</option>
+                                    <option value="from-stone-750 to-stone-900">Warm Stone</option>
                                 </select>
                             </div>
                         </div>
@@ -389,7 +416,7 @@
 
                         <div class="flex gap-2 pt-1">
                             <button type="button" onclick="saveNewCard(event)" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl cursor-pointer">Create Card</button>
-                            <button type="button" onclick="toggleCardForm()" class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-4 py-2 rounded-xl cursor-pointer">Cancel</button>
+                            <button type="button" onclick="toggleCardForm()" class="bg-teal-205 dark:bg-indigo-900 text-teal-900 dark:text-teal-200 text-xs px-4 py-2 rounded-xl cursor-pointer">Cancel</button>
                         </div>
                     </div>
 
@@ -400,43 +427,43 @@
                 </div>
 
                 <!-- Udhar Book -->
-                <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                <div class="glass-card p-6 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm space-y-4">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h3 class="font-bold text-lg text-slate-900 dark:text-white">Udhar Book (Debts ledger)</h3>
-                            <p class="text-xs text-slate-400">Keep track of cash lent to or borrowed from friends offline.</p>
+                            <h3 class="font-bold text-lg text-teal-950 dark:text-white">Udhar Book (Debts ledger)</h3>
+                            <p class="text-xs text-teal-650">Keep track of cash lent to or borrowed from friends offline.</p>
                         </div>
                         <button onclick="toggleUdharForm()" class="text-xs bg-emerald-600 hover:bg-emerald-505 text-white font-medium px-3.5 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20 cursor-pointer"><i class="fa-solid fa-plus mr-1"></i>New Entry</button>
                     </div>
 
                     <!-- Add Udhar Entry Form -->
-                    <form id="udharForm" class="hidden p-4 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-2xl space-y-3">
-                        <h4 class="font-bold text-xs uppercase text-slate-400 tracking-wider">Record Udhar / Debt</h4>
+                    <form id="udharForm" class="hidden p-4 bg-teal-50/80 dark:bg-indigo-955/20 border border-teal-200 dark:border-teal-900 rounded-2xl space-y-3">
+                        <h4 class="font-bold text-xs uppercase text-teal-650 tracking-wider">Record Udhar / Debt</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <input type="text" id="udharFriend" required placeholder="Friend's Name" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
-                            <input type="number" id="udharAmount" required placeholder="Amount (₹)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                            <input type="text" id="udharFriend" required placeholder="Friend's Name" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-250 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
+                            <input type="number" id="udharAmount" required placeholder="Amount (₹)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-250 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <select id="udharType" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-855 focus:outline-none">
+                            <select id="udharType" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-250 dark:border-indigo-909 bg-white dark:bg-indigo-950 focus:outline-none">
                                 <option value="Lent">You Lent (Friend owes you)</option>
                                 <option value="Borrowed">You Borrowed (You owe friend)</option>
                             </select>
-                            <input type="text" id="udharNotes" placeholder="Optional notes" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                            <input type="text" id="udharNotes" placeholder="Optional notes" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-250 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                         </div>
                         <div class="flex gap-2 pt-1">
                             <button type="button" onclick="saveUdharEntry(event)" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl cursor-pointer">Save Entry</button>
-                            <button type="button" onclick="toggleUdharForm()" class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs px-4 py-2 rounded-xl cursor-pointer">Cancel</button>
+                            <button type="button" onclick="toggleUdharForm()" class="bg-teal-200 dark:bg-indigo-900 text-teal-950 dark:text-teal-200 text-xs px-4 py-2 rounded-xl cursor-pointer">Cancel</button>
                         </div>
                     </form>
 
-                    <div class="grid grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200/50 dark:border-slate-800/80">
-                        <div class="text-center border-r border-slate-200/85 dark:border-slate-800">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase">Total to Collect</span>
-                            <p class="text-lg font-black text-emerald-600 dark:text-emerald-400 mt-0.5" id="udharCollectDisplay">₹0.00</p>
+                    <div class="grid grid-cols-2 gap-4 bg-teal-50/50 dark:bg-indigo-950/60 p-4 rounded-2xl border border-teal-250 dark:border-indigo-900/50">
+                        <div class="text-center border-r border-teal-200/80 dark:border-indigo-900/60">
+                            <span class="text-[9px] font-bold text-teal-600 dark:text-teal-400 uppercase">Total to Collect</span>
+                            <p class="text-lg font-black text-emerald-600 dark:text-teal-300 mt-0.5" id="udharCollectDisplay">₹0.00</p>
                         </div>
                         <div class="text-center">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase">Total to Pay</span>
-                            <p class="text-lg font-black text-rose-500 mt-0.5" id="udharPayDisplay">₹0.00</p>
+                            <span class="text-[9px] font-bold text-teal-600 dark:text-teal-400 uppercase">Total to Pay</span>
+                            <p class="text-lg font-black text-rose-505 mt-0.5" id="udharPayDisplay">₹0.00</p>
                         </div>
                     </div>
 
@@ -449,22 +476,22 @@
             <!-- Settings Section -->
             <section id="content-settings" class="tab-content hidden space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="glass-card p-6 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm space-y-4">
                         <h3 class="font-bold text-lg"><i class="fa-solid fa-users text-emerald-500 mr-2"></i>Profile Management</h3>
-                        <p class="text-xs text-slate-400">Currently logged in as <span class="font-bold text-slate-900 dark:text-white" id="settingsActiveUser"></span>.</p>
-                        <button onclick="logoutSession()" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-right-from-bracket mr-2"></i>Log Out Session</button>
+                        <p class="text-xs text-teal-650">Currently logged in as <span class="font-bold text-teal-950 dark:text-white" id="settingsActiveUser"></span>.</p>
+                        <button onclick="logoutSession()" class="w-full bg-teal-100/80 hover:bg-teal-200 dark:bg-indigo-950 dark:hover:bg-indigo-900 text-teal-950 dark:text-teal-100 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-right-from-bracket mr-2"></i>Log Out Session</button>
                     </div>
 
-                    <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="glass-card p-6 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm space-y-4">
                         <h3 class="font-bold text-lg"><i class="fa-solid fa-database text-amber-500 mr-2"></i>Backup & Reset</h3>
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="exportData()" class="flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 py-3 rounded-2xl text-xs font-semibold transition-colors cursor-pointer"><i class="fa-solid fa-file-export text-slate-400"></i>Export Backup</button>
-                            <label class="flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 py-3 rounded-2xl text-xs font-semibold transition-colors cursor-pointer">
-                                <i class="fa-solid fa-file-import text-slate-400"></i>Import Backup
+                            <button onclick="exportData()" class="flex items-center justify-center gap-2 border border-teal-200 dark:border-teal-700 hover:bg-teal-100 dark:hover:bg-indigo-950 py-3 rounded-2xl text-xs font-semibold transition-colors cursor-pointer"><i class="fa-solid fa-file-export text-teal-400"></i>Export Backup</button>
+                            <label class="flex items-center justify-center gap-2 border border-teal-200 dark:border-teal-700 hover:bg-teal-100 dark:hover:bg-indigo-950 py-3 rounded-2xl text-xs font-semibold transition-colors cursor-pointer">
+                                <i class="fa-solid fa-file-import text-teal-400"></i>Import Backup
                                 <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
                             </label>
                         </div>
-                        <button onclick="resetAllData()" class="w-full bg-rose-50 hover:bg-rose-105 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 border border-rose-200 dark:border-rose-900/55 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-trash-can mr-2"></i>Clear Local Cache & Reset</button>
+                        <button onclick="resetAllData()" class="w-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 border border-rose-200 dark:border-rose-900/50 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-trash-can mr-2"></i>Clear Local Cache & Reset</button>
                     </div>
                 </div>
             </section>
@@ -473,31 +500,31 @@
     </div>
 
     <!-- Add/Edit Transaction Modal -->
-    <div id="txnModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 relative animate-in fade-in zoom-in-95 duration-200">
-            <button onclick="closeTxnModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-655 dark:hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 id="formTitle" class="font-bold text-lg text-slate-900 dark:text-white">Add Transaction</h3>
+    <div id="txnModal" class="hidden fixed inset-0 bg-teal-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-indigo-950 rounded-3xl p-6 max-w-md w-full border border-teal-200 dark:border-indigo-900 shadow-2xl space-y-4 relative animate-in fade-in zoom-in-95 duration-200">
+            <button onclick="closeTxnModal()" class="absolute top-4 right-4 text-teal-400 hover:text-teal-655 dark:hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 id="formTitle" class="font-bold text-lg text-teal-950 dark:text-white">Add Transaction</h3>
             <form id="txnForm" class="space-y-4">
                 <input type="hidden" id="editTxnId">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase">Type</label>
+                    <label class="block text-xs font-semibold text-teal-400 mb-1.5 uppercase">Type</label>
                     <div class="grid grid-cols-2 gap-2">
                         <button type="button" id="typeExpense" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-955/30 dark:text-rose-400 dark:border-rose-900/50 ring-2 ring-rose-500/20 cursor-pointer" onclick="setTxnType('Expense')">Expense</button>
-                        <button type="button" id="typeIncome" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-655 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 cursor-pointer" onclick="setTxnType('Income')">Income</button>
+                        <button type="button" id="typeIncome" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-teal-50 text-teal-600 border border-teal-200 dark:bg-indigo-900 dark:text-teal-400 dark:border-indigo-800 cursor-pointer" onclick="setTxnType('Income')">Income</button>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Description</label>
-                    <input type="text" id="txnDesc" required placeholder="e.g., Grocery, Rent" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                    <label class="block text-xs font-semibold text-teal-405 mb-1 uppercase">Description</label>
+                    <input type="text" id="txnDesc" required placeholder="e.g., Grocery, Rent" class="w-full px-3.5 py-2.5 rounded-xl border border-teal-200 dark:border-indigo-850 bg-teal-50 dark:bg-indigo-950 text-xs font-medium focus:outline-none focus:border-teal-450">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Amount (₹)</label>
-                        <input type="number" id="txnAmount" required min="1" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                        <label class="block text-xs font-semibold text-teal-405 mb-1 uppercase">Amount (₹)</label>
+                        <input type="number" id="txnAmount" required min="1" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-teal-200 dark:border-indigo-850 bg-teal-50 dark:bg-indigo-950 text-xs font-medium focus:outline-none focus:border-teal-450">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Category</label>
-                        <select id="txnCategory" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                        <label class="block text-xs font-semibold text-teal-405 mb-1 uppercase">Category</label>
+                        <select id="txnCategory" class="w-full px-3.5 py-2.5 rounded-xl border border-teal-200 dark:border-indigo-850 bg-teal-50 dark:bg-indigo-950 text-xs font-medium focus:outline-none focus:border-teal-450">
                             <option value="Food">Food</option>
                             <option value="Shopping">Shopping</option>
                             <option value="Bills">Bills</option>
@@ -510,19 +537,18 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Date</label>
-                    <input type="date" id="txnDate" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-medium focus:outline-none focus:border-emerald-500">
+                    <label class="block text-xs font-semibold text-teal-405 mb-1 uppercase">Date</label>
+                    <input type="date" id="txnDate" required class="w-full px-3.5 py-2.5 rounded-xl border border-teal-250 dark:border-indigo-850 bg-teal-50 dark:bg-indigo-955 text-xs font-medium focus:outline-none focus:border-teal-450">
                 </div>
                 <div class="flex gap-2 pt-2">
                     <button type="submit" id="submitTxnBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-555 text-white font-semibold py-2.5 rounded-xl shadow-md transition-colors text-xs cursor-pointer">Save Transaction</button>
-                    <button type="button" id="cancelEditBtn" class="hidden bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-4 py-2.5 rounded-xl text-xs cursor-pointer" onclick="closeTxnModal()">Cancel</button>
+                    <button type="button" id="cancelEditBtn" class="hidden bg-teal-200 dark:bg-indigo-900 text-teal-900 dark:text-teal-200 px-4 py-2.5 rounded-xl text-xs cursor-pointer" onclick="closeTxnModal()">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // Session and states
         let currentUser = localStorage.getItem('rupee_current_user') || '';
         let currentPassword = localStorage.getItem('rupee_current_password') || '';
         
@@ -539,62 +565,110 @@
             return `rupee_${currentUser}_${key}`;
         }
 
-        // Login Overlay controller
-        async function handleCloudLogin(e) {
+        // Authentication tabs switcher
+        function toggleAuthTab(mode) {
+            const btnSignIn = document.getElementById('tabBtnSignIn');
+            const btnRegister = document.getElementById('tabBtnRegister');
+            const fSignIn = document.getElementById('signInForm');
+            const fRegister = document.getElementById('registerForm');
+
+            document.getElementById('signinStatusMsg').classList.add('hidden');
+            document.getElementById('registerStatusMsg').classList.add('hidden');
+
+            if (mode === 'signin') {
+                btnSignIn.className = "flex-1 py-2 text-xs font-bold rounded-xl transition-all bg-emerald-600 text-white";
+                btnRegister.className = "flex-1 py-2 text-xs font-bold rounded-xl transition-all text-teal-300 hover:text-white";
+                fSignIn.classList.remove('hidden');
+                fRegister.classList.add('hidden');
+            } else {
+                btnRegister.className = "flex-1 py-2 text-xs font-bold rounded-xl transition-all bg-emerald-600 text-white";
+                btnSignIn.className = "flex-1 py-2 text-xs font-bold rounded-xl transition-all text-teal-300 hover:text-white";
+                fRegister.classList.remove('hidden');
+                fSignIn.classList.add('hidden');
+            }
+        }
+
+        // Account Registration Handler
+        async function handleCloudRegister(e) {
             e.preventDefault();
-            const userField = document.getElementById('loginUsername');
-            const passField = document.getElementById('loginPassword');
-            const statusMsg = document.getElementById('loginStatusMsg');
-            const submitBtn = document.getElementById('loginSubmitBtn');
+            const userField = document.getElementById('registerUsername');
+            const passField = document.getElementById('registerPassword');
+            const confField = document.getElementById('registerConfirmPassword');
+            const statusMsg = document.getElementById('registerStatusMsg');
+            const submitBtn = document.getElementById('registerSubmitBtn');
+
+            const username = userField.value.trim().toLowerCase();
+            const password = passField.value;
+            const confirmPassword = confField.value;
+
+            if (password !== confirmPassword) {
+                statusMsg.innerText = "Passwords do not match!";
+                statusMsg.classList.remove('hidden');
+                return;
+            }
+
+            statusMsg.innerText = "Checking username availability...";
+            statusMsg.classList.remove('hidden');
+            submitBtn.disabled = true;
+
+            try {
+                const checkRes = await fetch(CLOUD_DB_BASE_URL + username);
+                if (checkRes.ok) {
+                    statusMsg.innerText = "Username is already taken! Try another.";
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                statusMsg.innerText = "Securing account credentials...";
+                const passwordHash = CryptoJS.SHA256(password).toString();
+                const initialPayload = { transactions: [], wishlist: [], udharList: [], cards: [] };
+                const encrypted = CryptoJS.AES.encrypt(JSON.stringify(initialPayload), password).toString();
+                const dataBundle = { passwordHash, payload: encrypted };
+
+                await fetch(CLOUD_DB_BASE_URL + username, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataBundle)
+                });
+
+                currentUser = username;
+                currentPassword = password;
+                localStorage.setItem('rupee_current_user', currentUser);
+                localStorage.setItem('rupee_current_password', password);
+
+                initAppSession(initialPayload);
+            } catch (err) {
+                statusMsg.innerText = "Network sync timeout. Re-try.";
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Account Sign In Handler
+        async function handleCloudSignIn(e) {
+            e.preventDefault();
+            const userField = document.getElementById('signinUsername');
+            const passField = document.getElementById('signinPassword');
+            const statusMsg = document.getElementById('signinStatusMsg');
+            const submitBtn = document.getElementById('signinSubmitBtn');
 
             const username = userField.value.trim().toLowerCase();
             const password = passField.value;
 
-            if (!username || !password) return;
-
-            statusMsg.innerText = "Connecting to Cloud Vault...";
+            statusMsg.innerText = "Authenticating secure keys...";
             statusMsg.classList.remove('hidden');
             submitBtn.disabled = true;
 
             try {
                 const response = await fetch(CLOUD_DB_BASE_URL + username);
-                
                 if (response.status === 404) {
-                    if (confirm(`Username "${username}" does not exist in the database. Would you like to create a new profile with the entered password?`)) {
-                        statusMsg.innerText = "Registering new account...";
-                        
-                        const passwordHash = CryptoJS.SHA256(password).toString();
-                        const initialPayload = {
-                            transactions: [],
-                            wishlist: [],
-                            udharList: [],
-                            cards: []
-                        };
-
-                        const encrypted = CryptoJS.AES.encrypt(JSON.stringify(initialPayload), password).toString();
-                        const dataBundle = { passwordHash, payload: encrypted };
-
-                        await fetch(CLOUD_DB_BASE_URL + username, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(dataBundle)
-                        });
-
-                        currentUser = username;
-                        currentPassword = password;
-                        localStorage.setItem('rupee_current_user', currentUser);
-                        localStorage.setItem('rupee_current_password', password);
-
-                        initAppSession(initialPayload);
-                    } else {
-                        statusMsg.classList.add('hidden');
-                    }
+                    statusMsg.innerText = "Account does not exist! Please Register.";
                 } else if (response.ok) {
                     const dataBundle = await response.json();
                     const passwordHash = CryptoJS.SHA256(password).toString();
 
                     if (dataBundle.passwordHash === passwordHash) {
-                        statusMsg.innerText = "Loading profile ledger...";
+                        statusMsg.innerText = "Decrypting cloud vault...";
                         try {
                             const decryptedBytes = CryptoJS.AES.decrypt(dataBundle.payload, password);
                             const decryptedStr = decryptedBytes.toString(CryptoJS.enc.Utf8);
@@ -616,7 +690,7 @@
                     statusMsg.innerText = "Access timeout. Please try again.";
                 }
             } catch (err) {
-                statusMsg.innerText = "Network sync timeout. Re-try.";
+                statusMsg.innerText = "Network timeout. Re-try.";
             } finally {
                 submitBtn.disabled = false;
             }
@@ -636,9 +710,15 @@
             const savedBudget = localStorage.getItem(getKey('budget')) || 50000;
             document.getElementById('budgetInput').value = savedBudget;
 
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('loginStatusMsg').classList.add('hidden');
+            // Clear inputs
+            document.getElementById('signinUsername').value = '';
+            document.getElementById('signinPassword').value = '';
+            document.getElementById('registerUsername').value = '';
+            document.getElementById('registerPassword').value = '';
+            document.getElementById('registerConfirmPassword').value = '';
+            
+            document.getElementById('signinStatusMsg').classList.add('hidden');
+            document.getElementById('registerStatusMsg').classList.add('hidden');
 
             renderUserControls();
             calculateMetricsAndRefresh();
@@ -665,7 +745,7 @@
                     body: JSON.stringify(dataBundle)
                 });
             } catch (err) {
-                console.warn("Cloud sync fail. Stored offline.");
+                console.warn("Cloud backup write failed.");
             }
         }
 
@@ -676,18 +756,18 @@
             localStorage.removeItem('rupee_current_password');
             document.getElementById('appContainer').classList.add('hidden');
             document.getElementById('loginScreen').classList.remove('hidden');
+            toggleAuthTab('signin');
         }
 
-        // Tab selection switch
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = "tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer";
+                btn.className = "tab-btn px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-teal-700 hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-100 cursor-pointer";
             });
 
             document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
-                btn.className = "mobile-tab-btn flex flex-col items-center gap-1 text-slate-400 hover:text-slate-655 dark:text-slate-500 dark:hover:text-slate-200 cursor-pointer";
+                btn.className = "mobile-tab-btn flex flex-col items-center gap-1 text-teal-600/70 hover:text-teal-900 dark:text-teal-500 dark:hover:text-teal-200 cursor-pointer";
             });
 
             const targetSection = document.getElementById(`content-${tabId}`);
@@ -700,7 +780,7 @@
 
             const activeMobileBtn = document.getElementById(`mobile-tab-${tabId}`);
             if (activeMobileBtn) {
-                activeMobileBtn.className = "mobile-tab-btn flex flex-col items-center gap-1 text-emerald-600 dark:text-emerald-400 cursor-pointer";
+                activeMobileBtn.className = "mobile-tab-btn flex flex-col items-center gap-1 text-emerald-600 dark:text-teal-350 cursor-pointer";
             }
 
             if (tabId === 'dashboard') renderChart();
@@ -717,7 +797,6 @@
             if (userBudget) document.getElementById('budgetInput').value = userBudget;
         }
 
-        // Theme Toggle Handler
         const themeToggle = document.getElementById('themeToggle');
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -753,10 +832,10 @@
             
             if(type === 'Expense') {
                 expenseBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-955/30 dark:text-rose-400 dark:border-rose-900/50 ring-2 ring-rose-500/20 cursor-pointer";
-                incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 cursor-pointer";
+                incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-teal-50 text-teal-655 border border-teal-200 dark:bg-indigo-900 dark:text-teal-400 dark:border-indigo-850 cursor-pointer";
             } else {
-                incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-emerald-50 text-emerald-605 border border-emerald-200 dark:bg-emerald-955/30 dark:text-emerald-400 dark:border-emerald-900/50 ring-2 ring-emerald-500/20 cursor-pointer";
-                expenseBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-65 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 cursor-pointer";
+                incomeBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-emerald-50 text-emerald-605 border border-emerald-200 dark:bg-emerald-955/30 dark:text-emerald-400 dark:border-emerald-900/50 ring-2 ring-emerald-555/20 cursor-pointer";
+                expenseBtn.className = "type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-teal-50 text-teal-65 border border-teal-200 dark:bg-indigo-900 dark:text-teal-400 dark:border-indigo-850 cursor-pointer";
             }
         }
 
@@ -846,24 +925,24 @@
 
             itemsFiltered.forEach(t => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition-colors";
+                tr.className = "hover:bg-teal-50/50 dark:hover:bg-indigo-950/40 transition-colors";
                 
                 let amtColor = 'text-slate-700 dark:text-slate-200';
                 let prefixSign = '-';
                 if(t.type === 'Income') {
-                    amtColor = 'text-emerald-605 dark:text-emerald-400 font-bold';
+                    amtColor = 'text-emerald-600 dark:text-teal-300 font-bold';
                     prefixSign = '+';
                 }
                 
                 tr.innerHTML = `
-                    <td class="py-3 px-2 font-semibold text-slate-900 dark:text-white">${t.description}</td>
-                    <td class="py-3 px-2"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-655 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${t.category}</span></td>
-                    <td class="py-3 px-2 text-[11px] text-slate-400 font-medium">${t.date}</td>
+                    <td class="py-3 px-2 font-semibold text-teal-950 dark:text-white">${t.description}</td>
+                    <td class="py-3 px-2"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-teal-50 dark:bg-indigo-950 text-teal-800 dark:text-teal-300 border border-teal-200 dark:border-indigo-900/60">${t.category}</span></td>
+                    <td class="py-3 px-2 text-[11px] text-teal-600 dark:text-teal-400 font-medium">${t.date}</td>
                     <td class="py-3 px-2 text-right ${amtColor}">${prefixSign} ₹${Math.abs(t.amount).toFixed(2)}</td>
                     <td class="py-3 px-2 text-center">
                         <div class="flex items-center justify-center gap-2">
-                            ${(!t.isPiggyDeposit && !t.isPiggyWithdrawal) ? `<button onclick="editTransaction('${t.id}')" class="text-slate-400 hover:text-emerald-555 transition-colors cursor-pointer"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
-                            <button onclick="deleteTransaction('${t.id}')" class="text-slate-400 hover:text-rose-505 transition-colors cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                            ${(!t.isPiggyDeposit && !t.isPiggyWithdrawal) ? `<button onclick="editTransaction('${t.id}')" class="text-teal-400 hover:text-emerald-500 transition-colors cursor-pointer"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
+                            <button onclick="deleteTransaction('${t.id}')" class="text-teal-400 hover:text-rose-500 transition-colors cursor-pointer"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </td>
                 `;
@@ -891,7 +970,7 @@
             }
 
             const activeThemeIsDark = document.documentElement.classList.contains('dark');
-            const fontPropertiesSetupColor = activeThemeIsDark ? '#94a3b8' : '#64748b';
+            const fontPropertiesSetupColor = activeThemeIsDark ? '#5eead4' : '#0f766e';
 
             expenseChart = new Chart(ctx, {
                 type: 'doughnut',
@@ -956,7 +1035,7 @@
             const currentNetSurplusPoolBalance = totalIncome - totalExpense;
 
             if(wishlist.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-6 text-xs text-slate-400"><i class="fa-solid fa-bullseye text-2xl mb-1 block"></i>No goals created yet.</div>`;
+                container.innerHTML = `<div class="col-span-full text-center py-6 text-xs text-teal-650"><i class="fa-solid fa-bullseye text-2xl mb-1 block"></i>No goals created yet.</div>`;
                 return;
             }
 
@@ -965,34 +1044,34 @@
                 const calculatedRatio = currentNetSurplusPoolBalance > 0 ? Math.min((currentNetSurplusPoolBalance / w.targetPrice) * 100, 100) : 0;
                 const progressWidthPercentage = w.purchased ? 100 : calculatedRatio;
                 
-                card.className = `p-4 rounded-2xl border transition-all ${w.purchased ? 'bg-slate-50/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800' : 'glass-card border-white/60 dark:border-slate-800 shadow-sm'}`;
+                card.className = `p-4 rounded-2xl border transition-all ${w.purchased ? 'bg-teal-50/50 dark:bg-indigo-950/40 border-teal-200 dark:border-indigo-900/60' : 'glass-card border-teal-200/60 dark:border-indigo-900/65 shadow-sm'}`;
                 card.innerHTML = `
                     <div class="flex justify-between items-start gap-2">
                         <div>
                             <span class="px-2 py-0.5 rounded-md text-[9px] font-bold ${
                                 w.priority === 'High' ? 'bg-rose-50 text-rose-655 dark:bg-rose-955/30 dark:text-rose-400' : 
                                 w.priority === 'Medium' ? 'bg-amber-50 text-amber-655 dark:bg-amber-955/30 dark:text-amber-400' :
-                                'bg-slate-100 text-slate-655 dark:bg-slate-800 dark:text-slate-400'
+                                'bg-teal-50 text-teal-800 dark:bg-indigo-950 dark:text-teal-250 font-bold border border-teal-100'
                             }">${w.priority} Priority</span>
-                            <h4 class="font-bold text-sm text-slate-900 dark:text-white mt-1.5 ${w.purchased ? 'line-through text-slate-400' : ''}">${w.name}</h4>
-                            ${w.notes ? `<p class="text-[11px] text-slate-400 mt-0.5">${w.notes}</p>` : ''}
+                            <h4 class="font-bold text-sm text-teal-950 dark:text-white mt-1.5 ${w.purchased ? 'line-through text-teal-400/50' : ''}">${w.name}</h4>
+                            ${w.notes ? `<p class="text-[11px] text-teal-500 mt-0.5">${w.notes}</p>` : ''}
                         </div>
                         <div class="text-right">
-                            <span class="font-bold text-xs block text-slate-900 dark:text-white">₹${w.targetPrice.toLocaleString('en-IN')}</span>
-                            <span class="text-[10px] font-bold text-emerald-650 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-955/30 px-2 py-0.5 rounded-md mt-1 inline-block">${w.purchased ? 'Acquired' : `${progressWidthPercentage.toFixed(0)}% Saved`}</span>
+                            <span class="font-bold text-xs block text-teal-950 dark:text-white">₹${w.targetPrice.toLocaleString('en-IN')}</span>
+                            <span class="text-[10px] font-bold text-emerald-650 dark:text-teal-300 bg-emerald-50 dark:bg-indigo-950 px-2 py-0.5 rounded-md mt-1 inline-block">${w.purchased ? 'Acquired' : `${progressWidthPercentage.toFixed(0)}% Saved`}</span>
                         </div>
                     </div>
 
-                    <div class="w-full bg-slate-200 dark:bg-slate-855 h-2 rounded-full mt-3 overflow-hidden">
-                        <div class="bg-gradient-to-r from-emerald-505 to-teal-400 h-full transition-all duration-500" style="width: ${progressWidthPercentage}%"></div>
+                    <div class="w-full bg-teal-200/50 dark:bg-indigo-950 h-2 rounded-full mt-3 overflow-hidden">
+                        <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-500" style="width: ${progressWidthPercentage}%"></div>
                     </div>
 
-                    <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-200/60 dark:border-slate-800 text-[11px]">
-                        <button onclick="togglePurchasedWish('${w.id}')" class="text-slate-555 hover:text-emerald-555 font-semibold flex items-center gap-1.5 transition-colors cursor-pointer">
-                            <i class="${w.purchased ? 'fa-solid fa-square-check text-emerald-505' : 'fa-regular fa-square'}"></i> ${w.purchased ? 'Purchased' : 'Mark Bought'}
+                    <div class="flex justify-between items-center mt-3 pt-2 border-t border-teal-100 dark:border-indigo-900/60 text-[11px]">
+                        <button onclick="togglePurchasedWish('${w.id}')" class="text-teal-650 hover:text-emerald-555 font-semibold flex items-center gap-1.5 transition-colors cursor-pointer">
+                            <i class="${w.purchased ? 'fa-solid fa-square-check text-emerald-500' : 'fa-regular fa-square'}"></i> ${w.purchased ? 'Purchased' : 'Mark Bought'}
                         </button>
-                        <div class="flex items-center gap-2 text-slate-400">
-                            <button onclick="deleteWishItem('${w.id}')" class="hover:text-rose-505 transition-colors cursor-pointer"><i class="fa-solid fa-trash-can"></i></button>
+                        <div class="flex items-center gap-2 text-teal-400">
+                            <button onclick="deleteWishItem('${w.id}')" class="hover:text-rose-500 transition-colors cursor-pointer"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                 `;
@@ -1158,7 +1237,7 @@
             let payTotal = 0;
 
             if (udharList.length === 0) {
-                list.innerHTML = `<div class="text-center py-6 text-xs text-slate-400"><i class="fa-solid fa-book-open text-2xl mb-1 block"></i>Udhar Book is empty. No outstanding debts.</div>`;
+                list.innerHTML = `<div class="text-center py-6 text-xs text-teal-650"><i class="fa-solid fa-book-open text-2xl mb-1 block"></i>Udhar Book is empty. No outstanding debts.</div>`;
                 document.getElementById('udharCollectDisplay').innerText = '₹0.00';
                 document.getElementById('udharPayDisplay').innerText = '₹0.00';
                 return;
@@ -1169,11 +1248,11 @@
                 else payTotal += u.amount;
 
                 const statusBgColor = u.type === 'Lent' 
-                    ? 'bg-emerald-50 border-emerald-100 dark:bg-emerald-955/20 dark:border-emerald-900/50' 
-                    : 'bg-rose-50 border-rose-105 dark:bg-rose-955/20 dark:border-rose-900/50';
+                    ? 'bg-teal-50 border-teal-100 dark:bg-indigo-950/40 dark:border-indigo-900/50' 
+                    : 'bg-rose-50 border-rose-100 dark:bg-rose-955/20 dark:border-rose-900/50';
                 
                 const statusTextColor = u.type === 'Lent' 
-                    ? 'text-emerald-700 dark:text-emerald-400' 
+                    ? 'text-emerald-700 dark:text-teal-300' 
                     : 'text-rose-600 dark:text-rose-400';
                 
                 const typeLabel = u.type === 'Lent' ? 'Lent (To Collect)' : 'Borrowed (To Pay)';
@@ -1184,19 +1263,19 @@
                 item.innerHTML = `
                     <div class="space-y-0.5">
                         <div class="flex items-center gap-1.5">
-                            <h4 class="font-extrabold text-xs text-slate-800 dark:text-slate-105">${u.friend}</h4>
-                            <span class="text-[8px] font-bold uppercase ${statusTextColor} bg-white dark:bg-slate-900 px-1.5 py-0.2 rounded-full border border-current">${typeLabel}</span>
+                            <h4 class="font-extrabold text-xs text-teal-950 dark:text-slate-100">${u.friend}</h4>
+                            <span class="text-[8px] font-bold uppercase ${statusTextColor} bg-white dark:bg-indigo-950 px-1.5 py-0.2 rounded-full border border-current">${typeLabel}</span>
                         </div>
-                        <p class="text-[10px] text-slate-400 font-medium">${u.date} ${u.notes ? `• ${u.notes}` : ''}</p>
+                        <p class="text-[10px] text-teal-500 font-medium">${u.date} ${u.notes ? `• ${u.notes}` : ''}</p>
                     </div>
 
                     <div class="flex items-center gap-3">
                         <span class="font-black text-xs ${statusTextColor}">₹${u.amount.toLocaleString('en-IN')}</span>
                         <div class="flex gap-1.5">
-                            <button onclick="settleUdhar('${u.id}')" class="bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-650 dark:text-slate-300 font-bold px-2.5 py-1 rounded-xl text-[10px] transition-colors cursor-pointer flex items-center gap-1">
+                            <button onclick="settleUdhar('${u.id}')" class="bg-white dark:bg-indigo-905 hover:bg-teal-50 dark:hover:bg-indigo-900 border border-teal-200 dark:border-indigo-900 text-teal-800 dark:text-teal-300 font-bold px-2.5 py-1 rounded-xl text-[10px] transition-colors cursor-pointer flex items-center gap-1">
                                 <i class="fa-solid fa-circle-check text-emerald-500"></i> Settle
                             </button>
-                            <button onclick="deleteUdhar('${u.id}')" class="text-slate-400 hover:text-rose-500 p-1 text-xs cursor-pointer"><i class="fa-solid fa-trash-can"></i></button>
+                            <button onclick="deleteUdhar('${u.id}')" class="text-teal-400 hover:text-rose-500 p-1 text-xs cursor-pointer"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                 `;
@@ -1236,74 +1315,74 @@
             if (type === 'Aadhaar') {
                 inputs.innerHTML = `
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Full Name</label>
-                        <input type="text" id="addAadhaarName" required placeholder="As on Aadhaar" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-650 uppercase mb-1">Full Name</label>
+                        <input type="text" id="addAadhaarName" required placeholder="As on Aadhaar" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Aadhaar Number (12 Digits)</label>
-                        <input type="text" id="addAadhaarNum" required maxlength="12" placeholder="e.g. 543212349876" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-650 uppercase mb-1">Aadhaar Number (12 Digits)</label>
+                        <input type="text" id="addAadhaarNum" required maxlength="12" placeholder="e.g. 543212349876" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Date of Birth</label>
-                        <input type="text" id="addAadhaarDob" required placeholder="DD/MM/YYYY" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-650 uppercase mb-1">Date of Birth</label>
+                        <input type="text" id="addAadhaarDob" required placeholder="DD/MM/YYYY" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Gender</label>
-                        <select id="addAadhaarGender" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Gender</label>
+                        <select id="addAadhaarGender" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-955 focus:outline-none">
                             <option value="Male">Male / पुरुष</option>
                             <option value="Female">Female / महिला</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Father's or Spouse's Name</label>
-                        <input type="text" id="addAadhaarRelative" required placeholder="S/O or W/O Name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Father's or Spouse's Name</label>
+                        <input type="text" id="addAadhaarRelative" required placeholder="S/O or W/O Name" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Address</label>
-                        <input type="text" id="addAadhaarAddress" required placeholder="Full residential address" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none col-span-1 sm:col-span-2">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Address</label>
+                        <input type="text" id="addAadhaarAddress" required placeholder="Full residential address" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none col-span-1 sm:col-span-2">
                     </div>
                 `;
             } else if (type === 'Google') {
                 inputs.innerHTML = `
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Developer Name</label>
-                        <input type="text" id="addGoogleName" required placeholder="Developer profile name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Developer Name</label>
+                        <input type="text" id="addGoogleName" required placeholder="Developer profile name" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Developer ID</label>
-                        <input type="text" id="addGoogleDevId" required placeholder="e.g. GP-74328-984" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Developer ID</label>
+                        <input type="text" id="addGoogleDevId" required placeholder="e.g. GP-74328-984" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Associated Email</label>
-                        <input type="email" id="addGoogleEmail" required placeholder="yourname@gmail.com" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Associated Email</label>
+                        <input type="email" id="addGoogleEmail" required placeholder="yourname@gmail.com" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Member Since</label>
-                        <input type="text" id="addGoogleSince" required placeholder="e.g. Jul 2026" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Member Since</label>
+                        <input type="text" id="addGoogleSince" required placeholder="e.g. Jul 2026" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                 `;
             } else if (type === 'Custom') {
                 themeSel.classList.remove('hidden');
                 inputs.innerHTML = `
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Title</label>
-                        <input type="text" id="addCustomTitle" required placeholder="e.g. Gym Club, Library Card" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Card Title</label>
+                        <input type="text" id="addCustomTitle" required placeholder="e.g. Gym Club, Library Card" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Holder Name</label>
-                        <input type="text" id="addCustomName" required placeholder="Your name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Card Holder Name</label>
+                        <input type="text" id="addCustomName" required placeholder="Your name" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Number / Member ID</label>
-                        <input type="text" id="addCustomNumber" required placeholder="e.g. ID-453-23" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Card Number / Member ID</label>
+                        <input type="text" id="addCustomNumber" required placeholder="e.g. ID-453-23" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Valid Upto / Expiry</label>
-                        <input type="text" id="addCustomExpiry" required placeholder="MM/YY or Date" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Valid Upto / Expiry</label>
+                        <input type="text" id="addCustomExpiry" required placeholder="MM/YY or Date" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Backside Description</label>
-                        <input type="text" id="addCustomDesc" placeholder="e.g. Terms, contact number" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Backside Description</label>
+                        <input type="text" id="addCustomDesc" placeholder="e.g. Terms, contact number" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                 `;
             }
@@ -1367,13 +1446,13 @@
         function getCardFrontHTML(c) {
             if (c.type === 'RupeeMind') {
                 return `
-                    <div class="w-full h-full bg-gradient-to-br from-slate-900 to-indigo-950 text-white p-5 flex flex-col justify-between select-none relative overflow-hidden rounded-2xl border border-white/5 shadow-inner">
+                    <div class="w-full h-full bg-gradient-to-br from-indigo-950 to-teal-950 text-white p-5 flex flex-col justify-between select-none relative overflow-hidden rounded-2xl border border-teal-500/30 shadow-inner">
                         <div class="flex justify-between items-start z-10">
                             <div>
-                                <span class="text-[8px] font-black uppercase tracking-widest text-emerald-400">RupeeMind Card</span>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-teal-400">RupeeMind Card</span>
                                 <h4 class="font-extrabold text-sm tracking-tight leading-tight mt-0.5">${c.name}</h4>
                             </div>
-                            <i class="fa-solid fa-circle-nodes text-emerald-450 text-sm"></i>
+                            <i class="fa-solid fa-circle-nodes text-teal-400 text-sm"></i>
                         </div>
                         <div class="z-10">
                             <span class="text-[7px] font-bold uppercase tracking-wider opacity-50">Member Access ID</span>
@@ -1381,23 +1460,23 @@
                         </div>
                         <div class="flex justify-between items-end z-10 text-[8px] font-semibold text-slate-400">
                             <span>SINCE: ${c.dateJoined}</span>
-                            <span class="font-black text-[9px] text-emerald-450">PLATINUM</span>
+                            <span class="font-black text-[9px] text-teal-400">PLATINUM</span>
                         </div>
                     </div>
                 `;
             } else if (c.type === 'Aadhaar') {
                 return `
-                    <div class="w-full h-full bg-white text-slate-800 p-3.5 flex flex-col justify-between select-none relative border border-slate-200 rounded-2xl shadow-inner">
+                    <div class="w-full h-full bg-white text-slate-800 p-3.5 flex flex-col justify-between select-none relative border border-slate-250 rounded-2xl shadow-inner">
                         <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-white to-emerald-600"></div>
                         <div class="flex justify-between items-center border-b border-rose-500/20 pb-1 text-[7.5px] leading-tight font-extrabold">
-                            <div class="text-left text-orange-600">भारत सरकार<br><span class="text-[6.5px] text-slate-500 font-bold block">GOVERNMENT OF INDIA</span></div>
-                            <div class="text-right text-emerald-700">भारतीय विशिष्ट पहचान प्राधिकरण<br><span class="text-[6.5px] text-slate-500 font-bold block">UIDAI</span></div>
+                            <div class="text-left text-orange-600 font-black">भारत सरकार<br><span class="text-[6.5px] text-slate-500 font-bold block">GOVERNMENT OF INDIA</span></div>
+                            <div class="text-right text-emerald-700 font-black">भारतीय विशिष्ट पहचान प्राधिकरण<br><span class="text-[6.5px] text-slate-500 font-bold block">UIDAI</span></div>
                         </div>
                         <div class="flex gap-3 items-center my-1">
                             <div class="w-11 h-13 bg-slate-50 border border-slate-200 flex items-center justify-center rounded overflow-hidden relative shadow-inner">
-                                <i class="fa-solid fa-user text-xl text-slate-300"></i>
+                                <i class="fa-solid fa-user text-xl text-slate-350"></i>
                             </div>
-                            <div class="text-[8.5px] leading-tight space-y-0.5 flex-1 font-semibold text-slate-700">
+                            <div class="text-[8.5px] leading-tight space-y-0.5 flex-1 font-semibold text-slate-705">
                                 <p class="font-black text-[10px] text-slate-900">${c.name}</p>
                                 <p><span class="text-slate-400 font-medium">DOB:</span> ${c.dob}</p>
                                 <p><span class="text-slate-400 font-medium">Gender:</span> ${c.gender}</p>
@@ -1428,7 +1507,7 @@
                         <div class="z-10 mt-1 py-1 border-t border-slate-100 flex justify-between items-end">
                             <div>
                                 <span class="text-[7px] font-bold uppercase tracking-wider text-slate-400">Developer ID</span>
-                                <p class="font-mono text-xs tracking-tight text-slate-850 font-bold">${c.devId}</p>
+                                <p class="font-mono text-xs tracking-tight text-slate-800 font-bold">${c.devId}</p>
                             </div>
                             <span class="text-[8px] font-bold text-[#34A853]">SINCE: ${c.since}</span>
                         </div>
@@ -1436,7 +1515,7 @@
                 `;
             } else if (c.type === 'Custom') {
                 return `
-                    <div class="w-full h-full bg-gradient-to-br ${c.theme} text-white p-5 flex flex-col justify-between select-none relative overflow-hidden rounded-2xl border border-white/5 shadow-inner">
+                    <div class="w-full h-full bg-gradient-to-br ${c.theme} text-white p-5 flex flex-col justify-between select-none relative overflow-hidden rounded-2xl border border-white/10 shadow-inner">
                         <div class="flex justify-between items-start z-10">
                             <div>
                                 <span class="text-[8px] font-black uppercase tracking-widest opacity-75">${c.title}</span>
@@ -1460,9 +1539,9 @@
         function getCardBackHTML(c) {
             if (c.type === 'RupeeMind') {
                 return `
-                    <div class="w-full h-full bg-slate-950 text-slate-400 p-5 flex flex-col justify-between select-none relative text-[7.5px] leading-relaxed border border-slate-900 rounded-2xl">
-                        <div class="h-6 bg-slate-900 w-full rounded flex items-center justify-between px-3">
-                            <span class="text-[6.5px] font-bold text-slate-500 uppercase tracking-widest">Magnetic Security</span>
+                    <div class="w-full h-full bg-indigo-950/80 text-teal-350 p-5 flex flex-col justify-between select-none relative text-[7.5px] leading-relaxed border border-teal-900 rounded-2xl">
+                        <div class="h-6 bg-teal-950 w-full rounded flex items-center justify-between px-3">
+                            <span class="text-[6.5px] font-bold text-teal-400 uppercase tracking-widest">Magnetic Security</span>
                             <span class="font-mono tracking-widest text-[8.5px] text-white">RM-SECURE</span>
                         </div>
                         <div class="space-y-1 opacity-70">
@@ -1486,14 +1565,14 @@
                             <span>Address:</span>
                             <span class="text-rose-600 font-extrabold">भारत सरकार</span>
                         </div>
-                        <div class="my-1 text-slate-700 leading-normal flex-1 font-semibold">
+                        <div class="my-1 text-slate-705 leading-normal flex-1 font-semibold">
                             <p class="text-slate-900"><span class="text-slate-400 font-medium">S/O / W/O:</span> ${c.relative}</p>
                             <p class="text-[7.5px] mt-0.5 text-slate-800 leading-relaxed">${c.address}</p>
                         </div>
                         <div class="flex justify-between items-end border-t border-slate-200/80 pt-1.5 mt-0.5">
                             <div class="text-[9.5px] font-black tracking-wider text-slate-900 flex-1 font-mono">${c.aadhaarNum}</div>
-                            <div class="w-6 h-6 bg-white border border-slate-300 p-0.5 rounded shadow-sm">
-                                <i class="fa-solid fa-qrcode text-lg text-slate-900"></i>
+                            <div class="w-6 h-6 bg-white border border-slate-350 p-0.5 rounded shadow-sm">
+                                <i class="fa-solid fa-qrcode text-lg text-slate-905"></i>
                             </div>
                         </div>
                     </div>
@@ -1550,14 +1629,14 @@
                 const backHTML = getCardBackHTML(c);
 
                 const cardWrapper = document.createElement('div');
-                cardWrapper.className = "p-5 bg-white/50 dark:bg-slate-900/40 rounded-3xl border border-slate-250 dark:border-slate-800/80 shadow-sm flex flex-col lg:flex-row gap-5 justify-between items-center card-container-lift";
+                cardWrapper.className = "p-5 bg-teal-50/50 dark:bg-indigo-950/40 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm flex flex-col lg:flex-row gap-5 justify-between items-center card-container-lift";
                 
                 cardWrapper.innerHTML = `
                     <div class="flex flex-col flex-1 leading-snug w-full">
-                        <h4 class="font-black text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <h4 class="font-black text-sm text-teal-950 dark:text-white flex items-center gap-1.5">
                             <i class="fa-solid fa-id-card text-amber-500"></i> ${c.type === 'Custom' ? c.title : c.type + ' Card'}
                         </h4>
-                        <p class="text-xs text-slate-400 mt-1">Holder: ${c.name}</p>
+                        <p class="text-xs text-teal-605 mt-1">Holder: ${c.name}</p>
                         <div class="flex gap-2 mt-4">
                             <button onclick="printCard('${c.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-md shadow-emerald-500/10"><i class="fa-solid fa-print"></i> Print Card</button>
                             ${c.id !== 'card-rupeemind' ? `<button onclick="deleteCard('${c.id}')" class="border border-rose-500/20 hover:bg-rose-500/5 text-rose-505 font-semibold px-4 py-2 rounded-xl text-xs cursor-pointer"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
@@ -1566,10 +1645,10 @@
 
                     <!-- Double-Sided CR80 Cards (Front & Back) -->
                     <div class="flex flex-col sm:flex-row gap-4 items-center justify-center card-perspective">
-                        <div class="w-[280px] h-[176px] rounded-2xl overflow-hidden shadow-lg border border-slate-200/60 dark:border-slate-850 transform transition-transform hover:scale-103 duration-300">
+                        <div class="w-[280px] h-[176px] rounded-2xl overflow-hidden shadow-lg border border-teal-200/60 dark:border-indigo-950/50 transform transition-transform hover:scale-103 duration-300">
                             ${frontHTML}
                         </div>
-                        <div class="w-[280px] h-[176px] rounded-2xl overflow-hidden shadow-lg border border-slate-200/60 dark:border-slate-850 transform transition-transform hover:scale-103 duration-300">
+                        <div class="w-[280px] h-[176px] rounded-2xl overflow-hidden shadow-lg border border-teal-200/60 dark:border-indigo-950/50 transform transition-transform hover:scale-103 duration-300">
                             ${backHTML}
                         </div>
                     </div>
@@ -1606,18 +1685,21 @@
                         .card-print-box {
                             width: 85.6mm;
                             height: 53.98mm;
-                            border: 1px solid #ddd;
+                            border: 1px dashed #059669;
                             border-radius: 12px;
                             overflow: hidden;
                             position: relative;
                             page-break-inside: avoid;
+                            box-sizing: border-box;
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
                         }
                     </style>
                 </head>
                 <body class="flex flex-col items-center gap-6 py-8">
                     <div class="no-print mb-4 flex gap-2">
                         <button onclick="window.print()" class="bg-emerald-600 text-white font-semibold px-4 py-2 rounded-xl text-xs shadow-md">Print Card (PDF)</button>
-                        <button onclick="window.close()" class="bg-slate-200 text-slate-805 font-semibold px-4 py-2 rounded-xl text-xs">Close</button>
+                        <button onclick="window.close()" class="bg-teal-100 text-teal-800 font-semibold px-4 py-2 rounded-xl text-xs">Close</button>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-6 justify-center items-center print-layout">
                         <div class="card-print-box shadow-lg">${frontHTML}</div>
@@ -1640,7 +1722,7 @@
 
         function exportData() {
             const bundleExportPackageData = {
-                version: "6.1.0",
+                version: "6.2.0",
                 user: currentUser,
                 timestamp: new Date().toISOString(),
                 transactions,
@@ -1709,6 +1791,7 @@
             } else {
                 document.getElementById('appContainer').classList.add('hidden');
                 document.getElementById('loginScreen').classList.remove('hidden');
+                toggleAuthTab('signin');
             }
         }
     </script>
