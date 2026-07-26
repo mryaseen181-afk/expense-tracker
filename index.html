@@ -1720,6 +1720,7 @@
                 
                 el.style.transform = `translateX(-50%) translateY(${targetY}px) scale(${targetScale})`;
                 el.style.zIndex = targetZ;
+                el.setAttribute('aria-expanded', idx === activeCardIndex ? 'true' : 'false');
                 
                 const controls = el.querySelector('.card-controls-panel');
                 if (controls) {
@@ -1752,8 +1753,13 @@
                 const backHTML = getCardBackHTML(c);
 
                 const cardWrapper = document.createElement('div');
-                cardWrapper.className = "samsung-card-wrapper";
+                cardWrapper.className = "samsung-card-wrapper focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500 rounded-2xl";
                 cardWrapper.setAttribute('onclick', `selectWalletCard(${idx})`);
+                cardWrapper.setAttribute('tabindex', '0');
+                cardWrapper.setAttribute('role', 'button');
+                cardWrapper.setAttribute('aria-expanded', idx === activeCardIndex ? 'true' : 'false');
+                cardWrapper.setAttribute('aria-label', `${c.type === 'Custom' ? c.title : c.type} Card, Holder: ${c.name}. Press Enter or Space to expand and show controls.`);
+                cardWrapper.setAttribute('onkeydown', `if(event.key === 'Enter' || event.key === ' ') { selectWalletCard(${idx}); event.preventDefault(); }`);
                 
                 cardWrapper.innerHTML = `
                     <div class="w-full h-full relative transform-style-3d transition-transform duration-700" id="flipper-${c.id}">
