@@ -1715,6 +1715,33 @@
             printWindow.document.close();
         }
 
+        document.getElementById('txnForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editTxnId').value;
+            const description = document.getElementById('txnDesc').value;
+            const amount = parseFloat(document.getElementById('txnAmount').value);
+            const category = document.getElementById('txnCategory').value;
+            const date = document.getElementById('txnDate').value;
+
+            const txnData = { 
+                id: id || 'txn-' + Date.now(), 
+                description, 
+                type: currentTxnType, 
+                amount, 
+                category, 
+                date 
+            };
+
+            if(id) {
+                transactions = transactions.map(t => t.id === id ? txnData : t);
+            } else {
+                transactions.push(txnData);
+            }
+
+            saveAndSyncData();
+            closeTxnModal();
+        });
+
         document.getElementById('txnSearch').addEventListener('input', renderTransactionsList);
         document.getElementById('txnFilterCategory').addEventListener('change', renderTransactionsList);
         document.getElementById('budgetInput').addEventListener('input', calculateMetricsAndRefresh);
