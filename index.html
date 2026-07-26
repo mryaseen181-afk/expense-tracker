@@ -337,19 +337,38 @@
                 
                 <!-- Cash Overview & Piggy Bank -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-gradient-to-br from-teal-950 to-indigo-950 rounded-3xl p-6 text-white flex flex-col justify-between shadow-xl relative overflow-hidden select-none min-h-[170px] border border-teal-500/20">
+                    <div class="bg-gradient-to-br from-amber-900 via-[#4e342e] to-amber-955 rounded-3xl p-6 text-white flex flex-col justify-between shadow-xl relative overflow-hidden select-none min-h-[170px] border border-amber-800/40 group hover:shadow-2xl transition-all duration-300">
+                        <!-- Stitching outline -->
+                        <div class="absolute inset-1.5 border border-dashed border-amber-700/40 rounded-2xl pointer-events-none"></div>
+                        
+                        <!-- Stacked Cash Notes peaking out from behind -->
+                        <div class="absolute -top-10 right-6 flex gap-1 transform rotate-12 group-hover:-translate-y-3 group-hover:rotate-6 transition-all duration-500">
+                            <!-- ₹500 Note -->
+                            <div class="w-14 h-24 bg-emerald-600 rounded-md border border-emerald-500 shadow-md flex flex-col justify-between p-1.5 text-[7px] font-mono select-none opacity-90 transform -rotate-12 translate-x-3">
+                                <div>₹500</div>
+                                <div class="text-[5px] text-center font-bold text-emerald-300">RBI</div>
+                                <div class="text-right">₹500</div>
+                            </div>
+                            <!-- ₹100 Note -->
+                            <div class="w-14 h-24 bg-cyan-600 rounded-md border border-cyan-500 shadow-md flex flex-col justify-between p-1.5 text-[7px] font-mono select-none opacity-95 transform rotate-6">
+                                <div>₹100</div>
+                                <div class="text-[5px] text-center font-bold text-cyan-300">RBI</div>
+                                <div class="text-right">₹100</div>
+                            </div>
+                        </div>
+
                         <div class="z-10">
-                            <span class="text-[9px] font-bold tracking-widest uppercase opacity-75">Available Wallet Balance</span>
-                            <h4 class="font-extrabold text-lg mt-0.5">My Cash Wallet</h4>
+                            <span class="text-[9px] font-bold tracking-widest uppercase opacity-75">Cash Compartment</span>
+                            <h4 class="font-extrabold text-base mt-0.5"><i class="fa-solid fa-wallet text-amber-500 mr-1.5"></i>Leather Cash Wallet</h4>
                         </div>
                         
                         <div class="z-10 my-3">
-                            <span class="text-[9px] font-bold uppercase tracking-wider opacity-60">Liquid Cash</span>
-                            <p class="font-black text-3xl tracking-tight mt-0.5" id="pocketCashDisplay">₹0.00</p>
+                            <span class="text-[9px] font-bold uppercase tracking-wider opacity-60">Total Cash Balance</span>
+                            <p class="font-black text-3xl tracking-tight mt-0.5 text-emerald-400" id="pocketCashDisplay">₹0.00</p>
                         </div>
                         
-                        <div class="text-[10px] opacity-75 z-10">
-                            * Cloud Synced (Encrypted)
+                        <div class="text-[10px] opacity-75 z-10 flex items-center gap-1.5">
+                            <span class="inline-block w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span> Cloud Synced Wallet
                         </div>
                     </div>
 
@@ -1348,8 +1367,8 @@
                         <input type="text" id="addGoogleName" required placeholder="Developer profile name" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Developer ID</label>
-                        <input type="text" id="addGoogleDevId" required placeholder="e.g. GP-74328-984" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Premium Member ID</label>
+                        <input type="text" id="addGoogleDevId" required placeholder="e.g. PM-94301-442" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Associated Email</label>
@@ -1505,7 +1524,7 @@
                         </div>
                         <div class="z-10 mt-1 py-1 border-t border-slate-100 flex justify-between items-end">
                             <div>
-                                <span class="text-[7px] font-bold uppercase tracking-wider text-slate-400">Developer ID</span>
+                                <span class="text-[7px] font-bold uppercase tracking-wider text-slate-400">Premium Member</span>
                                 <p class="font-mono text-xs tracking-tight text-slate-800 font-bold">${c.devId}</p>
                             </div>
                             <span class="text-[8px] font-bold text-[#34A853]">SINCE: ${c.since}</span>
@@ -1611,51 +1630,75 @@
                         <div class="flex justify-between items-end">
                             <p class="font-semibold text-[8px] text-white">VERIFIED MEMBER</p>
                             <div class="w-8 h-8 bg-white p-0.5 rounded shadow">
-                                <i class="fa-solid fa-barcode text-xl text-slate-900"></i>
+                                        function renderCardsDeck() {
+            const container = document.getElementById('printableCardsDeck');
+            container.innerHTML = '';
+
+            if(cards.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-xs text-teal-650">No cards in your holder.</div>`;
+                return;
+            }
+
+            // Create a skeuomorphic leather card organizer container
+            const walletOrganizer = document.createElement('div');
+            walletOrganizer.className = "relative bg-gradient-to-br from-amber-955 via-[#3e2723] to-[#1a0c00] border-4 border-[#2d1a10] rounded-[32px] p-6 pt-16 shadow-2xl flex flex-col gap-6 overflow-hidden min-h-[300px] select-none";
+            
+            // Add wallet stitching and pocket styling
+            walletOrganizer.innerHTML = `
+                <div class="absolute inset-1.5 border border-dashed border-amber-700/40 rounded-[26px] pointer-events-none"></div>
+                <div class="absolute top-4 left-6 right-6 flex justify-between items-center z-10">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-amber-500/80"><i class="fa-solid fa-folder-closed mr-1.5"></i>Skeuomorphic Card Holder</span>
+                    <span class="text-[9px] font-bold bg-amber-900/60 text-amber-300 border border-amber-700/50 px-2 py-0.5 rounded-full">${cards.length} Cards Loaded</span>
+                </div>
+                <div class="relative space-y-[-110px]" id="walletSlotsContainer"></div>
+            `;
+            container.appendChild(walletOrganizer);
+            
+            const slotsContainer = walletOrganizer.querySelector('#walletSlotsContainer');
+
+            cards.forEach((c, idx) => {
+                const frontHTML = getCardFrontHTML(c);
+                const backHTML = getCardBackHTML(c);
+
+                const pocket = document.createElement('div');
+                // Skeuomorphic overlapping pocket slot
+                pocket.className = "group relative transition-all duration-300 z-10 hover:z-40";
+                
+                pocket.innerHTML = `
+                    <!-- The pocket sleeve graphics -->
+                    <div class="absolute bottom-0 left-0 right-0 h-[100px] bg-gradient-to-t from-[#2d1a10] to-[#4e342e] rounded-b-2xl border-t border-[#1a0c00] shadow-md pointer-events-none z-20">
+                        <div class="absolute inset-1 border border-dashed border-amber-900/50 rounded-b-xl"></div>
+                        <!-- Sleek pocket center notch -->
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-4 bg-gradient-to-br from-[#1a0c00] to-[#2d1a10] rounded-b-full border-b border-amber-900/40 shadow-inner"></div>
+                    </div>
+
+                    <!-- Slideable Card Package -->
+                    <div class="transform translate-y-0 group-hover:-translate-y-24 transition-all duration-500 ease-out flex flex-col sm:flex-row gap-5 justify-between items-center bg-teal-50/95 border border-teal-250 rounded-2xl p-4 shadow-lg mx-2 z-10">
+                        <div class="flex flex-col flex-1 leading-snug w-full">
+                            <h4 class="font-black text-xs text-teal-950 flex items-center gap-1.5">
+                                <i class="fa-solid fa-id-card text-amber-500"></i> ${c.type === 'Custom' ? c.title : c.type + ' Card'}
+                            </h4>
+                            <p class="text-[10px] text-teal-655 mt-0.5">Holder: ${c.name}</p>
+                            <div class="flex gap-2 mt-3">
+                                <button onclick="printCard('${c.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg text-[9px] flex items-center gap-1 cursor-pointer shadow-md shadow-emerald-500/10"><i class="fa-solid fa-print"></i> Print</button>
+                                ${c.id !== 'card-rupeemind' ? `<button onclick="deleteCard('${c.id}')" class="border border-rose-500/20 hover:bg-rose-500/5 text-rose-550 font-bold px-3 py-1.5 rounded-lg text-[9px] cursor-pointer"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
+                            </div>
+                        </div>
+
+                        <!-- Double-Sided CR80 Cards -->
+                        <div class="flex gap-3 items-center justify-center">
+                            <div class="w-[200px] h-[126px] rounded-xl overflow-hidden shadow-md border border-teal-200/60 transform transition-transform duration-300 hover:scale-105">
+                                ${frontHTML}
+                            </div>
+                            <div class="w-[200px] h-[126px] rounded-xl overflow-hidden shadow-md border border-teal-200/60 transform transition-transform duration-300 hover:scale-105">
+                                ${backHTML}
                             </div>
                         </div>
                     </div>
                 `;
-            }
-        }
-
-        function renderCardsDeck() {
-            const container = document.getElementById('printableCardsDeck');
-            container.innerHTML = '';
-
-            cards.forEach(c => {
-                const frontHTML = getCardFrontHTML(c);
-                const backHTML = getCardBackHTML(c);
-
-                const cardWrapper = document.createElement('div');
-                cardWrapper.className = "p-5 bg-teal-50/50 dark:bg-indigo-950/40 rounded-3xl border border-teal-200/60 dark:border-indigo-900/60 shadow-sm flex flex-col lg:flex-row gap-5 justify-between items-center card-container-lift";
-                
-                cardWrapper.innerHTML = `
-                    <div class="flex flex-col flex-1 leading-snug w-full">
-                        <h4 class="font-black text-sm text-teal-950 dark:text-white flex items-center gap-1.5">
-                            <i class="fa-solid fa-id-card text-amber-500"></i> ${c.type === 'Custom' ? c.title : c.type + ' Card'}
-                        </h4>
-                        <p class="text-xs text-teal-605 mt-1">Holder: ${c.name}</p>
-                        <div class="flex gap-2 mt-4">
-                            <button onclick="printCard('${c.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-md shadow-emerald-500/10"><i class="fa-solid fa-print"></i> Print Card</button>
-                            ${c.id !== 'card-rupeemind' ? `<button onclick="deleteCard('${c.id}')" class="border border-rose-500/20 hover:bg-rose-500/5 text-rose-505 font-semibold px-4 py-2 rounded-xl text-xs cursor-pointer"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
-                        </div>
-                    </div>
-
-                    <!-- Double-Sided CR80 Cards (Front & Back) -->
-                    <div class="flex flex-col sm:flex-row gap-4 items-center justify-center card-perspective">
-                        <div class="w-[280px] h-[176px] rounded-2xl overflow-hidden shadow-lg border border-teal-200/60 dark:border-indigo-950/50 transform transition-transform hover:scale-103 duration-300">
-                            ${frontHTML}
-                        </div>
-                        <div class="w-[280px] h-[176px] rounded-2xl overflow-hidden shadow-lg border border-teal-200/60 dark:border-indigo-950/50 transform transition-transform hover:scale-103 duration-300">
-                            ${backHTML}
-                        </div>
-                    </div>
-                `;
-                container.appendChild(cardWrapper);
+                slotsContainer.appendChild(pocket);
             });
         }
-
         // Print engine for cards
         function printCard(cardId) {
             const card = cards.find(c => c.id === cardId);
