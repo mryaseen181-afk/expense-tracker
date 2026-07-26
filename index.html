@@ -7,6 +7,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CryptoJS CDN for secure client-side encryption -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -60,7 +62,7 @@
 </head>
 <body class="bg-gradient-to-br from-slate-50 via-teal-50/20 to-indigo-50/20 text-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen pb-24 md:pb-8">
 
-    <!-- Start / Login Overlay Page -->
+    <!-- Start / Cloud Login Screen -->
     <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-955 to-indigo-955 p-4 animate-in fade-in duration-300">
         <div class="max-w-md w-full glass-card border border-white/20 dark:border-slate-800/80 p-8 rounded-3xl shadow-2xl space-y-6 text-center text-white">
             <div class="flex flex-col items-center gap-3">
@@ -68,35 +70,26 @@
                     <i class="fa-solid fa-wallet text-3xl"></i>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black tracking-tight">Welcome to Rupee<span class="text-emerald-400">Mind</span></h2>
-                    <p class="text-xs text-slate-400 mt-1">Aesthetic Local-First Finance Manager</p>
+                    <h2 class="text-2xl font-black tracking-tight">Rupee<span class="text-emerald-400">Mind</span> Cloud</h2>
+                    <p class="text-xs text-slate-400 mt-1">Multi-device Secure Cloud Sync</p>
                 </div>
             </div>
 
-            <!-- Login selection block -->
-            <div id="existingProfilesBlock" class="space-y-3">
-                <label class="block text-[10px] font-bold text-slate-400 uppercase text-left tracking-wider">Login to Existing Profile</label>
-                <div class="flex gap-2">
-                    <select id="loginUserSelect" class="flex-1 px-4 py-3 text-xs font-semibold rounded-2xl border border-slate-700 bg-slate-900/60 focus:outline-none text-white cursor-pointer">
-                        <!-- Dynamic users lists -->
-                    </select>
-                    <button onclick="loginUser()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer transition-colors">Log In</button>
+            <!-- Login / Sign Up Form -->
+            <form onsubmit="handleCloudLogin(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Username</label>
+                    <input type="text" id="loginUsername" required placeholder="Enter username..." class="w-full px-4 py-3 text-xs rounded-2xl border border-slate-700 bg-slate-900/60 text-white focus:outline-none focus:border-emerald-500">
                 </div>
-            </div>
-
-            <div class="relative flex py-2 items-center">
-                <div class="flex-grow border-t border-slate-700"></div>
-                <span class="flex-shrink mx-4 text-[9px] font-extrabold uppercase text-slate-500 tracking-wider">Or</span>
-                <div class="flex-grow border-t border-slate-700"></div>
-            </div>
-
-            <!-- Create profile block -->
-            <form onsubmit="createNewUser(event)" class="space-y-3 text-left">
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Create New Local Profile</label>
-                <div class="flex gap-2">
-                    <input type="text" id="loginNewUser" required placeholder="Name (e.g. Rahul)" class="flex-1 px-4 py-3 text-xs rounded-2xl border border-slate-700 bg-slate-900/60 text-white focus:outline-none focus:border-emerald-555">
-                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-3 rounded-2xl text-xs font-bold cursor-pointer transition-colors">Create</button>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="Enter password..." class="w-full px-4 py-3 text-xs rounded-2xl border border-slate-700 bg-slate-900/60 text-white focus:outline-none focus:border-emerald-500">
                 </div>
+                <div id="loginStatusMsg" class="text-xs font-semibold text-rose-400 hidden"></div>
+                <button type="submit" id="loginSubmitBtn" class="w-full bg-emerald-650 hover:bg-emerald-500 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer transition-colors flex items-center justify-center gap-2">
+                    <span>Sign In / Sign Up</span>
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                </button>
             </form>
         </div>
     </div>
@@ -118,7 +111,7 @@
 
                 <div class="flex items-center gap-3">
                     <div class="flex items-center gap-2 bg-slate-100/80 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 text-xs font-bold">
-                        <i class="fa-solid fa-circle-user text-emerald-600 dark:text-emerald-400 ml-1"></i>
+                        <i class="fa-solid fa-cloud text-emerald-600 dark:text-emerald-400 ml-1"></i>
                         <span id="activeUserNameDisplay" class="text-slate-700 dark:text-slate-200 pr-1"></span>
                     </div>
 
@@ -202,19 +195,19 @@
                     <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-855 shadow-sm relative overflow-hidden">
                         <p class="text-xs font-semibold text-rose-500 uppercase tracking-wider">Total Expenses</p>
                         <p id="totalExpenses" class="text-2xl font-black mt-1 text-rose-600 dark:text-rose-400">₹0.00</p>
-                        <div class="absolute -right-2 -bottom-2 opacity-10 text-rose-500 text-6xl"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                        <div class="absolute -right-2 -bottom-2 opacity-10 text-rose-505 text-6xl"><i class="fa-solid fa-arrow-trend-down"></i></div>
                     </div>
                     <div class="glass-card p-5 rounded-3xl border border-white/60 dark:border-slate-855 shadow-sm relative overflow-hidden">
                         <p class="text-xs font-semibold text-amber-500 uppercase tracking-wider">Net Savings</p>
                         <p id="totalSavings" class="text-2xl font-black mt-1 text-amber-600 dark:text-amber-400">₹0.00</p>
-                        <div class="absolute -right-2 -bottom-2 opacity-10 text-amber-500 text-6xl"><i class="fa-solid fa-piggy-bank"></i></div>
+                        <div class="absolute -right-2 -bottom-2 opacity-10 text-amber-505 text-6xl"><i class="fa-solid fa-piggy-bank"></i></div>
                     </div>
                 </div>
 
                 <div id="budgetWarning" class="hidden bg-rose-500/10 border border-rose-500/30 p-4 rounded-2xl flex items-center gap-3 text-rose-650 dark:text-rose-400 animate-pulse">
                     <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
                     <div>
-                        <span class="font-bold text-sm">Budget Exceeded!</span> You have exceeded your targeted expenditure boundary limit.
+                        <span class="font-bold text-sm">Budget Exceeded!</span> You have exceeded your targeted expenditure limit.
                     </div>
                 </div>
 
@@ -332,7 +325,7 @@
                         </div>
                         
                         <div class="text-[10px] opacity-75 z-10">
-                            * Offline local storage: No bank connectivity required.
+                            * Cloud Synchronized: Access from any device with Username + Password.
                         </div>
                         <div class="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-white/10 blur-xl"></div>
                     </div>
@@ -433,7 +426,7 @@
                                 <option value="Lent">You Lent (Friend owes you)</option>
                                 <option value="Borrowed">You Borrowed (You owe friend)</option>
                             </select>
-                            <input type="text" id="udharNotes" placeholder="Optional notes (e.g. Lunch, cab fare)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                            <input type="text" id="udharNotes" placeholder="Optional notes (e.g. Lunch, cab fare)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-855 focus:outline-none">
                         </div>
                         <div class="flex gap-2 pt-1">
                             <button type="button" onclick="saveUdharEntry(event)" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl cursor-pointer">Save Entry</button>
@@ -463,18 +456,15 @@
             <!-- Settings Section -->
             <section id="content-settings" class="tab-content hidden space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Clean local cache controls -->
                     <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
-                        <h3 class="font-bold text-lg"><i class="fa-solid fa-users text-emerald-500 mr-2"></i>User Profiles</h3>
-                        <form onsubmit="addUser(event)" class="flex gap-2">
-                            <input type="text" id="newUserName" required placeholder="New profile name..." class="flex-1 px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-emerald-500">
-                            <button type="submit" class="bg-emerald-600 text-white text-xs px-4 py-2 rounded-xl font-semibold hover:bg-emerald-500 cursor-pointer">Create</button>
-                        </form>
-                        <div id="userList" class="space-y-2 max-h-56 overflow-y-auto pr-1">
-                        </div>
+                        <h3 class="font-bold text-lg"><i class="fa-solid fa-users text-emerald-500 mr-2"></i>Profile Management</h3>
+                        <p class="text-xs text-slate-400">Currently logged in as <span class="font-bold text-slate-900 dark:text-white" id="settingsActiveUser"></span>.</p>
+                        <button onclick="logoutSession()" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-805 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-right-from-bracket mr-2"></i>Log Out Session</button>
                     </div>
 
                     <div class="glass-card p-6 rounded-3xl border border-white/60 dark:border-slate-800 shadow-sm space-y-4">
-                        <h3 class="font-bold text-lg"><i class="fa-solid fa-database text-amber-500 mr-2"></i>Data & Backup</h3>
+                        <h3 class="font-bold text-lg"><i class="fa-solid fa-database text-amber-500 mr-2"></i>Backup & Reset</h3>
                         <div class="grid grid-cols-2 gap-2">
                             <button onclick="exportData()" class="flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 py-3 rounded-2xl text-xs font-semibold transition-colors cursor-pointer"><i class="fa-solid fa-file-export text-slate-400"></i>Export Backup</button>
                             <label class="flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 py-3 rounded-2xl text-xs font-semibold transition-colors cursor-pointer">
@@ -482,7 +472,7 @@
                                 <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
                             </label>
                         </div>
-                        <button onclick="resetAllData()" class="w-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 border border-rose-200 dark:border-rose-900/50 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-trash-can mr-2"></i>Purge & Reset Profile Local Storage</button>
+                        <button onclick="resetAllData()" class="w-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 border border-rose-200 dark:border-rose-900/55 font-semibold py-3 rounded-2xl text-xs transition-colors cursor-pointer"><i class="fa-solid fa-trash-can mr-2"></i>Clear Local Cache & Reset</button>
                     </div>
                 </div>
             </section>
@@ -501,7 +491,7 @@
                     <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase">Type</label>
                     <div class="grid grid-cols-2 gap-2">
                         <button type="button" id="typeExpense" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-955/30 dark:text-rose-400 dark:border-rose-900/50 ring-2 ring-rose-500/20 cursor-pointer" onclick="setTxnType('Expense')">Expense</button>
-                        <button type="button" id="typeIncome" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-105 text-slate-655 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 cursor-pointer" onclick="setTxnType('Income')">Income</button>
+                        <button type="button" id="typeIncome" class="type-btn py-2.5 rounded-xl font-semibold text-xs transition-all bg-slate-100 text-slate-655 border border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 cursor-pointer" onclick="setTxnType('Income')">Income</button>
                     </div>
                 </div>
                 <div>
@@ -540,14 +530,11 @@
     </div>
 
     <script>
-        // Multi-User Profile State
-        let users = JSON.parse(localStorage.getItem('rupee_users')) || ['Default User'];
+        // Multi-device synchronization state
         let currentUser = localStorage.getItem('rupee_current_user') || '';
-
-        function getKey(key) {
-            return `rupee_${currentUser}_${key}`;
-        }
-
+        let currentPassword = localStorage.getItem('rupee_current_password') || '';
+        
+        // Dynamic state arrays
         let transactions = [];
         let wishlist = [];
         let udharList = [];
@@ -555,75 +542,159 @@
         let currentTxnType = 'Expense';
         let expenseChart = null;
 
-        // Login overlay handlers
-        function renderLoginOptions() {
-            const select = document.getElementById('loginUserSelect');
-            const block = document.getElementById('existingProfilesBlock');
-            select.innerHTML = '';
-            
-            if (users.length === 0) {
-                block.classList.add('hidden');
-            } else {
-                block.classList.remove('hidden');
-                users.forEach(u => {
-                    const opt = document.createElement('option');
-                    opt.value = u;
-                    opt.innerText = u;
-                    select.appendChild(opt);
-                });
-            }
+        // Public cloud bucket configuration URL
+        const CLOUD_DB_BASE_URL = "https://kvdb.io/rupeemind_vault_v2/";
+
+        function getKey(key) {
+            return `rupee_${currentUser}_${key}`;
         }
 
-        function loginUser() {
-            const select = document.getElementById('loginUserSelect');
-            if (select.value) {
-                initSession(select.value);
-            }
-        }
-
-        function createNewUser(e) {
+        // Handle cloud database logging and account setup
+        async function handleCloudLogin(e) {
             e.preventDefault();
-            const input = document.getElementById('loginNewUser');
-            const name = input.value.trim();
-            if (name) {
-                if (!users.includes(name)) {
-                    users.push(name);
-                    localStorage.setItem('rupee_users', JSON.stringify(users));
+            const userField = document.getElementById('loginUsername');
+            const passField = document.getElementById('loginPassword');
+            const statusMsg = document.getElementById('loginStatusMsg');
+            const submitBtn = document.getElementById('loginSubmitBtn');
+
+            const username = userField.value.trim().toLowerCase();
+            const password = passField.value;
+
+            if (!username || !password) return;
+
+            statusMsg.innerText = "Synchronizing with Cloud Vault...";
+            statusMsg.classList.remove('hidden');
+            submitBtn.disabled = true;
+
+            try {
+                // Fetch existing cloud data record
+                const response = await fetch(CLOUD_DB_BASE_URL + username);
+                
+                // User does not exist, trigger self-creation check
+                if (response.status === 404) {
+                    if (confirm(`Username "${username}" does not exist in the cloud database. Would you like to create a new profile with the entered password?`)) {
+                        statusMsg.innerText = "Provisioning new cloud profile...";
+                        
+                        const passwordHash = CryptoJS.SHA256(password).toString();
+                        const initialPayload = {
+                            transactions: [],
+                            wishlist: [],
+                            udharList: [],
+                            cards: []
+                        };
+
+                        const encrypted = CryptoJS.AES.encrypt(JSON.stringify(initialPayload), password).toString();
+                        const dataBundle = { passwordHash, payload: encrypted };
+
+                        // Store in KVDB
+                        await fetch(CLOUD_DB_BASE_URL + username, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(dataBundle)
+                        });
+
+                        currentUser = username;
+                        currentPassword = password;
+                        localStorage.setItem('rupee_current_user', currentUser);
+                        localStorage.setItem('rupee_current_password', password);
+
+                        initAppSession(initialPayload);
+                    } else {
+                        statusMsg.classList.add('hidden');
+                    }
+                } else if (response.ok) {
+                    const dataBundle = await response.json();
+                    const passwordHash = CryptoJS.SHA256(password).toString();
+
+                    if (dataBundle.passwordHash === passwordHash) {
+                        statusMsg.innerText = "Decrypting secure credentials...";
+                        try {
+                            const decryptedBytes = CryptoJS.AES.decrypt(dataBundle.payload, password);
+                            const decryptedStr = decryptedBytes.toString(CryptoJS.enc.Utf8);
+                            const payload = JSON.parse(decryptedStr);
+
+                            currentUser = username;
+                            currentPassword = password;
+                            localStorage.setItem('rupee_current_user', currentUser);
+                            localStorage.setItem('rupee_current_password', password);
+
+                            initAppSession(payload);
+                        } catch (decryptError) {
+                            statusMsg.innerText = "Failed to decrypt cloud data. Check password.";
+                        }
+                    } else {
+                        statusMsg.innerText = "Incorrect password! Access denied.";
+                    }
+                } else {
+                    statusMsg.innerText = "Server sync failed. Please try again.";
                 }
-                input.value = '';
-                initSession(name);
+            } catch (err) {
+                statusMsg.innerText = "Network sync timeout. Please connect to internet.";
+            } finally {
+                submitBtn.disabled = false;
             }
         }
 
-        function initSession(name) {
-            currentUser = name;
-            localStorage.setItem('rupee_current_user', currentUser);
-            
-            // Hydrate local variables
-            transactions = JSON.parse(localStorage.getItem(getKey('transactions'))) || [];
-            wishlist = JSON.parse(localStorage.getItem(getKey('wishlist'))) || [];
-            udharList = JSON.parse(localStorage.getItem(getKey('udhar'))) || [];
-            cards = JSON.parse(localStorage.getItem(getKey('cards'))) || [];
+        // Initialize active session
+        function initAppSession(payload) {
+            transactions = payload.transactions || [];
+            wishlist = payload.wishlist || [];
+            udharList = payload.udharList || [];
+            cards = payload.cards || [];
 
-            // UI Hydration
             document.getElementById('activeUserNameDisplay').innerText = currentUser;
+            document.getElementById('settingsActiveUser').innerText = currentUser;
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('appContainer').classList.remove('hidden');
-            
+
             const savedBudget = localStorage.getItem(getKey('budget')) || 50000;
             document.getElementById('budgetInput').value = savedBudget;
+
+            // Clear inputs
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginStatusMsg').classList.add('hidden');
 
             renderUserControls();
             calculateMetricsAndRefresh();
             switchTab('dashboard');
         }
 
+        // Local triggers for cloud writes
+        async function saveAndSyncData() {
+            if (!currentUser || !currentPassword) return;
+
+            // Save locally as a secondary backup
+            localStorage.setItem(getKey('transactions'), JSON.stringify(transactions));
+            localStorage.setItem(getKey('cards'), JSON.stringify(cards));
+            localStorage.setItem(getKey('udhar'), JSON.stringify(udharList));
+            calculateMetricsAndRefresh();
+
+            // Sync encrypted data to the cloud
+            const dataToEncrypt = { transactions, wishlist, udharList, cards };
+            const encrypted = CryptoJS.AES.encrypt(JSON.stringify(dataToEncrypt), currentPassword).toString();
+            const passwordHash = CryptoJS.SHA256(currentPassword).toString();
+            const dataBundle = { passwordHash, payload: encrypted };
+
+            try {
+                await fetch(CLOUD_DB_BASE_URL + currentUser, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataBundle)
+                });
+            } catch (err) {
+                console.warn("Cloud backup write failed. Cache saved locally.");
+            }
+        }
+
+        // Log out active profile
         function logoutSession() {
             currentUser = '';
+            currentPassword = '';
             localStorage.removeItem('rupee_current_user');
+            localStorage.removeItem('rupee_current_password');
             document.getElementById('appContainer').classList.add('hidden');
             document.getElementById('loginScreen').classList.remove('hidden');
-            renderLoginOptions();
         }
 
         // Navigation Tabs Controller
@@ -662,77 +733,26 @@
         function renderUserControls() {
             const list = document.getElementById('userList');
             list.innerHTML = '';
-            users.forEach(u => {
-                const div = document.createElement('div');
-                div.className = "flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs";
-                div.innerHTML = `
-                    <span class="font-semibold ${u === currentUser ? 'text-emerald-600 dark:text-emerald-400' : ''}">${u} ${u === currentUser ? '(Active)' : ''}</span>
-                    ${users.length > 1 && u !== currentUser ? `<button onclick="removeUser('${u}')" class="text-rose-500 hover:text-rose-700 cursor-pointer"><i class="fa-solid fa-trash"></i></button>` : ''}
-                `;
-                list.appendChild(div);
-            });
+            const div = document.createElement('div');
+            div.className = "flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs";
+            div.innerHTML = `
+                <span class="font-semibold text-emerald-650 dark:text-emerald-400">${currentUser} (Active)</span>
+            `;
+            list.appendChild(div);
 
             const userBudget = localStorage.getItem(getKey('budget'));
             if (userBudget) document.getElementById('budgetInput').value = userBudget;
         }
 
-        function addUser(e) {
-            e.preventDefault();
-            const nameInput = document.getElementById('newUserName');
-            const name = nameInput.value.trim();
-            if(name && !users.includes(name)) {
-                users.push(name);
-                localStorage.setItem('rupee_users', JSON.stringify(users));
-                nameInput.value = '';
-                renderUserControls();
+        function removeUser() {
+            if(confirm(`Purge local cache backup for "${currentUser}"? The cloud version will remain intact.`)) {
+                localStorage.removeItem(`rupee_${currentUser}_transactions`);
+                localStorage.removeItem(`rupee_${currentUser}_wishlist`);
+                localStorage.removeItem(`rupee_${currentUser}_cards`);
+                localStorage.removeItem(`rupee_${currentUser}_udhar`);
+                localStorage.removeItem(`rupee_${currentUser}_budget`);
+                logoutSession();
             }
-        }
-
-        function removeUser(userName) {
-            if(confirm(`Confirm profile removal for "${userName}"?`)) {
-                users = users.filter(u => u !== userName);
-                localStorage.setItem('rupee_users', JSON.stringify(users));
-                localStorage.removeItem(`rupee_${userName}_transactions`);
-                localStorage.removeItem(`rupee_${userName}_wishlist`);
-                localStorage.removeItem(`rupee_${userName}_cards`);
-                localStorage.removeItem(`rupee_${userName}_udhar`);
-                localStorage.removeItem(`rupee_${userName}_budget`);
-                renderUserControls();
-                if(userName === currentUser) {
-                    logoutSession();
-                }
-            }
-        }
-
-        document.getElementById('txnDate').valueAsDate = new Date();
-
-        // Theme Toggle Handler
-        const themeToggle = document.getElementById('themeToggle');
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-
-        themeToggle.addEventListener('click', () => {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            }
-            renderChart();
-        });
-
-        function formatIndianCurrency(num) {
-            const absoluteValue = Math.abs(Number(num)).toFixed(2);
-            const [integerPart, decimalPart] = absoluteValue.split('.');
-            let lastThreeDigits = integerPart.substring(integerPart.length - 3);
-            const otherDigits = integerPart.substring(0, integerPart.length - 3);
-            if (otherDigits !== '') lastThreeDigits = ',' + lastThreeDigits;
-            const structuredResult = otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThreeDigits + '.' + decimalPart;
-            return num < 0 ? `- ₹${structuredResult}` : `₹${structuredResult}`;
         }
 
         // Toggle form types
@@ -754,6 +774,7 @@
             document.getElementById('txnModal').classList.remove('hidden');
         }
 
+        // ...
         function closeTxnModal() {
             document.getElementById('txnModal').classList.add('hidden');
             resetTxnForm();
@@ -975,7 +996,7 @@
             }
 
             localStorage.setItem(getKey('wishlist'), JSON.stringify(wishlist));
-            calculateMetricsAndRefresh();
+            saveAndSyncData();
             document.getElementById('wishlistForm').reset();
             document.getElementById('editWishId').value = '';
             toggleWishlistForm();
@@ -1005,8 +1026,8 @@
                     <div class="flex justify-between items-start gap-2">
                         <div>
                             <span class="px-2 py-0.5 rounded-md text-[9px] font-bold ${
-                                w.priority === 'High' ? 'bg-rose-50 text-rose-650 dark:bg-rose-955/30 dark:text-rose-400' : 
-                                w.priority === 'Medium' ? 'bg-amber-50 text-amber-650 dark:bg-amber-955/30 dark:text-amber-400' :
+                                w.priority === 'High' ? 'bg-rose-50 text-rose-655 dark:bg-rose-955/30 dark:text-rose-400' : 
+                                w.priority === 'Medium' ? 'bg-amber-50 text-amber-655 dark:bg-amber-955/30 dark:text-amber-400' :
                                 'bg-slate-100 text-slate-655 dark:bg-slate-800 dark:text-slate-400'
                             }">${w.priority} Priority</span>
                             <h4 class="font-bold text-sm text-slate-900 dark:text-white mt-1.5 ${w.purchased ? 'line-through text-slate-400' : ''}">${w.name}</h4>
@@ -1018,7 +1039,7 @@
                         </div>
                     </div>
 
-                    <div class="w-full bg-slate-200 dark:bg-slate-850 h-2 rounded-full mt-3 overflow-hidden">
+                    <div class="w-full bg-slate-200 dark:bg-slate-855 h-2 rounded-full mt-3 overflow-hidden">
                         <div class="bg-gradient-to-r from-emerald-505 to-teal-400 h-full transition-all duration-500" style="width: ${progressWidthPercentage}%"></div>
                     </div>
 
@@ -1038,14 +1059,14 @@
         function togglePurchasedWish(id) {
             wishlist = wishlist.map(w => w.id === id ? { ...w, purchased: !w.purchased } : w);
             localStorage.setItem(getKey('wishlist'), JSON.stringify(wishlist));
-            calculateMetricsAndRefresh();
+            saveAndSyncData();
         }
 
         function deleteWishItem(id) {
             if(confirm("Confirm goal removal?")) {
                 wishlist = wishlist.filter(w => w.id !== id);
                 localStorage.setItem(getKey('wishlist'), JSON.stringify(wishlist));
-                calculateMetricsAndRefresh();
+                saveAndSyncData();
             }
         }
 
@@ -1151,7 +1172,7 @@
             localStorage.setItem(getKey('udhar'), JSON.stringify(udharList));
             document.getElementById('udharForm').reset();
             toggleUdharForm();
-            calculateMetricsAndRefresh();
+            saveAndSyncData();
         }
 
         function settleUdhar(id) {
@@ -1184,7 +1205,7 @@
             if (confirm("Delete this Udhar entry without recording a cash settlement?")) {
                 udharList = udharList.filter(u => u.id !== id);
                 localStorage.setItem(getKey('udhar'), JSON.stringify(udharList));
-                calculateMetricsAndRefresh();
+                saveAndSyncData();
             }
         }
 
@@ -1208,11 +1229,11 @@
 
                 const statusBgColor = u.type === 'Lent' 
                     ? 'bg-emerald-50 border-emerald-100 dark:bg-emerald-955/20 dark:border-emerald-900/50' 
-                    : 'bg-rose-50 border-rose-100 dark:bg-rose-955/20 dark:border-rose-900/50';
+                    : 'bg-rose-50 border-rose-105 dark:bg-rose-955/20 dark:border-rose-900/50';
                 
                 const statusTextColor = u.type === 'Lent' 
                     ? 'text-emerald-700 dark:text-emerald-400' 
-                    : 'text-rose-605 dark:text-rose-400';
+                    : 'text-rose-600 dark:text-rose-400';
                 
                 const typeLabel = u.type === 'Lent' ? 'Lent (To Collect)' : 'Borrowed (To Pay)';
 
@@ -1222,7 +1243,7 @@
                 item.innerHTML = `
                     <div class="space-y-0.5">
                         <div class="flex items-center gap-1.5">
-                            <h4 class="font-extrabold text-xs text-slate-800 dark:text-slate-100">${u.friend}</h4>
+                            <h4 class="font-extrabold text-xs text-slate-800 dark:text-slate-105">${u.friend}</h4>
                             <span class="text-[8px] font-bold uppercase ${statusTextColor} bg-white dark:bg-slate-900 px-1.5 py-0.2 rounded-full border border-current">${typeLabel}</span>
                         </div>
                         <p class="text-[10px] text-slate-400 font-medium">${u.date} ${u.notes ? `• ${u.notes}` : ''}</p>
@@ -1231,7 +1252,7 @@
                     <div class="flex items-center gap-3">
                         <span class="font-black text-xs ${statusTextColor}">₹${u.amount.toLocaleString('en-IN')}</span>
                         <div class="flex gap-1.5">
-                            <button onclick="settleUdhar('${u.id}')" class="bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-650 dark:text-slate-300 font-bold px-2.5 py-1 rounded-xl text-[10px] transition-colors cursor-pointer flex items-center gap-1">
+                            <button onclick="settleUdhar('${u.id}')" class="bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-655 dark:text-slate-300 font-bold px-2.5 py-1 rounded-xl text-[10px] transition-colors cursor-pointer flex items-center gap-1">
                                 <i class="fa-solid fa-circle-check text-emerald-500"></i> Settle
                             </button>
                             <button onclick="deleteUdhar('${u.id}')" class="text-slate-400 hover:text-rose-500 p-1 text-xs cursor-pointer"><i class="fa-solid fa-trash-can"></i></button>
@@ -1245,7 +1266,11 @@
             document.getElementById('udharPayDisplay').innerText = formatIndianCurrency(payTotal);
         }
 
-        // PRINTABLE VIRTUAL CARD MANAGEMENT SYSTEM
+        // CARDS UI STATE
+        function toggleCardForm() {
+            document.getElementById('cardFormContainer').classList.toggle('hidden');
+        }
+
         function checkAndSeedDefaultCard() {
             if (cards.length === 0) {
                 const defaultCard = {
@@ -1256,12 +1281,8 @@
                     dateJoined: new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short' })
                 };
                 cards = [defaultCard];
-                localStorage.setItem(getKey('cards'), JSON.stringify(cards));
+                saveAndSyncData();
             }
-        }
-
-        function toggleCardForm() {
-            document.getElementById('cardFormContainer').classList.toggle('hidden');
         }
 
         function adjustCardFormFields(type) {
@@ -1294,30 +1315,30 @@
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Father's or Spouse's Name</label>
-                        <input type="text" id="addAadhaarRelative" required placeholder="S/O or W/O Name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-805 focus:outline-none">
+                        <input type="text" id="addAadhaarRelative" required placeholder="S/O or W/O Name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Address</label>
-                        <input type="text" id="addAadhaarAddress" required placeholder="Full residential address" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-805 focus:outline-none col-span-1 sm:col-span-2">
+                        <input type="text" id="addAadhaarAddress" required placeholder="Full residential address" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none col-span-1 sm:col-span-2">
                     </div>
                 `;
             } else if (type === 'Google') {
                 inputs.innerHTML = `
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Developer Name</label>
-                        <input type="text" id="addGoogleName" required placeholder="Developer profile name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-805 focus:outline-none">
+                        <input type="text" id="addGoogleName" required placeholder="Developer profile name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Developer ID</label>
-                        <input type="text" id="addGoogleDevId" required placeholder="e.g. GP-74328-984" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                        <input type="text" id="addGoogleDevId" required placeholder="e.g. GP-74328-984" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Associated Email</label>
-                        <input type="email" id="addGoogleEmail" required placeholder="yourname@gmail.com" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                        <input type="email" id="addGoogleEmail" required placeholder="yourname@gmail.com" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Member Since</label>
-                        <input type="text" id="addGoogleSince" required placeholder="e.g. Jul 2026" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                        <input type="text" id="addGoogleSince" required placeholder="e.g. Jul 2026" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
                     </div>
                 `;
             } else if (type === 'Custom') {
@@ -1325,96 +1346,27 @@
                 inputs.innerHTML = `
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Title</label>
-                        <input type="text" id="addCustomTitle" required placeholder="e.g. Gym Club, Library Card" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                        <input type="text" id="addCustomTitle" required placeholder="e.g. Gym Club, Library Card" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Holder Name</label>
-                        <input type="text" id="addCustomName" required placeholder="Your full name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                        <input type="text" id="addCustomName" required placeholder="Your full name" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Card Number / Member ID</label>
-                        <input type="text" id="addCustomNumber" required placeholder="e.g. ID-453-23" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                        <input type="text" id="addCustomNumber" required placeholder="e.g. ID-453-23" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Valid Upto / Expiry</label>
-                        <input type="text" id="addCustomExpiry" required placeholder="MM/YY or Date" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                        <input type="text" id="addCustomExpiry" required placeholder="MM/YY or Date" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Backside Description</label>
-                        <input type="text" id="addCustomDesc" placeholder="e.g. Terms, contact number" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 focus:outline-none">
+                        <input type="text" id="addCustomDesc" placeholder="e.g. Terms, contact number" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
                     </div>
                 `;
             }
         }
-
-        function saveNewCard(e) {
-            e.preventDefault();
-            const type = document.getElementById('newCardType').value;
-            const theme = document.getElementById('newCardTheme').value;
-            let cardData = { id: 'card-' + Date.now(), type, theme };
-
-            if (type === 'Aadhaar') {
-                const name = document.getElementById('addAadhaarName').value.trim();
-                const rawNum = document.getElementById('addAadhaarNum').value.trim();
-                const dob = document.getElementById('addAadhaarDob').value.trim();
-                const gender = document.getElementById('addAadhaarGender').value;
-                const relative = document.getElementById('addAadhaarRelative').value.trim();
-                const address = document.getElementById('addAadhaarAddress').value.trim();
-
-                if (rawNum.length !== 12 || isNaN(rawNum)) {
-                    alert("Aadhaar Number must be exactly 12 digits.");
-                    return;
-                }
-                
-                const numFormatted = rawNum.replace(/(\d{4})(\d{4})(\d{4})/, '$1 $2 $3');
-                cardData = { ...cardData, name, aadhaarNum: numFormatted, dob, gender, relative, address };
-            } else if (type === 'Google') {
-                const name = document.getElementById('addGoogleName').value.trim();
-                const devId = document.getElementById('addGoogleDevId').value.trim();
-                const email = document.getElementById('addGoogleEmail').value.trim();
-                const since = document.getElementById('addGoogleSince').value.trim();
-
-                cardData = { ...cardData, name, devId, email, since };
-            } else if (type === 'Custom') {
-                const title = document.getElementById('addCustomTitle').value.trim();
-                const name = document.getElementById('addCustomName').value.trim();
-                const number = document.getElementById('addCustomNumber').value.trim();
-                const expiry = document.getElementById('addCustomExpiry').value.trim();
-                const desc = document.getElementById('addCustomDesc').value.trim() || 'Offline Virtual ID replica.';
-
-                cardData = { ...cardData, title, name, number, expiry, desc };
-            }
-
-            cards.push(cardData);
-            localStorage.setItem(getKey('cards'), JSON.stringify(cards));
-            toggleCardForm();
-            adjustCardFormFields(type);
-            calculateMetricsAndRefresh();
-        }
-
-        function deleteCard(id) {
-            if (id === 'card-rupeemind') {
-                alert("The default RupeeMind ID cannot be deleted.");
-                return;
-            }
-            if (confirm("Confirm removal of this card from organizer?")) {
-                cards = cards.filter(c => c.id !== id);
-                localStorage.setItem(getKey('cards'), JSON.stringify(cards));
-                calculateMetricsAndRefresh();
-            }
-        }
-
-        const SMART_CHIP_HTML = `
-            <div class="w-8 h-7 rounded-md bg-gradient-to-br from-yellow-200 via-amber-300 to-yellow-600 border border-amber-600/40 flex flex-wrap p-0.5 relative overflow-hidden shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]">
-                <div class="w-1/2 h-1/3 border-r border-b border-amber-850/40"></div>
-                <div class="w-1/2 h-1/3 border-b border-amber-850/40"></div>
-                <div class="w-1/2 h-1/3 border-r border-b border-amber-850/40"></div>
-                <div class="w-1/2 h-1/3 border-b border-amber-850/40"></div>
-                <div class="w-1/2 h-1/3 border-r border-amber-850/40"></div>
-                <div class="w-1/2 h-1/3"></div>
-                <div class="absolute inset-1.5 rounded-full border border-amber-900/30"></div>
-            </div>
-        `;
 
         function getCardFrontHTML(c) {
             if (c.type === 'RupeeMind') {
@@ -1431,9 +1383,7 @@
                                 <i class="fa-solid fa-shield-halved text-emerald-400 text-sm"></i>
                             </div>
                         </div>
-                        <div class="z-10 mt-1">
-                            ${SMART_CHIP_HTML}
-                        </div>
+
                         <div class="z-10 mt-1">
                             <span class="text-[7px] font-bold uppercase tracking-wider opacity-50">Member Access ID</span>
                             <p class="font-mono text-xs tracking-widest text-slate-200 mt-0.5">${c.memberId}</p>
@@ -1475,7 +1425,6 @@
             } else if (c.type === 'Google') {
                 return `
                     <div class="w-full h-full bg-white text-slate-800 p-4 flex flex-col justify-between select-none relative overflow-hidden border border-slate-200">
-                        <!-- Google Color Header Accent Strip -->
                         <div class="absolute top-0 left-0 right-0 h-1.5 flex">
                             <div class="w-1/4 h-full bg-[#4285F4]"></div>
                             <div class="w-1/4 h-full bg-[#EA4335]"></div>
@@ -1486,29 +1435,26 @@
                         <div class="flex justify-between items-start z-10 mt-1">
                             <div>
                                 <span class="text-[8px] font-extrabold uppercase tracking-widest text-[#4285F4]">Google Developer ID</span>
-                                <h4 class="font-black text-sm tracking-tight leading-tight text-slate-900 mt-0.5">${c.name}</h4>
+                                <div class="z-10 mt-2">
+                                    <h4 class="font-black text-sm tracking-tight leading-tight text-slate-900">${c.name}</h4>
+                                    <span class="text-[8.5px] text-[#4285F4] block mt-0.5 font-bold">${c.email}</span>
+                                </div>
                             </div>
                             <div class="text-2xl flex items-center gap-1">
-                                <!-- Multi-color FontAwesome Google logo -->
                                 <i class="fa-brands fa-google text-[#4285F4]"></i>
                             </div>
                         </div>
 
-                        <!-- Info Area -->
-                        <div class="z-10 flex justify-between items-end gap-3 mt-1 py-1 border-y border-slate-100">
+                        <div class="z-10 flex justify-between items-end gap-3 mt-1 py-1 border-t border-slate-100">
                             <div>
                                 <span class="text-[7px] font-bold uppercase tracking-wider text-slate-400">Developer Account ID</span>
                                 <p class="font-mono text-xs tracking-tight text-slate-800 font-bold">${c.devId}</p>
                             </div>
-                            <!-- Google G badge visual representation -->
-                            <div class="w-7 h-7 rounded bg-slate-50 border border-slate-200 flex items-center justify-center text-[10px] font-black tracking-tight">
-                                <span class="text-[#4285F4]">G</span><span class="text-[#EA4335]">D</span>
-                            </div>
                         </div>
 
                         <div class="flex justify-between items-end z-10 text-[8px] font-semibold text-slate-400 mt-1">
-                            <span>EMAIL: ${c.email}</span>
-                            <span class="font-bold text-[#34A853]">MEMBER SINCE: ${c.since}</span>
+                            <span>PLATFORM VERIFIED</span>
+                            <span class="font-bold text-[#34A853]">SINCE: ${c.since}</span>
                         </div>
                     </div>
                 `;
@@ -1522,10 +1468,6 @@
                                 <h4 class="font-extrabold text-sm tracking-tight leading-tight mt-0.5">${c.name}</h4>
                             </div>
                             <div class="text-base opacity-90"><i class="fa-solid fa-address-card"></i></div>
-                        </div>
-                        
-                        <div class="z-10">
-                            ${SMART_CHIP_HTML}
                         </div>
 
                         <div class="z-10">
@@ -1605,7 +1547,7 @@
                         <div class="flex justify-between items-end">
                             <div>
                                 <p class="text-[5.5px] uppercase tracking-wider opacity-60">Verified Dev</p>
-                                <p class="font-semibold text-[8px] text-slate-800 mt-0.5">PLAY-CONSOLE-DEV</p>
+                                <p class="font-semibold text-[8px] text-slate-805 mt-0.5">PLAY-CONSOLE-DEV</p>
                             </div>
                             <div class="w-14 h-4 bg-slate-100 flex items-center justify-center rounded border border-slate-200">
                                 <i class="fa-solid fa-barcode text-slate-800 text-lg"></i>
@@ -1631,7 +1573,7 @@
                                 <p class="font-semibold text-[8px] text-white mt-0.5">VERIFIED MEMBER</p>
                             </div>
                             <div class="w-8 h-8 bg-white p-0.5 rounded flex items-center justify-center shadow">
-                                <i class="fa-solid fa-barcode text-xl text-slate-900"></i>
+                                <i class="fa-solid fa-barcode text-xl text-slate-905"></i>
                             </div>
                         </div>
                     </div>
@@ -1715,7 +1657,7 @@
                 <body class="flex flex-col items-center gap-6 py-8">
                     <div class="no-print mb-4 flex gap-2">
                         <button onclick="window.print()" class="bg-emerald-600 text-white font-semibold px-4 py-2 rounded-xl text-xs shadow-md">Print Card (PDF)</button>
-                        <button onclick="window.close()" class="bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-xl text-xs">Close</button>
+                        <button onclick="window.close()" class="bg-slate-200 text-slate-805 font-semibold px-4 py-2 rounded-xl text-xs">Close</button>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-6 justify-center items-center print-layout">
                         <div class="card-print-box shadow-lg">${frontHTML}</div>
@@ -1732,7 +1674,7 @@
             printWindow.document.close();
         }
 
-        // UDHAR BOOK LEDGER SYSTEM
+        // UDHAR BOOK DEBT LEDGER SYSTEM
         function toggleUdharForm() {
             document.getElementById('udharForm').classList.toggle('hidden');
         }
@@ -1759,10 +1701,9 @@
             };
 
             udharList.push(newEntry);
-            localStorage.setItem(getKey('udhar'), JSON.stringify(udharList));
             document.getElementById('udharForm').reset();
             toggleUdharForm();
-            calculateMetricsAndRefresh();
+            saveAndSyncData();
         }
 
         function settleUdhar(id) {
@@ -1784,7 +1725,6 @@
 
                 transactions.push(settlementTxn);
                 udharList.splice(index, 1);
-                localStorage.setItem(getKey('udhar'), JSON.stringify(udharList));
                 
                 saveAndSyncData();
                 alert("Debt settled and recorded in transaction ledger.");
@@ -1794,8 +1734,7 @@
         function deleteUdhar(id) {
             if (confirm("Delete this Udhar entry without recording a cash settlement?")) {
                 udharList = udharList.filter(u => u.id !== id);
-                localStorage.setItem(getKey('udhar'), JSON.stringify(udharList));
-                calculateMetricsAndRefresh();
+                saveAndSyncData();
             }
         }
 
@@ -1861,17 +1800,6 @@
             document.getElementById('cardFormContainer').classList.toggle('hidden');
         }
 
-        function saveAndSyncData() {
-            localStorage.setItem(getKey('transactions'), JSON.stringify(transactions));
-            localStorage.setItem(getKey('cards'), JSON.stringify(cards));
-            localStorage.setItem(getKey('udhar'), JSON.stringify(udharList));
-            calculateMetricsAndRefresh();
-        }
-
-        document.getElementById('txnSearch').addEventListener('input', renderTransactionsList);
-        document.getElementById('txnFilterCategory').addEventListener('change', renderTransactionsList);
-        document.getElementById('budgetInput').addEventListener('input', calculateMetricsAndRefresh);
-
         function exportData() {
             const bundleExportPackageData = {
                 version: "6.0.0",
@@ -1906,7 +1834,7 @@
                             document.getElementById('budgetInput').value = extractedJsonParsedObjectTree.budgetConfigLimit;
                         }
                         saveAndSyncData();
-                        alert("Database configuration updated!");
+                        alert("Database configuration updated and synced!");
                     } else {
                         alert("Invalid backup JSON structure.");
                     }
@@ -1918,12 +1846,7 @@
         }
 
         function resetAllData() {
-            if(confirm(`Reset all stored records for ${currentUser}?`)) {
-                localStorage.removeItem(getKey('transactions'));
-                localStorage.removeItem(getKey('wishlist'));
-                localStorage.removeItem(getKey('cards'));
-                localStorage.removeItem(getKey('udhar'));
-                localStorage.removeItem(getKey('budget'));
+            if(confirm(`Reset all local stored records for ${currentUser}?`)) {
                 transactions = [];
                 wishlist = [];
                 udharList = [];
@@ -1937,9 +1860,15 @@
 
         // Bootstrap App Startup
         window.onload = function() {
-            renderLoginOptions();
-            if (currentUser) {
-                initSession(currentUser);
+            if (currentUser && currentPassword) {
+                // Auto login on same session
+                const initialPayload = {
+                    transactions: JSON.parse(localStorage.getItem(getKey('transactions'))) || [],
+                    wishlist: JSON.parse(localStorage.getItem(getKey('wishlist'))) || [],
+                    udharList: JSON.parse(localStorage.getItem(getKey('udhar'))) || [],
+                    cards: JSON.parse(localStorage.getItem(getKey('cards'))) || []
+                };
+                initAppSession(initialPayload);
             } else {
                 document.getElementById('appContainer').classList.add('hidden');
                 document.getElementById('loginScreen').classList.remove('hidden');
