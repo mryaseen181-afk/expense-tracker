@@ -244,7 +244,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <label for="budgetInput" class="text-xs font-medium text-teal-700">Monthly Budget (₹):</label>
-                            <input type="number" id="budgetInput" value="50000" class="w-28 px-3 py-1.5 text-xs font-bold rounded-xl border border-teal-200 dark:border-indigo-850 bg-teal-50 dark:bg-indigo-950 focus:outline-none focus:border-teal-400">
+                            <input type="number" id="budgetInput" value="50000" class="w-28 px-3 py-1.5 text-xs font-bold rounded-xl border border-teal-200 dark:border-indigo-900/60 bg-teal-50 dark:bg-indigo-950 focus:outline-none focus:border-teal-400">
                         </div>
                     </div>
                     <div class="h-64 flex justify-center items-center">
@@ -309,18 +309,18 @@
                         <button onclick="toggleWishlistForm()" class="text-xs bg-emerald-600 hover:bg-emerald-505 text-white font-medium px-3 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20 cursor-pointer"><i class="fa-solid fa-plus mr-1"></i>New Goal</button>
                     </div>
 
-                    <form id="wishlistForm" class="hidden p-4 bg-teal-50/80 dark:bg-indigo-955/20 border border-teal-200 dark:border-indigo-900 rounded-2xl space-y-3">
+                    <form id="wishlistForm" class="hidden p-4 bg-teal-50/80 dark:bg-indigo-950/20 border border-teal-200 dark:border-indigo-900 rounded-2xl space-y-3">
                         <input type="hidden" id="editWishId">
-                        <input type="text" id="wishName" required placeholder="Item Name (e.g., iPhone, Laptop, Watch)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-850 bg-white dark:bg-indigo-950 focus:outline-none">
+                        <input type="text" id="wishName" required placeholder="Item Name (e.g., iPhone, Laptop, Watch)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900/60 bg-white dark:bg-indigo-950 focus:outline-none">
                         <div class="grid grid-cols-2 gap-2">
-                            <input type="number" id="wishTarget" required placeholder="Target Price (₹)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-850 bg-white dark:bg-indigo-950 focus:outline-none">
+                            <input type="number" id="wishTarget" required placeholder="Target Price (₹)" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900/60 bg-white dark:bg-indigo-950 focus:outline-none">
                             <select id="wishPriority" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-855 bg-white dark:bg-indigo-950 focus:outline-none">
                                 <option value="High">High Priority</option>
                                 <option value="Medium" selected>Medium Priority</option>
                                 <option value="Low">Low Priority</option>
                             </select>
                         </div>
-                        <input type="text" id="wishNotes" placeholder="Additional notes..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-850 bg-white dark:bg-indigo-950 focus:outline-none">
+                        <input type="text" id="wishNotes" placeholder="Additional notes..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900/60 bg-white dark:bg-indigo-950 focus:outline-none">
                         <div class="flex gap-2 pt-1">
                             <button type="submit" class="flex-1 bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl cursor-pointer">Save Goal</button>
                             <button type="button" onclick="toggleWishlistForm()" class="bg-teal-200 dark:bg-indigo-900 text-teal-900 dark:text-teal-200 text-xs px-4 py-2 rounded-xl cursor-pointer">Cancel</button>
@@ -386,7 +386,7 @@
                     </div>
 
                     <!-- Add Card Form -->
-                    <div id="cardFormContainer" class="hidden p-4 bg-teal-50/80 dark:bg-indigo-955/20 border border-teal-200 dark:border-teal-900 rounded-2xl space-y-3">
+                    <div id="cardFormContainer" class="hidden p-4 bg-teal-50/80 dark:bg-indigo-950/20 border border-teal-200 dark:border-teal-900 rounded-2xl space-y-3">
                         <h4 class="font-bold text-xs uppercase text-teal-650 tracking-wider">Create Custom Card Replica</h4>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -437,7 +437,7 @@
                     </div>
 
                     <!-- Add Udhar Entry Form -->
-                    <form id="udharForm" class="hidden p-4 bg-teal-50/80 dark:bg-indigo-955/20 border border-teal-200 dark:border-teal-900 rounded-2xl space-y-3">
+                    <form id="udharForm" class="hidden p-4 bg-teal-50/80 dark:bg-indigo-950/20 border border-teal-200 dark:border-teal-900 rounded-2xl space-y-3">
                         <h4 class="font-bold text-xs uppercase text-teal-650 tracking-wider">Record Udhar / Debt</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <input type="text" id="udharFriend" required placeholder="Friend's Name" class="w-full px-3.5 py-2 text-xs rounded-xl border border-teal-250 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
@@ -515,16 +515,16 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-teal-405 mb-1 uppercase">Description</label>
-                    <input type="text" id="txnDesc" required placeholder="e.g., Grocery, Rent" class="w-full px-3.5 py-2.5 rounded-xl border border-teal-200 dark:border-indigo-850 bg-teal-50 dark:bg-indigo-950 text-xs font-medium focus:outline-none focus:border-teal-450">
+                    <input type="text" id="txnDesc" required placeholder="e.g., Grocery, Rent" class="w-full px-3.5 py-2.5 rounded-xl border border-teal-200 dark:border-indigo-900/60 bg-teal-50 dark:bg-indigo-950 text-xs font-medium focus:outline-none focus:border-teal-450">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-teal-405 mb-1 uppercase">Amount (₹)</label>
-                        <input type="number" id="txnAmount" required min="1" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-teal-200 dark:border-indigo-850 bg-teal-50 dark:bg-indigo-950 text-xs font-medium focus:outline-none focus:border-teal-450">
+                        <input type="number" id="txnAmount" required min="1" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-teal-200 dark:border-indigo-900/60 bg-teal-50 dark:bg-indigo-950 text-xs font-medium focus:outline-none focus:border-teal-450">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-teal-405 mb-1 uppercase">Category</label>
-                        <select id="txnCategory" class="w-full px-3.5 py-2.5 rounded-xl border border-teal-200 dark:border-indigo-850 bg-teal-50 dark:bg-indigo-950 text-xs font-medium focus:outline-none focus:border-teal-450">
+                        <select id="txnCategory" class="w-full px-3.5 py-2.5 rounded-xl border border-teal-200 dark:border-indigo-900/60 bg-teal-50 dark:bg-indigo-950 text-xs font-medium focus:outline-none focus:border-teal-450">
                             <option value="Food">Food</option>
                             <option value="Shopping">Shopping</option>
                             <option value="Bills">Bills</option>
@@ -538,7 +538,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-teal-405 mb-1 uppercase">Date</label>
-                    <input type="date" id="txnDate" required class="w-full px-3.5 py-2.5 rounded-xl border border-teal-250 dark:border-indigo-850 bg-teal-50 dark:bg-indigo-955 text-xs font-medium focus:outline-none focus:border-teal-450">
+                    <input type="date" id="txnDate" required class="w-full px-3.5 py-2.5 rounded-xl border border-teal-250 dark:border-indigo-900/60 bg-teal-50 dark:bg-indigo-950 text-xs font-medium focus:outline-none focus:border-teal-450">
                 </div>
                 <div class="flex gap-2 pt-2">
                     <button type="submit" id="submitTxnBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-555 text-white font-semibold py-2.5 rounded-xl shadow-md transition-colors text-xs cursor-pointer">Save Transaction</button>
@@ -660,9 +660,16 @@
             submitBtn.disabled = true;
 
             try {
-                const response = await fetch(CLOUD_DB_BASE_URL + username);
                 if (response.status === 404) {
-                    statusMsg.innerText = "Account does not exist! Please Register.";
+                    if (confirm(`Account "${username}" does not exist. Would you like to register a new account with this username and password?`)) {
+                        toggleAuthTab('register');
+                        document.getElementById('registerUsername').value = username;
+                        document.getElementById('registerPassword').value = password;
+                        document.getElementById('registerConfirmPassword').value = password;
+                        statusMsg.innerText = "Please confirm your password and click 'Create Account'.";
+                    } else {
+                        statusMsg.innerText = "Account does not exist! Please Register.";
+                    }
                 } else if (response.ok) {
                     const dataBundle = await response.json();
                     const passwordHash = CryptoJS.SHA256(password).toString();
@@ -868,13 +875,14 @@
             let piggyWithdrawals = 0;
 
             transactions.forEach(t => {
+                const amt = parseFloat(t.amount) || 0;
                 if (t.isPiggyDeposit) {
-                    piggyDeposits += t.amount;
+                    piggyDeposits += amt;
                 } else if (t.isPiggyWithdrawal) {
-                    piggyWithdrawals += t.amount;
+                    piggyWithdrawals += amt;
                 } else {
-                    if (t.type === 'Income') incomeTotal += t.amount;
-                    else expenseTotal += t.amount;
+                    if (t.type === 'Income') incomeTotal += amt;
+                    else expenseTotal += amt;
                 }
             });
 
@@ -1032,7 +1040,11 @@
 
             let totalIncome = 0;
             let totalExpense = 0;
-            transactions.forEach(t => { if(t.type==='Income') totalIncome += t.amount; else totalExpense += t.amount; });
+            transactions.forEach(t => { 
+                const amt = parseFloat(t.amount) || 0;
+                if(t.type==='Income') totalIncome += amt; 
+                else totalExpense += amt; 
+            });
             const currentNetSurplusPoolBalance = totalIncome - totalExpense;
 
             if(wishlist.length === 0) {
@@ -1329,7 +1341,7 @@
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-teal-655 uppercase mb-1">Gender</label>
-                        <select id="addAadhaarGender" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-955 focus:outline-none">
+                        <select id="addAadhaarGender" class="w-full px-3 py-2 text-xs rounded-xl border border-teal-200 dark:border-indigo-900 bg-white dark:bg-indigo-950 focus:outline-none">
                             <option value="Male">Male / पुरुष</option>
                             <option value="Female">Female / महिला</option>
                         </select>
