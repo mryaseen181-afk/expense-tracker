@@ -140,7 +140,7 @@
                         <span id="activeUserNameDisplay" class="text-teal-900 dark:text-teal-100 pr-1"></span>
                     </div>
 
-                    <button id="themeToggle" class="p-2.5 rounded-2xl bg-teal-100/80 dark:bg-indigo-950 text-teal-800 dark:text-teal-300 hover:scale-105 transition-transform cursor-pointer">
+                    <button id="themeToggle" class="hidden p-2.5 rounded-2xl bg-teal-100/80 dark:bg-indigo-950 text-teal-800 dark:text-teal-300 hover:scale-105 transition-transform cursor-pointer">
                         <i class="fa-solid fa-moon dark:hidden"></i>
                         <i class="fa-solid fa-sun hidden dark:block"></i>
                     </button>
@@ -660,6 +660,7 @@
             submitBtn.disabled = true;
 
             try {
+                const response = await fetch(CLOUD_DB_BASE_URL + username);
                 if (response.status === 404) {
                     if (confirm(`Account "${username}" does not exist. Would you like to register a new account with this username and password?`)) {
                         toggleAuthTab('register');
@@ -805,23 +806,8 @@
             if (userBudget) document.getElementById('budgetInput').value = userBudget;
         }
 
-        const themeToggle = document.getElementById('themeToggle');
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-
-        themeToggle.addEventListener('click', () => {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            }
-            renderChart();
-        });
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
 
         function formatIndianCurrency(num) {
             const absoluteValue = Math.abs(Number(num)).toFixed(2);
