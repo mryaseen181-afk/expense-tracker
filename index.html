@@ -797,6 +797,7 @@
             container.innerHTML = '';
 
             const itemsFiltered = transactions.filter(t => {
+                if (t.isPiggyDeposit || t.isPiggyWithdrawal) return false;
                 const searchMatch = t.description.toLowerCase().includes(query) || (t.category && t.category.toLowerCase().includes(query));
                 const categoryMatch = selectedCategory === 'All' || (t.category && t.category === selectedCategory);
                 return searchMatch && categoryMatch;
@@ -1921,6 +1922,7 @@
             let csvContent = "data:text/csv;charset=utf-8,";
             csvContent += "Date,Description,Category,Type,Amount\r\n";
             transactions.forEach(t => {
+                if (t.isPiggyDeposit || t.isPiggyWithdrawal) return;
                 const date = t.date || '';
                 const desc = `"${(t.description || '').replace(/"/g, '""')}"`;
                 const cat = t.category || 'Others';
